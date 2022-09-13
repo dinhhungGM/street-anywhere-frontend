@@ -1,0 +1,15 @@
+@import './../../../solutions/assets/scss/variables';
+
+.menu {
+  margin-top: 8px !important;
+  &__item {
+    padding: 8px 12px !important;
+    border-radius: 100rem !important;
+    &__title {
+      padding-left: 32px;
+      font-size: 14px;
+      font-weight: 500;
+      color: $primaryBlack;
+    }
+  }
+}
