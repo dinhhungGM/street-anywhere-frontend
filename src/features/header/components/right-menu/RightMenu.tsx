@@ -1,4 +1,4 @@
-import { Add, Login, Search } from '@mui/icons-material';
+import { Add, Login, PersonAdd, Search } from '@mui/icons-material';
 import { Drawer, IconButton, Stack, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { FeatureMenu } from '../../feature-menu';
@@ -36,9 +36,14 @@ const RightMenu = () => {
             <AppIcon component={Add} />
           </IconButton>
         </Tooltip>
-        <Tooltip title='Sign in'>
+        <Tooltip title='Sign in' onClick={() => navigate('/sign-in')}>
           <IconButton>
             <AppIcon component={Login} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Sign up' onClick={() => navigate('/sign-up')}>
+          <IconButton>
+            <AppIcon component={PersonAdd} />
           </IconButton>
         </Tooltip>
         <FeatureMenu anchorEl={anchorEl} onClose={() => setAnchorEl(null)} isOpen={isOpenFeatureMenu} />
