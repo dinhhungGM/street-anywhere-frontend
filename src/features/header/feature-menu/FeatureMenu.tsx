@@ -42,7 +42,7 @@ const FeatureMenu = ({ isOpen, onClose, anchorEl }: IFunctionsMenuProps) => {
           style: {
             width: 280,
             padding: 12,
-            borderRadius: 28,
+            borderRadius: 12,
           },
         }}
       >
