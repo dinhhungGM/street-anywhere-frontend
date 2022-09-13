@@ -1,13 +1,16 @@
-import { Add, Search } from '@mui/icons-material';
+import { Add, Login, Search } from '@mui/icons-material';
 import { Drawer, IconButton, Stack, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { FeatureMenu } from '../../feature-menu';
 import { SearchBox } from '../search-box';
+import { AppIcon } from '../../../../solutions/components/app-icon';
+import { useNavigate } from 'react-router-dom';
 
 const RightMenu = () => {
   const [isOpenSearchBox, setIsOpenSearchBox] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isOpenFeatureMenu = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const showFeatureMenu = (event: React.MouseEvent<HTMLButtonElement>): void => {
     setAnchorEl(event.currentTarget);
@@ -18,10 +21,10 @@ const RightMenu = () => {
       <Stack spacing={2} alignItems='center' direction='row'>
         <Tooltip title='Search'>
           <IconButton size='large' color='warning' onClick={() => setIsOpenSearchBox(true)}>
-            <Search />
+            <AppIcon component={Search} />
           </IconButton>
         </Tooltip>
-        <Tooltip title='Functions menu'>
+        <Tooltip title='Features'>
           <IconButton
             size='large'
             color='success'
@@ -30,7 +33,12 @@ const RightMenu = () => {
             aria-controls={isOpenFeatureMenu ? 'basic-menu' : undefined}
             onClick={showFeatureMenu}
           >
-            <Add />
+            <AppIcon component={Add} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Sign in'>
+          <IconButton>
+            <AppIcon component={Login} />
           </IconButton>
         </Tooltip>
         <FeatureMenu anchorEl={anchorEl} onClose={() => setAnchorEl(null)} isOpen={isOpenFeatureMenu} />
