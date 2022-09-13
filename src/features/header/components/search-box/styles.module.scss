@@ -1,0 +1,43 @@
+.search-box {
+  width: 100vw;
+  height: 500px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &__input {
+    position: relative;
+    width: 50%;
+
+    input {
+      display: inline-block;
+      width: 100%;
+
+      border: none;
+      outline: none;
+      padding: 0 12px 12px 0;
+      border-bottom: 3px solid #000;
+
+      font-size: 40px;
+      line-height: 40px;
+    }
+
+    &__icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      svg {
+        transform: scale(2);
+      }
+    }
+  }
+
+  &__discover {
+    padding-top: 16px;
+    width: 50%;
+  }
+}
