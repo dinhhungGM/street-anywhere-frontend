@@ -1,7 +1,7 @@
 import { lazy, ReactNode } from 'react';
 
 const LazyLandingPage = lazy(() => import('../../features/landing-page').then((m) => ({ default: m.LandingPage })));
-const LazySignUp = lazy(() => import('./../../features/sign-up').then((m) => ({ default: m.SignUp })));
+const LazySignUp = lazy(() => import('../../features/auth/sign-up').then((m) => ({ default: m.SignUp })));
 const LazyCreateNewPost = lazy(() =>
   import('./../../features/create-new-post').then((m) => ({ default: m.CreateNewPost })),
 );

@@ -20,14 +20,15 @@ export const signInActionAsync = createAsyncThunk(
   'auth/signIn',
   async (payload: { username: string; password: string; }, { dispatch }) => {
     try {
-      dispatch(wrapperActions.showLoading);
+      dispatch(wrapperActions.showLoading());
       const { data } = await authService.signIn(payload);
       return data.value;
     } catch (error: any) {
+      dispatch(wrapperActions.hideLoading());
       const message = error.response.data.message;
       AlertUtil.showError(message);
     } finally {
-      dispatch(wrapperActions.hideLoading);
+      dispatch(wrapperActions.hideLoading());
     }
   },
 );
@@ -42,7 +43,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(signInActionAsync.fulfilled, (state, action) => {
-      state.currentUser = action.payload;
+      // state.currentUser = action.payload;
     });
   },
 });

@@ -18,7 +18,7 @@ const wrapperSlice = createSlice({
       state.isLoading = true;
     },
     hideLoading: (state) => {
-      state.isLoading = true;
+      state.isLoading = false;
     },
   },
 });
