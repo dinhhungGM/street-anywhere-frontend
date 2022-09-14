@@ -9,7 +9,7 @@ import {
 } from '@mui/icons-material';
 import { Menu, MenuItem } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import { AppIcon } from '../../../solutions/components/app-icon';
+import { AppIcon } from '../../../../solutions/components/app-icon';
 import styles from './styles.module.scss';
 
 type IFunctionsMenuProps = {

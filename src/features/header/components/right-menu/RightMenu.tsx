@@ -1,10 +1,10 @@
 import { Add, Login, PersonAdd, Search } from '@mui/icons-material';
 import { Drawer, IconButton, Stack, Tooltip } from '@mui/material';
 import { useState } from 'react';
-import { FeatureMenu } from '../../feature-menu';
-import { SearchBox } from '../search-box';
-import { AppIcon } from '../../../../solutions/components/app-icon';
 import { useNavigate } from 'react-router-dom';
+import { AppIcon } from '../../../../solutions/components/app-icon';
+import { SearchBox } from '../search-box';
+import { FeatureMenu } from './../feature-menu';
 
 const RightMenu = () => {
   const [isOpenSearchBox, setIsOpenSearchBox] = useState<boolean>(false);

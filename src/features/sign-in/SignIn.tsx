@@ -47,52 +47,45 @@ const SignIn = () => {
 
   return (
     <>
-      <Box>
-        <Grid container spacing={2}>
-          <Grid item sm={12} md={6}>
-            <Stack alignItems='center' justifyContent='center' className={styles['form-container']}>
-              <Typography variant='h2'>Sign in to application</Typography>
-              <Stack direction='row' justifyContent='space-between' alignItems='center'>
-                <Typography variant='h6' width='300px'>
-                  If you don't have an account register. You can <NavLink to='/sign-up'>register here!</NavLink>
-                </Typography>
-                <img src='/sign-in.png' alt='Sign in' />
-              </Stack>
-            </Stack>
-          </Grid>
-          <Grid item sm={12} md={6}>
-            <Box className={styles['form-container']}>
-              <Typography variant='h3' marginBottom={8}>
-                Sign in
-              </Typography>
-              <TextField
-                label='Username'
-                className={styles['form-control']}
-                type='text'
-                {...form.getFieldProps('username')}
-                {...checkControl('username')}
-              />
-              <TextField
-                label='Password'
-                className={styles['form-control']}
-                type='password'
-                {...form.getFieldProps('password')}
-                {...checkControl('password')}
-              />
-              <Button variant='contained' className={styles['form-submit']} onClick={handleSignIn}>
-                Sign in
-              </Button>
-              <Divider className={styles.divider}>Or continue with</Divider>
-              <GoogleLogin
-                clientId={GOOGLE_AUTH_CLIENT_KEY as string}
-                onSuccess={handleOnSuccess}
-                onFailure={handleOnSuccess}
-                cookiePolicy={'single_host_origin'}
-                className={styles['btn-google']}
-              />
-            </Box>
-          </Grid>
-        </Grid>
+      <Box className={styles.wrapper} boxShadow={1}>
+        <Box className={styles.form}>
+          <Typography variant='h3' textAlign='center' color='#9391fd' marginBottom={4} fontWeight='600'>
+            Login
+          </Typography>
+          <Box className={styles['form-group']}>
+            <TextField
+              type='text'
+              fullWidth
+              label='Username'
+              {...form.getFieldProps('username')}
+              {...checkControl('username')}
+            />
+          </Box>
+          <Box className={styles['form-group']}>
+            <TextField
+              type='password'
+              fullWidth
+              label='Password'
+              {...form.getFieldProps('password')}
+              {...checkControl('password')}
+            />
+          </Box>
+          <Box className={styles['form-group']}>
+            <Button fullWidth variant='contained' className={styles.btn}>
+              Login
+            </Button>
+          </Box>
+          <Divider>Or continue with</Divider>
+          <Stack paddingY={4} alignItems='center' justifyContent='center'>
+            <GoogleLogin
+              clientId={GOOGLE_AUTH_CLIENT_KEY as string}
+              onSuccess={handleOnSuccess}
+              onFailure={handleOnSuccess}
+              cookiePolicy={'single_host_origin'}
+              className={styles['btn-google']}
+            />
+          </Stack>
+        </Box>
       </Box>
     </>
   );
