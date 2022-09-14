@@ -1,7 +1,12 @@
+import { Box } from '@mui/material';
 import React from 'react';
 
 const SignUp = () => {
-  return <div>SignUp</div>;
+  return (
+    <>
+      <Box></Box>
+    </>
+  );
 };
 
 export default SignUp;

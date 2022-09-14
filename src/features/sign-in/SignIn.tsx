@@ -1,17 +1,15 @@
-import { Box, Button, Divider, Grid, Stack } from '@mui/material';
+import { PersonAdd } from '@mui/icons-material';
+import { Box, Button, Divider, Stack } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import GoogleLogin from 'react-google-login';
-import styles from './styles.module.scss';
-import { NavLink } from 'react-router-dom';
 import { useFormik } from 'formik';
+import GoogleLogin from 'react-google-login';
+import { NavLink } from 'react-router-dom';
 import * as yup from 'yup';
 import { useAppDispatch } from '../../app/hooks';
-import { authActions } from './store';
 import { AppIcon } from '../../solutions/components/app-icon';
-import { PersonAdd } from '@mui/icons-material';
-
-const GOOGLE_AUTH_CLIENT_KEY = process.env.REACT_APP_GOOGLE_AUTHENTICATION_CLIENT_ID || undefined;
+import { authActions } from './store';
+import styles from './styles.module.scss';
 
 const SignIn = () => {
   const dispatch = useAppDispatch();
@@ -84,7 +82,7 @@ const SignIn = () => {
           <Divider>Or continue with</Divider>
           <Stack paddingY={4} alignItems='center' justifyContent='center'>
             <GoogleLogin
-              clientId={GOOGLE_AUTH_CLIENT_KEY as string}
+              clientId={process.env.REACT_APP_GOOGLE_AUTHENTICATION_CLIENT_ID as string}
               onSuccess={handleOnSuccess}
               onFailure={handleOnSuccess}
               cookiePolicy={'single_host_origin'}
