@@ -4,13 +4,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
   height: calc(100vh - 80px - 22px);
   padding: 20px;
   background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3)),
     url('https://images.pexels.com/photos/114979/pexels-photo-114979.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500');
-  background-size: cover;
   background-position: center;
+  background-size: cover;
 }
 
 .form {
@@ -31,11 +30,11 @@
 .btn {
   padding: 12px;
   border-radius: 100rem;
+
   &-google {
     display: flex;
     align-items: center;
     justify-content: center;
-
     width: 100%;
     padding: 8px;
     box-shadow: unset !important;

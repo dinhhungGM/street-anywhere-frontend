@@ -8,6 +8,8 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useAppDispatch } from '../../app/hooks';
 import { authActions } from './store';
+import { AppIcon } from '../../solutions/components/app-icon';
+import { PersonAdd } from '@mui/icons-material';
 
 const GOOGLE_AUTH_CLIENT_KEY = process.env.REACT_APP_GOOGLE_AUTHENTICATION_CLIENT_ID || undefined;
 
@@ -49,7 +51,7 @@ const SignIn = () => {
     <>
       <Box className={styles.wrapper} boxShadow={1}>
         <Box className={styles.form}>
-          <Typography variant='h3' textAlign='center' color='#9391fd' marginBottom={4} fontWeight='600'>
+          <Typography variant='h3' textAlign='center' color='#9391fd' marginBottom={4} fontWeight='500'>
             Login
           </Typography>
           <Box className={styles['form-group']}>
@@ -70,8 +72,12 @@ const SignIn = () => {
               {...checkControl('password')}
             />
           </Box>
+          <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%' paddingY={1}>
+            <AppIcon component={PersonAdd} />
+            <NavLink to='/sign-up'>Create new account</NavLink>
+          </Stack>
           <Box className={styles['form-group']}>
-            <Button fullWidth variant='contained' className={styles.btn}>
+            <Button fullWidth variant='contained' className={styles.btn} onClick={handleSignIn}>
               Login
             </Button>
           </Box>
