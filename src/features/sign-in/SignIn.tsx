@@ -7,6 +7,7 @@ import GoogleLogin from 'react-google-login';
 import { NavLink } from 'react-router-dom';
 import * as yup from 'yup';
 import { useAppDispatch } from '../../app/hooks';
+import { AppFormInput } from '../../solutions/components/app-form-input';
 import { AppIcon } from '../../solutions/components/app-icon';
 import { authActions } from './store';
 import styles from './styles.module.scss';
@@ -53,29 +54,23 @@ const SignIn = () => {
             Login
           </Typography>
           <Box className={styles['form-group']}>
-            <TextField
-              type='text'
-              fullWidth
-              label='Username'
-              {...form.getFieldProps('username')}
-              {...checkControl('username')}
-            />
+            <AppFormInput label='Username' form={form} formControlName='username' />
           </Box>
           <Box className={styles['form-group']}>
-            <TextField
-              type='password'
-              fullWidth
-              label='Password'
-              {...form.getFieldProps('password')}
-              {...checkControl('password')}
-            />
+            <AppFormInput type='password' label='Password' form={form} formControlName='password' />
           </Box>
           <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%' paddingY={1}>
             <AppIcon component={PersonAdd} />
             <NavLink to='/sign-up'>Create new account</NavLink>
           </Stack>
           <Box className={styles['form-group']}>
-            <Button fullWidth variant='contained' className={styles.btn} onClick={handleSignIn}>
+            <Button
+              fullWidth
+              variant='contained'
+              className={styles.btn}
+              onClick={handleSignIn}
+              disabled={!form.isValid}
+            >
               Login
             </Button>
           </Box>
