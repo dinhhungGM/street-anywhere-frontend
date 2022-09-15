@@ -19,6 +19,7 @@ const AppFormInput = ({ form, formControlName, type, fullWidth, label, ...rest }
     }
     return null;
   };
+  console.log('re-render');
 
   return (
     <>

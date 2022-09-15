@@ -1,6 +1,5 @@
 import { PersonAdd } from '@mui/icons-material';
 import { Box, Button, Divider, Stack } from '@mui/material';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
 import GoogleLogin from 'react-google-login';
@@ -32,16 +31,6 @@ const SignIn = () => {
     console.log('Handle On Success', obj);
   };
 
-  const checkControl = (field: 'username' | 'password'): { error: boolean; helperText: string | undefined; } | null => {
-    if (form.touched[field] && !!form.errors[field]) {
-      return {
-        error: true,
-        helperText: form.errors[field],
-      };
-    }
-    return null;
-  };
-
   const handleSignIn = (): void => {
     form.handleSubmit();
   };
@@ -67,6 +56,7 @@ const SignIn = () => {
             <Button
               fullWidth
               variant='contained'
+              color='secondary'
               className={styles.btn}
               onClick={handleSignIn}
               disabled={!form.isValid}
