@@ -24,7 +24,7 @@ export const signInActionAsync = createAsyncThunk('auth/signIn', async (payload:
     return data.value;
   } catch (error: any) {
     dispatch(wrapperActions.hideLoading());
-    const message = error.response.data.message;
+    const message = error.response.data.message ?? error.message;
     AlertUtil.showError(message);
   } finally {
     dispatch(wrapperActions.hideLoading());
@@ -38,7 +38,7 @@ export const signUpActionAsync = createAsyncThunk('auth/signUp', async (payload:
     return data.value;
   } catch (error: any) {
     dispatch(wrapperActions.hideLoading());
-    const message = error.response.data.message;
+    const message = error.response.data.message ?? error.message;
     AlertUtil.showError(message);
   } finally {
     dispatch(wrapperActions.hideLoading());

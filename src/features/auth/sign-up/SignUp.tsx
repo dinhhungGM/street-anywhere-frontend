@@ -3,8 +3,11 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { AppFormInput } from '../../../solutions/components/app-form-input';
 import styles from './styles.module.scss';
+import { useAppDispatch } from '../../../app/hooks';
+import { signUpActionAsync } from '../../sign-in/store/signInSlice';
 
 const SignUp = () => {
+  const dispatch = useAppDispatch();
   const form = useFormik({
     initialValues: {
       username: '',
@@ -13,7 +16,9 @@ const SignUp = () => {
       firstName: '',
       lastName: '',
     },
-    onSubmit: (values) => {},
+    onSubmit: (values) => {
+      dispatch(signUpActionAsync(values));
+    },
     validationSchema: yup.object({
       username: yup
         .string()
@@ -36,6 +41,11 @@ const SignUp = () => {
         .max(50, 'Your first name is too long - should less than 50 characters'),
     }),
   });
+
+  const handleSignUp = (): void => {
+    form.handleSubmit();
+  };
+
   return (
     <>
       <Box className={styles.wrapper} boxShadow={1}>
@@ -46,7 +56,7 @@ const SignUp = () => {
           <Box className={styles['form-group']}>
             <AppFormInput label='Username' form={form} formControlName='username' />
           </Box>
-          <Box className={styles['form-group']}>91
+          <Box className={styles['form-group']}>
             <AppFormInput type='password' label='Password' form={form} formControlName='password' />
           </Box>
           <Box className={styles['form-group']}>
@@ -59,7 +69,14 @@ const SignUp = () => {
             <AppFormInput label='Last name' form={form} formControlName='lastName' />
           </Box>
           <Box className={styles['form-group']}>
-            <Button fullWidth variant='contained' color='secondary' className={styles.btn} disabled={!form.isValid}>
+            <Button
+              fullWidth
+              variant='contained'
+              color='secondary'
+              className={styles.btn}
+              disabled={!form.isValid}
+              onClick={handleSignUp}
+            >
               Submit
             </Button>
           </Box>
