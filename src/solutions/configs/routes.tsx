@@ -5,7 +5,7 @@ const LazySignUp = lazy(() => import('../../features/auth/sign-up').then((m) => 
 const LazyCreateNewPost = lazy(() =>
   import('./../../features/create-new-post').then((m) => ({ default: m.CreateNewPost })),
 );
-const LazySignIn = lazy(() => import('./../../features/sign-in').then((m) => ({ default: m.SignIn })));
+const LazySignIn = lazy(() => import('./../../features/auth/sign-in').then((m) => ({ default: m.SignIn })));
 
 type Route = {
   id: string;

@@ -1,11 +1,11 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
-import { authReducer } from '../features/sign-in/store';
+import { authReducer } from '../features/auth/store';
 import { wrapperReducer } from '../features/wrapper/store';
 
 export const store = configureStore({
   reducer: {
     wrapper: wrapperReducer,
-    auth: authReducer
+    auth: authReducer,
   },
 });
 

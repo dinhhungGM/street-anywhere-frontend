@@ -5,10 +5,10 @@ import { useFormik } from 'formik';
 import GoogleLogin from 'react-google-login';
 import { NavLink } from 'react-router-dom';
 import * as yup from 'yup';
-import { useAppDispatch } from '../../app/hooks';
-import { AppFormInput } from '../../solutions/components/app-form-input';
-import { AppIcon } from '../../solutions/components/app-icon';
-import { authActions } from './store';
+import { useAppDispatch } from '../../../app/hooks';
+import { AppFormInput } from '../../../solutions/components/app-form-input';
+import { AppIcon } from '../../../solutions/components/app-icon';
+import { authActions } from '../store';
 import styles from './styles.module.scss';
 
 const SignIn = () => {

@@ -1,4 +1,4 @@
-import authSlice, { signInActionAsync } from './signInSlice';
+import authSlice, { signInActionAsync } from './authSlice';
 const { actions, reducer: authReducer } = authSlice;
 
 const authActions = {
