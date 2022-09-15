@@ -1,7 +1,5 @@
+import { SignInPayload, SignUpPayload } from '../models/authModels';
 import { default as axios } from './axios';
-
-type SignInPayload = { username: string; password: string; };
-type SignUpPayload = { username: string; password: string; firstName: string; lastName: string; };
 
 class AuthenticationService {
   signIn = async (payload: SignInPayload) => {

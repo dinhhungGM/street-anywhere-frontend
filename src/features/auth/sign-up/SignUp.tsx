@@ -46,7 +46,7 @@ const SignUp = () => {
           <Box className={styles['form-group']}>
             <AppFormInput label='Username' form={form} formControlName='username' />
           </Box>
-          <Box className={styles['form-group']}>
+          <Box className={styles['form-group']}>91
             <AppFormInput type='password' label='Password' form={form} formControlName='password' />
           </Box>
           <Box className={styles['form-group']}>
