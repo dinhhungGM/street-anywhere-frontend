@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { AppFormInput } from '../../../solutions/components/app-form-input';
 import styles from './styles.module.scss';
 import { useAppDispatch } from '../../../app/hooks';
-import { signUpActionAsync } from '../../sign-in/store/signInSlice';
+import { signUpActionAsync } from '../store/authSlice';
 
 const SignUp = () => {
   const dispatch = useAppDispatch();
@@ -42,10 +42,6 @@ const SignUp = () => {
     }),
   });
 
-  const handleSignUp = (): void => {
-    form.handleSubmit();
-  };
-
   return (
     <>
       <Box className={styles.wrapper} boxShadow={1}>
@@ -75,7 +71,7 @@ const SignUp = () => {
               color='secondary'
               className={styles.btn}
               disabled={!form.isValid}
-              onClick={handleSignUp}
+              onClick={() => form.handleSubmit()}
             >
               Submit
             </Button>

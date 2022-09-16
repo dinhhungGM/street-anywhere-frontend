@@ -31,10 +31,6 @@ const SignIn = () => {
     console.log('Handle On Success', obj);
   };
 
-  const handleSignIn = (): void => {
-    form.handleSubmit();
-  };
-
   return (
     <>
       <Box className={styles.wrapper} boxShadow={1}>
@@ -58,7 +54,7 @@ const SignIn = () => {
               variant='contained'
               color='secondary'
               className={styles.btn}
-              onClick={handleSignIn}
+              onClick={() => form.handleSubmit()}
               disabled={!form.isValid}
             >
               Login

@@ -1,0 +1,13 @@
+@import './../../../solutions/assets/scss/variables';
+
+.map {
+  position: relative;
+  &-search {
+    position: absolute;
+    z-index: 1000;
+    right: 10px;
+    top: 10px;
+    background-color: #fff;
+    padding: 12px;
+  }
+}

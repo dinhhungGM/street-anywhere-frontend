@@ -1,3 +1,4 @@
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { ThemeProvider } from '@emotion/react';
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
