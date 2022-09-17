@@ -26,6 +26,7 @@ export const signInActionAsync = createAsyncThunk('auth/signIn', async (payload:
     dispatch(wrapperActions.hideLoading());
     const message = error.response.data.message ?? error.message;
     AlertUtil.showError(message);
+    return Promise.reject();
   } finally {
     dispatch(wrapperActions.hideLoading());
   }
@@ -40,6 +41,7 @@ export const signUpActionAsync = createAsyncThunk('auth/signUp', async (payload:
     dispatch(wrapperActions.hideLoading());
     const message = error.response.data.message ?? error.message;
     AlertUtil.showError(message);
+    return Promise.reject();
   } finally {
     dispatch(wrapperActions.hideLoading());
   }
@@ -51,14 +53,17 @@ const authSlice = createSlice({
   reducers: {
     signOut: (state) => {
       state.currentUser = null;
+      localStorage.removeItem('currentUser');
     },
   },
   extraReducers: (builder) => {
     builder.addCase(signInActionAsync.fulfilled, (state, action) => {
       state.currentUser = action.payload;
+      localStorage.setItem('currentUser', JSON.stringify(state.currentUser));
     });
     builder.addCase(signUpActionAsync.fulfilled, (state, action) => {
       state.currentUser = action.payload;
+      localStorage.setItem('currentUser', JSON.stringify(state.currentUser));
     });
   },
 });

@@ -1,4 +1,5 @@
 import authSlice, { signInActionAsync, signUpActionAsync } from './authSlice';
+import * as authSelectors from './authSelectors';
 const { actions, reducer: authReducer } = authSlice;
 
 const authActions = {
@@ -7,4 +8,4 @@ const authActions = {
   signUpActionAsync,
 };
 
-export { authActions, authReducer };
+export { authActions, authReducer, authSelectors };

@@ -3,24 +3,25 @@ import { Box, Button, Divider, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
 import GoogleLogin from 'react-google-login';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { useAppDispatch } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppFormInput } from '../../../solutions/components/app-form-input';
 import { AppIcon } from '../../../solutions/components/app-icon';
-import { authActions } from '../store';
+import { authActions, authSelectors } from '../store';
 import styles from './styles.module.scss';
+import { useEffect } from 'react';
 
 const SignIn = () => {
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(authSelectors.selectCurrentUser);
+  const navigate = useNavigate();
   const form = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
-    onSubmit: (values) => {
-      dispatch(authActions.signInActionAsync(values));
-    },
+    onSubmit: (values) => {},
     validationSchema: yup.object({
       username: yup.string().required('Required'),
       password: yup.string().required('Required'),
@@ -29,6 +30,13 @@ const SignIn = () => {
 
   const handleOnSuccess = (obj: any) => {
     console.log('Handle On Success', obj);
+  };
+
+  const handleSignIn = async () => {
+    const response = await dispatch(authActions.signInActionAsync(form.values));
+    if (response.meta.requestStatus === 'fulfilled') {
+      navigate('/');
+    }
   };
 
   return (
@@ -54,7 +62,7 @@ const SignIn = () => {
               variant='contained'
               color='secondary'
               className={styles.btn}
-              onClick={() => form.handleSubmit()}
+              onClick={handleSignIn}
               disabled={!form.isValid}
             >
               Login

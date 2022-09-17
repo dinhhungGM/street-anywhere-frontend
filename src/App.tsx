@@ -15,7 +15,7 @@ function App() {
       <ThemeProvider theme={appTheme}>
         <Wrapper>
           <Suspense fallback={<LoadingSpinner />}>
-            <Routes>
+            <Routes >
               {routes.map((route) => (
                 <Route key={route.id} path={route.path} element={route.element} />
               ))}

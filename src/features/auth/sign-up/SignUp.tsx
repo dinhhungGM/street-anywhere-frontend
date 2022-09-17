@@ -3,11 +3,16 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { AppFormInput } from '../../../solutions/components/app-form-input';
 import styles from './styles.module.scss';
-import { useAppDispatch } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { signUpActionAsync } from '../store/authSlice';
+import { authSelectors } from '../store';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(authSelectors.selectCurrentUser);
+  const navigate = useNavigate();
   const form = useFormik({
     initialValues: {
       username: '',
@@ -16,9 +21,7 @@ const SignUp = () => {
       firstName: '',
       lastName: '',
     },
-    onSubmit: (values) => {
-      dispatch(signUpActionAsync(values));
-    },
+    onSubmit: (values) => {},
     validationSchema: yup.object({
       username: yup
         .string()
@@ -41,6 +44,13 @@ const SignUp = () => {
         .max(50, 'Your first name is too long - should less than 50 characters'),
     }),
   });
+
+  const handleSignUp = async () => {
+    const response = await dispatch(signUpActionAsync(form.values));
+    if (response.meta.requestStatus === 'fulfilled') {
+      navigate('/');
+    }
+  };
 
   return (
     <>
@@ -71,7 +81,7 @@ const SignUp = () => {
               color='secondary'
               className={styles.btn}
               disabled={!form.isValid}
-              onClick={() => form.handleSubmit()}
+              onClick={handleSignUp}
             >
               Submit
             </Button>
