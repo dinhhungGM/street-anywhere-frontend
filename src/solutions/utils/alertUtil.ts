@@ -8,7 +8,8 @@ const AlertUtil = {
       text: message,
     });
   },
-  showError: (message: string) => {
+  showError: (error: any) => {
+    const message = error.response.data?.message || error.message;
     SweetAlert.fire({
       title: 'Error',
       icon: 'error',

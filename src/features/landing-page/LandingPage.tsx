@@ -1,7 +1,12 @@
 import React from 'react';
+import Gallery from './components/gallery/Gallery';
 
 const LandingPage = () => {
-  return <div>LandingPage</div>;
+  return (
+    <>
+      <Gallery />
+    </>
+  );
 };
 
 export default LandingPage;

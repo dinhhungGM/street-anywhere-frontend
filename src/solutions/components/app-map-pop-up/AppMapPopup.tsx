@@ -1,29 +1,42 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
-import AppMap from '../app-map/AppMap';
-import styles from './styles.module.scss';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import { useState } from 'react';
+import AppMap from '../app-map/AppMap';
 
 type AppMapPopupProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: () => void;
+  onSelect: (locationInfo: any) => void;
 };
 
-const AppMapPopup = ({ isOpen, onClose }: AppMapPopupProps) => {
+const AppMapPopup = ({ isOpen, onClose, onSelect }: AppMapPopupProps) => {
   const [marker, setMarker] = useState<any>(undefined);
   const handleOnClick = (e: any) => {
     const { lng, lat } = e.lngLat;
     setMarker({
-      long: lng,
-      lat,
+      longitude: lng,
+      latitude: lat,
     });
+  };
+
+  const handleOnClose = (): void => {
+    setMarker(null);
+    onClose();
+  };
+
+  const handleOnSelect = (): void => {
+    const locationInfo = {
+      ...marker,
+      location: 'Viet Name',
+    };
+    onSelect(locationInfo);
+    onClose();
   };
 
   return (
     <>
       <Dialog
         open={isOpen}
-        onClose={onClose}
+        onClose={handleOnClose}
         aria-labelledby='dialog-title'
         aria-describedby='alert-dialog-description'
         maxWidth='lg'
@@ -41,10 +54,12 @@ const AppMapPopup = ({ isOpen, onClose }: AppMapPopupProps) => {
         </DialogContent>
         <DialogActions>
           <Stack spacing={2} direction='row' padding={2}>
-            <Button variant='contained' color='error' onClick={onClose}>
+            <Button variant='contained' color='error' onClick={handleOnClose}>
               Cancel
             </Button>
-            <Button variant='contained'>Select</Button>
+            <Button variant='contained' onClick={handleOnSelect}>
+              Select
+            </Button>
           </Stack>
         </DialogActions>
       </Dialog>

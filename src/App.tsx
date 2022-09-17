@@ -1,8 +1,9 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import './App.css';
 import { ThemeProvider } from '@emotion/react';
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
-import './App.css';
 import { Wrapper } from './features/wrapper';
 import LoadingSpinner from './solutions/components/loading-spinner/LoadingSpinner';
 import routes from './solutions/configs/routes';

@@ -1,0 +1,41 @@
+import React, { useEffect } from 'react';
+import { Masonry } from '@mui/lab';
+import { useAppSelector, useAppDispatch } from '../../../../app/hooks';
+import { landingPageSelectors, landingPageActions } from '../../store';
+import { Box } from '@mui/material';
+import { AppCard } from '../../../../solutions/components/app-card';
+
+const Gallery = () => {
+  const displayPosts = useAppSelector(landingPageSelectors.selectPosts);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(landingPageActions.getPostsAsync(null));
+  }, []);
+
+  return (
+    <>
+      <Masonry columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} spacing={2}>
+        {displayPosts &&
+          displayPosts.map((post) => (
+            <Box
+              sx={{
+                margin: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              key={post.id}
+            >
+              <AppCard
+                imgSrc='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80'
+                alt='Test'
+              />
+            </Box>
+          ))}
+      </Masonry>
+    </>
+  );
+};
+
+export default Gallery;

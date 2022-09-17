@@ -1,6 +1,6 @@
 import { Room } from '@mui/icons-material';
 import { useState } from 'react';
-import Map, { Popup, Marker } from 'react-map-gl';
+import Map, { GeolocateControl, Marker } from 'react-map-gl';
 import { AppIcon } from '../app-icon';
 
 type AppMapProps = {
@@ -18,6 +18,7 @@ const AppMap = ({ latitude = 14.058324, longitude = 108.277199, zoom = 5.5, onCl
     latitude,
     zoom: 10,
   });
+
   return (
     <>
       <Map
@@ -29,10 +30,11 @@ const AppMap = ({ latitude = 14.058324, longitude = 108.277199, zoom = 5.5, onCl
         onClick={onClick}
       >
         {marker && (
-          <Marker anchor='left' latitude={marker.lat} longitude={marker.long}>
+          <Marker anchor='left' latitude={marker.latitude} longitude={marker.longitude}>
             <AppIcon component={Room} color='#e60023' fontSize={32} />
           </Marker>
         )}
+        <GeolocateControl positionOptions={{ enableHighAccuracy: true }} trackUserLocation={true} />
       </Map>
     </>
   );
