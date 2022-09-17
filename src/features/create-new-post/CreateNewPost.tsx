@@ -63,7 +63,7 @@ const CreateNewPost = () => {
   };
 
   const handleCreateNewPost = async () => {
-    const payload = utils.constructPostPayload(form.values, currentUser.id as any);
+    const payload = utils.constructPostPayload(form.values, currentUser.id);
     const response = await dispatch(postActions.createPostActionAsync(payload));
     if (response.meta.requestStatus === 'fulfilled') {
       navigate('/');
@@ -101,6 +101,9 @@ const CreateNewPost = () => {
         </Box>
         <Box className={styles['form-control']}>
           <AppFormInput form={form} formControlName='shortTitle' label='Short title' />
+        </Box>
+        <Box className={styles['form-control']}>
+          <AppFormInput form={form} formControlName='description' label='Description' />
         </Box>
         <Box className={styles['form-control']}>
           <AppFormInput form={form} formControlName='location' label='Location' />

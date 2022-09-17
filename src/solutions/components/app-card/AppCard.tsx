@@ -1,5 +1,5 @@
-import { ChatBubble, KeyboardArrowUp, Share, VisibilityRounded } from '@mui/icons-material';
-import { Box, Chip, IconButton, Stack, Tooltip } from '@mui/material';
+import { ChatBubble, KeyboardArrowUp, Room, Share, VisibilityRounded } from '@mui/icons-material';
+import { Box, Chip, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { AppIcon } from '../app-icon';
 import styles from './styles.module.scss';
 
@@ -11,9 +11,10 @@ type AppCardProps = {
   tags?: string[];
   avatarUrl?: string;
   postId?: number;
+  location?: string;
 };
 
-const AppCard = ({ imgSrc, alt, author, shortTitle, tags, postId }: AppCardProps) => {
+const AppCard = ({ imgSrc, alt, author, shortTitle, tags, postId, location }: AppCardProps) => {
   return (
     <>
       <Box className={styles.card}>
@@ -42,6 +43,10 @@ const AppCard = ({ imgSrc, alt, author, shortTitle, tags, postId }: AppCardProps
         <Box className={styles['card__footer']}>
           <Stack direction='column'>
             <h3 className={styles['card__footer__caption']}>{shortTitle}</h3>
+            <Typography justifyItems='center' justifyContent='flex-start' display='flex' marginY={1}>
+              <AppIcon component={Room} color='#e60023' />
+              <Typography paddingLeft={2}>{location}</Typography>
+            </Typography>
             <Stack direction='row' alignItems='center' justifyContent='space-between' marginTop={2}>
               <Box className={styles['card__footer__avatar']}>
                 <img src='https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png' alt='Avatar' />

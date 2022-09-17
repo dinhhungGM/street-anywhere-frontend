@@ -15,6 +15,7 @@ export const postActionsAsync = {
     } catch (error) {
       dispatch(wrapperActions.hideLoading());
       AlertUtil.showError(error);
+      return Promise.reject();
     } finally {
       dispatch(wrapperActions.hideLoading());
     }
@@ -27,6 +28,7 @@ export const postActionsAsync = {
     } catch (error) {
       dispatch(wrapperActions.hideLoading());
       AlertUtil.showError(error);
+      return Promise.reject();
     } finally {
       dispatch(wrapperActions.hideLoading());
     }
@@ -39,6 +41,7 @@ export const postActionsAsync = {
     } catch (error) {
       dispatch(wrapperActions.hideLoading());
       AlertUtil.showError(error);
+      return Promise.reject();
     } finally {
       dispatch(wrapperActions.hideLoading());
     }
