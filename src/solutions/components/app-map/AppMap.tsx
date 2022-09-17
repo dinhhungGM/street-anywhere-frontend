@@ -1,7 +1,9 @@
 import { Room } from '@mui/icons-material';
-import { useState } from 'react';
-import Map, { GeolocateControl, Marker } from 'react-map-gl';
+import { useEffect, useRef, useState } from 'react';
+import Map, { GeolocateControl, Marker, useControl } from 'react-map-gl';
 import { AppIcon } from '../app-icon';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import { Stack } from '@mui/material';
 
 type AppMapProps = {
   latitude?: number;
@@ -12,12 +14,18 @@ type AppMapProps = {
   onClick: (e: any) => void;
 };
 
+function GeocoderControl(props: any) {
+  useControl(() => new MapboxGeocoder(props));
+  return null;
+}
+
 const AppMap = ({ latitude = 14.058324, longitude = 108.277199, zoom = 5.5, onClick, marker }: AppMapProps) => {
   const [viewportState, setViewportState] = useState({
     longitude,
     latitude,
-    zoom: 10,
   });
+
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -34,7 +42,10 @@ const AppMap = ({ latitude = 14.058324, longitude = 108.277199, zoom = 5.5, onCl
             <AppIcon component={Room} color='#e60023' fontSize={32} />
           </Marker>
         )}
-        <GeolocateControl positionOptions={{ enableHighAccuracy: true }} trackUserLocation={true} />
+        <Stack direction='row'>
+          <GeolocateControl positionOptions={{ enableHighAccuracy: true }} trackUserLocation={true} />
+          <GeocoderControl accessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN} />
+        </Stack>
       </Map>
     </>
   );
