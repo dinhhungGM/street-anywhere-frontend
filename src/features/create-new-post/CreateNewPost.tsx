@@ -2,6 +2,7 @@ import { Close, Map, Upload } from '@mui/icons-material';
 import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
 import { AppFormInput } from '../../solutions/components/app-form-input';
 import { AppIcon } from '../../solutions/components/app-icon';
@@ -29,6 +30,7 @@ const CreateNewPost = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isOpenMap, setIsOpenMap] = useState(false);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleFileChanges = (event: any): void => {
     const file = event.target.files[0];
@@ -47,6 +49,14 @@ const CreateNewPost = () => {
     form.setFieldValue('location', locationInfo.location);
   };
 
+  const handleCreateNewPost = async () => {
+    const payload = utils.constructPostPayload(form.values);
+    const response = await dispatch(postActions.createPostActionAsync(payload));
+    if (response.meta.requestStatus === 'fulfilled') {
+      navigate('/');
+    }
+  };
+
   return (
     <>
       <Container>
@@ -60,10 +70,10 @@ const CreateNewPost = () => {
           <AppFormInput form={form} formControlName='location' label='Location' />
         </Box>
         <Box className={styles['form-control']}>
-          <AppFormInput form={form} formControlName='longitude' label='Longitude' />
+          <AppFormInput form={form} formControlName='longitude' label='Longitude' disabled />
         </Box>
         <Box className={styles['form-control']}>
-          <AppFormInput form={form} formControlName='latitude' label='Latitude' />
+          <AppFormInput form={form} formControlName='latitude' label='Latitude' disabled />
         </Box>
         <Button
           variant='contained'
@@ -94,7 +104,7 @@ const CreateNewPost = () => {
           </>
         )}
         <Box>
-          <Button variant='contained' onClick={() => form.handleSubmit()}>
+          <Button variant='contained' onClick={handleCreateNewPost}>
             Create
           </Button>
         </Box>

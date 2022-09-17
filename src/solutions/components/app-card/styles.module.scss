@@ -39,11 +39,14 @@
       max-width: 100%;
       border-radius: 16px;
       transition: all 0.7s ease;
+      object-fit: cover;
+      display: block;
+      height: 100%;
     }
     &__tags {
       position: absolute;
       left: 4%;
-      bottom: -2%;
+      bottom: -1.9%;
 
       &__item {
         background-color: #fff;

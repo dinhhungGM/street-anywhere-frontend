@@ -1,14 +1,18 @@
 import { ChatBubble, KeyboardArrowUp, Share, VisibilityRounded } from '@mui/icons-material';
-import { Box, IconButton, Stack, Tooltip } from '@mui/material';
+import { Box, Chip, IconButton, Stack, Tooltip } from '@mui/material';
 import { AppIcon } from '../app-icon';
 import styles from './styles.module.scss';
 
 type AppCardProps = {
   imgSrc: string;
   alt: string;
+  author?: string;
+  shortTitle?: string;
+  tags?: string[];
+  avatarUrl?: string;
 };
 
-const AppCard = ({ imgSrc, alt }: AppCardProps) => {
+const AppCard = ({ imgSrc, alt, author, shortTitle, tags }: AppCardProps) => {
   return (
     <>
       <Box className={styles.card}>
@@ -24,17 +28,23 @@ const AppCard = ({ imgSrc, alt }: AppCardProps) => {
             </IconButton>
           </Tooltip>
         </Box>
-        <Box className={styles['card__image']}>
+        <Box className={styles['card__image']} boxShadow={1} borderRadius={4}>
           <img src={imgSrc} alt={alt} />
-          <Box className={styles['card__image__tags']}></Box>
+          <Box className={styles['card__image__tags']}>
+            <Stack spacing={2} direction='row'>
+              {tags?.map((tag, idx) => (
+                <Chip key={idx} label={tag} className={styles['card__image__tags__item']} />
+              ))}
+            </Stack>
+          </Box>
         </Box>
         <Box className={styles['card__footer']}>
           <Stack direction='column'>
-            <h3 className={styles['card__footer__caption']}>Rolling eyes mp4 demo</h3>
+            <h3 className={styles['card__footer__caption']}>{shortTitle}</h3>
             <Stack direction='row' alignItems='center' justifyContent='space-between' marginTop={2}>
               <Box className={styles['card__footer__avatar']}>
                 <img src='https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png' alt='Avatar' />
-                <span>king</span>
+                <span>{author}</span>
               </Box>
               <Stack direction='row' alignItems='center' justifyContent='center'>
                 <Box className={styles['card__footer__info']}>
