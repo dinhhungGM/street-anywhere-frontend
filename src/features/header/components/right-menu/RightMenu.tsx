@@ -22,6 +22,7 @@ const RightMenu = () => {
 
   const handleSignOut = (): void => {
     dispatch(authActions.signOut());
+    navigate('/');
   };
 
   return (

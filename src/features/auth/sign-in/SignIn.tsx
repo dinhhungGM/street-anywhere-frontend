@@ -35,7 +35,7 @@ const SignIn = () => {
   const handleSignIn = async () => {
     const response = await dispatch(authActions.signInActionAsync(form.values));
     if (response.meta.requestStatus === 'fulfilled') {
-      navigate('/');
+      navigate(-2);
     }
   };
 

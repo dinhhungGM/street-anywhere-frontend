@@ -1,13 +1,12 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { AppFormInput } from '../../../solutions/components/app-form-input';
-import styles from './styles.module.scss';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { signUpActionAsync } from '../store/authSlice';
-import { authSelectors } from '../store';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { AppFormInput } from '../../../solutions/components/app-form-input';
+import { authSelectors } from '../store';
+import { signUpActionAsync } from '../store/authSlice';
+import styles from './styles.module.scss';
 
 const SignUp = () => {
   const dispatch = useAppDispatch();

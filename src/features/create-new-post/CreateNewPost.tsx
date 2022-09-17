@@ -1,12 +1,13 @@
 import { Close, Map, Upload } from '@mui/icons-material';
 import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { AppFormInput } from '../../solutions/components/app-form-input';
 import { AppIcon } from '../../solutions/components/app-icon';
 import { AppMapPopup } from '../../solutions/components/app-map-pop-up';
+import { authSelectors } from '../auth/store';
 import { postActions } from '../posts/store';
 import styles from './styles.module.scss';
 import * as utils from './utils';
@@ -31,6 +32,7 @@ const CreateNewPost = () => {
   const [isOpenMap, setIsOpenMap] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const currentUser = useAppSelector(authSelectors.selectCurrentUser);
 
   const handleFileChanges = (event: any): void => {
     const file = event.target.files[0];
@@ -56,6 +58,13 @@ const CreateNewPost = () => {
       navigate('/');
     }
   };
+
+  useEffect(() => {
+    if (currentUser) {
+    } else {
+      navigate('/sign-in');
+    }
+  }, []);
 
   return (
     <>
