@@ -10,9 +10,10 @@ type AppCardProps = {
   shortTitle?: string;
   tags?: string[];
   avatarUrl?: string;
+  postId?: number;
 };
 
-const AppCard = ({ imgSrc, alt, author, shortTitle, tags }: AppCardProps) => {
+const AppCard = ({ imgSrc, alt, author, shortTitle, tags, postId }: AppCardProps) => {
   return (
     <>
       <Box className={styles.card}>

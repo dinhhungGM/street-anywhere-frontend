@@ -10,7 +10,7 @@ export type User = {
 };
 
 export type AuthState = {
-  currentUser: User | null;
+  currentUser: any;
 };
 
 const initialState: AuthState = {

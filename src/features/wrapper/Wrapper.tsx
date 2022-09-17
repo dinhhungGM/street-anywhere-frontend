@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { LoadingSpinner } from '../../solutions/components/loading-spinner';
-import { Footer } from '../footer';
 import { Header } from '../header';
 
 type WrapperProps = {
@@ -12,7 +11,6 @@ const Wrapper = ({ children }: WrapperProps) => {
     <>
       <Header />
       {children}
-      <Footer />
       <LoadingSpinner />
     </>
   );

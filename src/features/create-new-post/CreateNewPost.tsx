@@ -1,16 +1,26 @@
 import { Close, Map, Upload } from '@mui/icons-material';
-import { Box, Button, Container, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, Container, MenuItem, OutlinedInput, Select, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
-import { useState, useEffect } from 'react';
+import _ from 'lodash';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { AppFormInput } from '../../solutions/components/app-form-input';
 import { AppIcon } from '../../solutions/components/app-icon';
 import { AppMapPopup } from '../../solutions/components/app-map-pop-up';
 import { authSelectors } from '../auth/store';
-import { postActions } from '../posts/store';
+import { postActions, postSelectors } from '../posts/store';
 import styles from './styles.module.scss';
 import * as utils from './utils';
+
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: 28 * 4.5 + 8,
+      width: 250,
+    },
+  },
+};
 
 const CreateNewPost = () => {
   const form = useFormik({
@@ -22,17 +32,18 @@ const CreateNewPost = () => {
       longitude: '',
       latitude: '',
       file: '',
+      tags: [],
+      categories: [],
     },
-    onSubmit: (values) => {
-      const payload = utils.constructPostPayload(values);
-      dispatch(postActions.createPostActionAsync(payload));
-    },
+    onSubmit: (values) => {},
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isOpenMap, setIsOpenMap] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
+  const tags = useAppSelector(postSelectors.selectTags);
+  const categories = useAppSelector(postSelectors.selectCategories);
 
   const handleFileChanges = (event: any): void => {
     const file = event.target.files[0];
@@ -52,15 +63,31 @@ const CreateNewPost = () => {
   };
 
   const handleCreateNewPost = async () => {
-    const payload = utils.constructPostPayload(form.values);
+    const payload = utils.constructPostPayload(form.values, currentUser.id as any);
     const response = await dispatch(postActions.createPostActionAsync(payload));
     if (response.meta.requestStatus === 'fulfilled') {
       navigate('/');
     }
   };
 
+  const mapJson2Obj = (arr: string[]) => {
+    return _.map(arr, (item) => JSON.parse(item));
+  };
+
+  const handleTagsChange = (event: any): void => {
+    const { value } = event.target;
+    form.setFieldValue('tags', value);
+  };
+
+  const handleCategoriesChange = (event: any): void => {
+    const { value } = event.target;
+    form.setFieldValue('categories', value);
+  };
+
   useEffect(() => {
     if (currentUser) {
+      dispatch(postActions.getCategoriesAsync(null));
+      dispatch(postActions.getTagsAsync(null));
     } else {
       navigate('/sign-in');
     }
@@ -112,6 +139,65 @@ const CreateNewPost = () => {
             </Stack>
           </>
         )}
+        <Box className={styles['form-control']}>
+          <Select
+            id='tags'
+            multiple
+            fullWidth
+            value={form.values.tags}
+            input={<OutlinedInput label='Choose tags' />}
+            MenuProps={MenuProps}
+            renderValue={(selectedValues: string[]) => {
+              if (selectedValues.length) {
+                return (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {mapJson2Obj(selectedValues).map((value) => (
+                      <Chip key={value.id} label={value.tagName} />
+                    ))}
+                  </Box>
+                );
+              }
+            }}
+            onChange={handleTagsChange}
+          >
+            {Array.isArray(tags) &&
+              tags.map((tag) => (
+                <MenuItem key={tag.id} value={JSON.stringify(tag)}>
+                  {tag.tagName}
+                </MenuItem>
+              ))}
+          </Select>
+        </Box>
+        <Box className={styles['form-control']}>
+          <Select
+            id='categories'
+            multiple
+            fullWidth
+            placeholder='Choose categories'
+            value={form.values.categories}
+            input={<OutlinedInput label='Choose categories' />}
+            MenuProps={MenuProps}
+            renderValue={(selectedValues: string[]) => {
+              if (selectedValues.length) {
+                return (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {mapJson2Obj(selectedValues).map((value) => (
+                      <Chip key={value.id} label={value.categoryName} />
+                    ))}
+                  </Box>
+                );
+              }
+            }}
+            onChange={handleCategoriesChange}
+          >
+            {Array.isArray(categories) &&
+              categories.map((category: any) => (
+                <MenuItem key={category.id} value={JSON.stringify(category)}>
+                  {category.categoryName}
+                </MenuItem>
+              ))}
+          </Select>
+        </Box>
         <Box>
           <Button variant='contained' onClick={handleCreateNewPost}>
             Create

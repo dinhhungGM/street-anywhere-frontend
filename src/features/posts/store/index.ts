@@ -1,5 +1,6 @@
 import { postActionsAsync } from './postActionsAsync';
 import postSlice from './postSlice';
+import * as postSelectors from './postSelectors';
 
 const { actions, reducer: postReducer } = postSlice;
 const postActions = {
@@ -7,5 +8,5 @@ const postActions = {
   ...postActionsAsync,
 };
 
-export { postActions, postReducer };
+export { postActions, postReducer, postSelectors };
 
