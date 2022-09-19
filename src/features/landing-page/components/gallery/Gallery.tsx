@@ -35,6 +35,7 @@ const Gallery = () => {
                 tags={post.tags}
                 shortTitle={post.shortTitle}
                 location={post.location}
+                postId={post.id}
               />
             </Box>
           ))}

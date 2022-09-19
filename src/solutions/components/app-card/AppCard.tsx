@@ -1,5 +1,6 @@
 import { ChatBubble, KeyboardArrowUp, Room, Share, VisibilityRounded } from '@mui/icons-material';
 import { Box, Chip, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { AppIcon } from '../app-icon';
 import styles from './styles.module.scss';
 
@@ -15,9 +16,15 @@ type AppCardProps = {
 };
 
 const AppCard = ({ imgSrc, alt, author, shortTitle, tags, postId, location }: AppCardProps) => {
+  const navigate = useNavigate();
+
+  const navigateToPostDetail = (): void => {
+    navigate(`/posts/${ postId }`);
+  };
+
   return (
     <>
-      <Box className={styles.card}>
+      <Box className={styles.card} onClick={navigateToPostDetail}>
         <Box className={styles['card__actions']}>
           <Tooltip title='Quick view' placement='right-end'>
             <IconButton className={styles['card__actions__btn']}>
@@ -31,7 +38,7 @@ const AppCard = ({ imgSrc, alt, author, shortTitle, tags, postId, location }: Ap
           </Tooltip>
         </Box>
         <Box className={styles['card__image']} boxShadow={1} borderRadius={4}>
-          <img src={imgSrc} alt={alt} />
+          <img src={imgSrc} alt={alt} loading='lazy' />
           <Box className={styles['card__image__tags']}>
             <Stack spacing={2} direction='row'>
               {tags?.map((tag, idx) => (
@@ -45,28 +52,12 @@ const AppCard = ({ imgSrc, alt, author, shortTitle, tags, postId, location }: Ap
             <h3 className={styles['card__footer__caption']}>{shortTitle}</h3>
             <Typography justifyItems='center' justifyContent='flex-start' display='flex' marginY={1}>
               <AppIcon component={Room} color='#e60023' />
-              <Typography paddingLeft={2}>{location}</Typography>
+              <span>{location}</span>
             </Typography>
-            <Stack direction='row' alignItems='center' justifyContent='space-between' marginTop={2}>
-              <Box className={styles['card__footer__avatar']}>
-                <img src='https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png' alt='Avatar' />
-                <span>{author}</span>
-              </Box>
-              <Stack direction='row' alignItems='center' justifyContent='center'>
-                <Box className={styles['card__footer__info']}>
-                  <AppIcon component={ChatBubble} color='#84849d' />
-                  <span>0</span>
-                </Box>
-                <Box className={styles['card__footer__info']}>
-                  <AppIcon component={VisibilityRounded} />
-                  <span>0</span>
-                </Box>
-                <Box className={styles['card__footer__info']}>
-                  <AppIcon component={KeyboardArrowUp} />
-                  <span>0</span>
-                </Box>
-              </Stack>
-            </Stack>
+            <Box className={styles['card__footer__avatar']}>
+              <img src='https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png' alt='Avatar' />
+              <span>{author}</span>
+            </Box>
           </Stack>
         </Box>
       </Box>
