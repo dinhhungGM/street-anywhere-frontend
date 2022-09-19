@@ -15,3 +15,9 @@ body {
 a {
   text-decoration: none !important;
 }
+
+.mapboxgl-ctrl-top-right {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}

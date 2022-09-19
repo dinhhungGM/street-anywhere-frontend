@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppMap from '../app-map/AppMap';
 
 type AppMapPopupProps = {
@@ -9,8 +9,10 @@ type AppMapPopupProps = {
 };
 
 const AppMapPopup = ({ isOpen, onClose, onSelect }: AppMapPopupProps) => {
-  const [marker, setMarker] = useState<any>(undefined);
-  const handleOnClick = (e: any) => {
+  const [marker, setMarker] = useState<any>(null);
+  const [queryAddress, setQueryAddress] = useState(null);
+
+  const handleOnSelectLocationPoint = (e: any) => {
     const { lng, lat } = e.lngLat;
     setMarker({
       longitude: lng,
@@ -18,25 +20,38 @@ const AppMapPopup = ({ isOpen, onClose, onSelect }: AppMapPopupProps) => {
     });
   };
 
-  const handleOnClose = (): void => {
-    setMarker(null);
-    onClose();
+  const handleOnFindLocation = (e): void => {
+    const [longitude, latitude] = e.result.geometry.coordinates;
+    const location = e.result.place_name;
+    setQueryAddress({
+      longitude,
+      latitude,
+      location,
+    });
   };
 
-  const handleOnSelect = (): void => {
-    const locationInfo = {
-      ...marker,
-      location: 'Viet Name',
-    };
-    onSelect(locationInfo);
-    onClose();
+  const handleOnFigureOutCurrentPosition = (e) => {
+    setTimeout(() => {
+      const { latitude, longitude } = e.target._lastKnownPosition.coords;
+      setMarker({ latitude, longitude });
+    }, 1000);
   };
+
+  const handleOnClickSelectBtn = (): void => {
+    onSelect(marker);
+  };
+
+  useEffect(() => {
+    return () => {
+      setMarker(null);
+    };
+  }, [isOpen]);
 
   return (
     <>
       <Dialog
         open={isOpen}
-        onClose={handleOnClose}
+        onClose={onClose}
         aria-labelledby='dialog-title'
         aria-describedby='alert-dialog-description'
         maxWidth='lg'
@@ -50,14 +65,19 @@ const AppMapPopup = ({ isOpen, onClose, onSelect }: AppMapPopupProps) => {
             overflow: 'unset',
           }}
         >
-          <AppMap marker={marker} onClick={handleOnClick} />
+          <AppMap
+            marker={marker}
+            onSelectLocationPoint={handleOnSelectLocationPoint}
+            onFindLocation={handleOnFindLocation}
+            onFigureOutCurrentPosition={handleOnFigureOutCurrentPosition}
+          />
         </DialogContent>
         <DialogActions>
           <Stack spacing={2} direction='row' padding={2}>
-            <Button variant='contained' color='error' onClick={handleOnClose}>
+            <Button variant='contained' color='error' onClick={onClose}>
               Cancel
             </Button>
-            <Button variant='contained' onClick={handleOnSelect}>
+            <Button variant='contained' onClick={handleOnClickSelectBtn}>
               Select
             </Button>
           </Stack>

@@ -36,3 +36,9 @@ export const constructPostPayload = (formValues: any, userId: any): FormData => 
 export const mapJson2Obj = (arr: string[]) => {
   return _.map(arr, (item) => JSON.parse(item));
 };
+
+export const setValueForControl = (form, fieldName, value): void => {
+  if (form.field) {
+    form.setFieldValue(fieldName, value);
+  }
+};

@@ -1,5 +1,19 @@
 import { Close, Map, Upload } from '@mui/icons-material';
-import { Box, Button, Chip, Container, MenuItem, OutlinedInput, Select, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  Container,
+  FormControl,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -62,11 +76,11 @@ const CreateNewPost = () => {
     setSelectedFile(null);
   };
 
-  const handleOnSelect = (locationInfo: any): void => {
-    form.setFieldValue('latitude', locationInfo.latitude);
-    form.setFieldValue('longitude', locationInfo.longitude);
-    form.setFieldValue('location', locationInfo.location);
-  };
+  // const handleOnSelect = (locationInfo: any): void => {
+  //   form.setFieldValue('latitude', locationInfo.latitude);
+  //   form.setFieldValue('longitude', locationInfo.longitude);
+  //   form.setFieldValue('location', locationInfo.location);
+  // };
 
   const handleCreateNewPost = async () => {
     const payload = utils.constructPostPayload(form.values, currentUser.id);
@@ -84,6 +98,21 @@ const CreateNewPost = () => {
   const handleCategoriesChange = (event: any): void => {
     const { value } = event.target;
     form.setFieldValue('categories', value);
+  };
+  //#endregion
+
+  //#region Handle Popup
+  const handleOnSelectPoint = (location): void => {
+    if (location) {
+      ['latitude', 'longitude', 'location'].forEach((fieldName) => {
+        form.setFieldValue(fieldName, location[fieldName] || 'Viet Nam');
+      });
+    }
+    handleCloseAppMapPopup();
+  };
+
+  const handleCloseAppMapPopup = (): void => {
+    setIsOpenMap(false);
   };
   //#endregion
 
@@ -145,13 +174,15 @@ const CreateNewPost = () => {
             </Stack>
           </>
         )}
-        <Box className={styles['form-control']}>
+        <FormControl className={styles['form-control']}>
+          <InputLabel id='tags-label'>Tags</InputLabel>
           <Select
             id='tags'
             multiple
             fullWidth
+            labelId='tags-label'
             value={form.values.tags}
-            input={<OutlinedInput label='Choose tags' />}
+            input={<OutlinedInput label='Tags' />}
             MenuProps={MenuProps}
             renderValue={(selectedValues: string[]) => {
               if (selectedValues.length) {
@@ -173,15 +204,15 @@ const CreateNewPost = () => {
                 </MenuItem>
               ))}
           </Select>
-        </Box>
-        <Box className={styles['form-control']}>
+        </FormControl>
+        <FormControl className={styles['form-control']}>
+          <InputLabel id='categories-label'>Categories</InputLabel>
           <Select
-            id='categories'
             multiple
             fullWidth
-            placeholder='Choose categories'
+            labelId='categories-label'
             value={form.values.categories}
-            input={<OutlinedInput label='Choose categories' />}
+            input={<OutlinedInput label='Categories' />}
             MenuProps={MenuProps}
             renderValue={(selectedValues: string[]) => {
               if (selectedValues.length) {
@@ -199,17 +230,18 @@ const CreateNewPost = () => {
             {Array.isArray(categories) &&
               categories.map((category: any) => (
                 <MenuItem key={category.id} value={JSON.stringify(category)}>
-                  {category.categoryName}
+                  <Checkbox />
+                  <ListItemText primary={category.categoryName} />
                 </MenuItem>
               ))}
           </Select>
-        </Box>
+        </FormControl>
         <Box>
           <Button variant='contained' onClick={handleCreateNewPost}>
             Create
           </Button>
         </Box>
-        <AppMapPopup isOpen={isOpenMap} onClose={() => setIsOpenMap(false)} onSelect={handleOnSelect} />
+        <AppMapPopup isOpen={isOpenMap} onClose={handleCloseAppMapPopup} onSelect={handleOnSelectPoint} />
       </Container>
     </>
   );

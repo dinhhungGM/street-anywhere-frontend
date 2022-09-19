@@ -1,4 +1,4 @@
-import { ChatBubble, KeyboardArrowUp, Room, Share, VisibilityRounded } from '@mui/icons-material';
+import { KeyboardArrowUp, Room, Share } from '@mui/icons-material';
 import { Box, Chip, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { AppIcon } from '../app-icon';
