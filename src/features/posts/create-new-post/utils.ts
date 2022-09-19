@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 export const constructPostPayload = (formValues: any, userId: any): FormData => {
   const fd = new FormData();
   fd.append('title', formValues.title);
@@ -30,4 +31,8 @@ export const constructPostPayload = (formValues: any, userId: any): FormData => 
     ),
   );
   return fd;
+};
+
+export const mapJson2Obj = (arr: string[]) => {
+  return _.map(arr, (item) => JSON.parse(item));
 };

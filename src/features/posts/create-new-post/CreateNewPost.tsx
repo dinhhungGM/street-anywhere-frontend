@@ -1,28 +1,41 @@
 import { Close, Map, Upload } from '@mui/icons-material';
 import { Box, Button, Chip, Container, MenuItem, OutlinedInput, Select, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
-import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { AppFormInput } from '../../solutions/components/app-form-input';
-import { AppIcon } from '../../solutions/components/app-icon';
-import { AppMapPopup } from '../../solutions/components/app-map-pop-up';
-import { authSelectors } from '../auth/store';
-import { postActions, postSelectors } from '../posts/store';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import AppIcon from '../../../solutions/components/app-icon/AppIcon';
+import AppMapPopup from '../../../solutions/components/app-map-pop-up/AppMapPopup';
+import { authSelectors } from '../../auth/store';
+import { postActions, postSelectors } from '../store';
+import { AppFormInput } from './../../../solutions/components/app-form-input';
 import styles from './styles.module.scss';
 import * as utils from './utils';
 
 const MenuProps = {
   PaperProps: {
     style: {
-      maxHeight: 28 * 4.5 + 8,
+      maxHeight: 134,
       width: 250,
     },
   },
 };
 
 const CreateNewPost = () => {
+  //#region Initialize hook
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const currentUser = useAppSelector(authSelectors.selectCurrentUser);
+  const tags = useAppSelector(postSelectors.selectTags);
+  const categories = useAppSelector(postSelectors.selectCategories);
+  //#endregion
+
+  //#region Initial state
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isOpenMap, setIsOpenMap] = useState(false);
+  //#endregion
+
+  //#region Initialize Form
   const form = useFormik({
     initialValues: {
       title: '',
@@ -37,13 +50,6 @@ const CreateNewPost = () => {
     },
     onSubmit: (values) => {},
   });
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isOpenMap, setIsOpenMap] = useState(false);
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const currentUser = useAppSelector(authSelectors.selectCurrentUser);
-  const tags = useAppSelector(postSelectors.selectTags);
-  const categories = useAppSelector(postSelectors.selectCategories);
 
   const handleFileChanges = (event: any): void => {
     const file = event.target.files[0];
@@ -70,10 +76,6 @@ const CreateNewPost = () => {
     }
   };
 
-  const mapJson2Obj = (arr: string[]) => {
-    return _.map(arr, (item) => JSON.parse(item));
-  };
-
   const handleTagsChange = (event: any): void => {
     const { value } = event.target;
     form.setFieldValue('tags', value);
@@ -83,6 +85,7 @@ const CreateNewPost = () => {
     const { value } = event.target;
     form.setFieldValue('categories', value);
   };
+  //#endregion
 
   useEffect(() => {
     if (currentUser) {
@@ -154,7 +157,7 @@ const CreateNewPost = () => {
               if (selectedValues.length) {
                 return (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {mapJson2Obj(selectedValues).map((value) => (
+                    {utils.mapJson2Obj(selectedValues).map((value) => (
                       <Chip key={value.id} label={value.tagName} />
                     ))}
                   </Box>
@@ -184,7 +187,7 @@ const CreateNewPost = () => {
               if (selectedValues.length) {
                 return (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {mapJson2Obj(selectedValues).map((value) => (
+                    {utils.mapJson2Obj(selectedValues).map((value) => (
                       <Chip key={value.id} label={value.categoryName} />
                     ))}
                   </Box>
