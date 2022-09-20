@@ -42,3 +42,8 @@ export const setValueForControl = (form, fieldName, value): void => {
     form.setFieldValue(fieldName, value);
   }
 };
+
+export const isValidFileType = (fileType: string): boolean => {
+  const acceptedImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
+  return acceptedImageTypes.includes(fileType);
+}

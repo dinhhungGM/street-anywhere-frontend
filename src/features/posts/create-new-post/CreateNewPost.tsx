@@ -18,13 +18,15 @@ import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import AppIcon from '../../../solutions/components/app-icon/AppIcon';
-import AppMapPopup from '../../../solutions/components/app-map-pop-up/AppMapPopup';
+import { AppIcon } from '../../../solutions/components/app-icon';
+import { AppMapPopup } from '../../../solutions/components/app-map-pop-up';
 import { authSelectors } from '../../auth/store';
 import { postActions, postSelectors } from '../store';
 import { AppFormInput } from './../../../solutions/components/app-form-input';
 import styles from './styles.module.scss';
 import * as utils from './utils';
+import * as yup from 'yup';
+import AlertUtil from '../../../solutions/utils/alertUtil';
 
 const MenuProps = {
   PaperProps: {
@@ -63,12 +65,25 @@ const CreateNewPost = () => {
       categories: [],
     },
     onSubmit: (values) => {},
+    validationSchema: yup.object({
+      title: yup.string().required('Required!').max(50, ''),
+      shortTitle: yup.string().required('Required').max(20, ''),
+      location: yup.string().required('Required'),
+      longitude: yup.number().required('Required'),
+      latitude: yup.number().required('Required'),
+      file: yup.object().required('Required'),
+      categories: yup.array().required('Required'),
+    }),
   });
 
   const handleFileChanges = (event: any): void => {
     const file = event.target.files[0];
-    form.setFieldValue('file', file);
-    setSelectedFile(file);
+    if (file && utils.isValidFileType(file.type)) {
+      form.setFieldValue('file', file);
+      setSelectedFile(file);
+    } else {
+      AlertUtil.showError(new Error('Invalid file. Please choose an image!'));
+    }
   };
 
   const handleCancelFile = (): void => {
@@ -128,6 +143,9 @@ const CreateNewPost = () => {
   return (
     <>
       <Container>
+        <Typography textAlign='center' variant='h3'>
+          New Post
+        </Typography>
         <Box className={styles['form-group']}>
           <AppFormInput form={form} formControlName='title' label='Title' />
         </Box>
@@ -140,7 +158,7 @@ const CreateNewPost = () => {
             rows={6}
             cols={50}
             className={styles['form-control']}
-            placeholder='Description'
+            placeholder='Description (optional)'
           />
         </Box>
         <Box className={styles['form-group']}>
@@ -163,7 +181,7 @@ const CreateNewPost = () => {
           <Box className={styles['form-group']}>
             <Button variant='contained' component='label' startIcon={<AppIcon component={Upload} color='#fff' />}>
               Upload
-              <input hidden accept='image/*' multiple type='file' onChange={handleFileChanges} />
+              <input hidden accept='image/*' type='file' onChange={handleFileChanges} />
             </Button>
           </Box>
         ) : (
@@ -243,7 +261,7 @@ const CreateNewPost = () => {
           </Select>
         </FormControl>
         <Box>
-          <Button variant='contained' onClick={handleCreateNewPost}>
+          <Button variant='contained' onClick={handleCreateNewPost} disabled={!form.dirty || !form.isValid}>
             Create
           </Button>
         </Box>
