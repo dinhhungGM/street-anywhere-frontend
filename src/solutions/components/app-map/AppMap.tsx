@@ -60,7 +60,7 @@ const AppMap = ({
             <AppIcon component={Room} color='#e60023' fontSize={32} />
           </Marker>
         )}
-        {isReadonly && (
+        {!isReadonly && (
           <>
             <GeolocateControl
               positionOptions={{ enableHighAccuracy: true }}
