@@ -46,4 +46,17 @@ export const postActionsAsync = {
       dispatch(wrapperActions.hideLoading());
     }
   }),
+  getPostByIdAsync: createAsyncThunk('post/getPostById', async (postId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await postService.getPostById(postId);
+      return data.value;
+    } catch (error) {
+      dispatch(wrapperActions.hideLoading());
+      AlertUtil.showError(error);
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  }),
 };

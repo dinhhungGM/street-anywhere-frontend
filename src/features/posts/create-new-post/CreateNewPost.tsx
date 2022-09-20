@@ -128,22 +128,28 @@ const CreateNewPost = () => {
   return (
     <>
       <Container>
-        <Box className={styles['form-control']}>
+        <Box className={styles['form-group']}>
           <AppFormInput form={form} formControlName='title' label='Title' />
         </Box>
-        <Box className={styles['form-control']}>
+        <Box className={styles['form-group']}>
           <AppFormInput form={form} formControlName='shortTitle' label='Short title' />
         </Box>
-        <Box className={styles['form-control']}>
-          <AppFormInput form={form} formControlName='description' label='Description' />
+        <Box className={styles['form-group']}>
+          <textarea
+            {...form.getFieldProps('description')}
+            rows={6}
+            cols={50}
+            className={styles['form-control']}
+            placeholder='Description'
+          />
         </Box>
-        <Box className={styles['form-control']}>
+        <Box className={styles['form-group']}>
           <AppFormInput form={form} formControlName='location' label='Location' />
         </Box>
-        <Box className={styles['form-control']}>
+        <Box className={styles['form-group']}>
           <AppFormInput form={form} formControlName='longitude' label='Longitude' disabled />
         </Box>
-        <Box className={styles['form-control']}>
+        <Box className={styles['form-group']}>
           <AppFormInput form={form} formControlName='latitude' label='Latitude' disabled />
         </Box>
         <Button
@@ -154,7 +160,7 @@ const CreateNewPost = () => {
           Select location
         </Button>
         {!selectedFile ? (
-          <Box className={styles['form-control']}>
+          <Box className={styles['form-group']}>
             <Button variant='contained' component='label' startIcon={<AppIcon component={Upload} color='#fff' />}>
               Upload
               <input hidden accept='image/*' multiple type='file' onChange={handleFileChanges} />
@@ -174,7 +180,7 @@ const CreateNewPost = () => {
             </Stack>
           </>
         )}
-        <FormControl className={styles['form-control']}>
+        <FormControl className={styles['form-group']}>
           <InputLabel id='tags-label'>Tags</InputLabel>
           <Select
             id='tags'
@@ -205,7 +211,7 @@ const CreateNewPost = () => {
               ))}
           </Select>
         </FormControl>
-        <FormControl className={styles['form-control']}>
+        <FormControl className={styles['form-group']}>
           <InputLabel id='categories-label'>Categories</InputLabel>
           <Select
             multiple

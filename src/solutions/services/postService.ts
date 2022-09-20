@@ -11,6 +11,12 @@ class PostService {
   getPosts = async () => {
     return await axios.get('/posts');
   };
+  getPostById = async (postId: number) => {
+    return await axios.get(`/posts/${postId}`);
+  };
+  deletePost = async (postId: number) => {
+    return await axios.delete(`/posts/${postId}`);
+  };
 }
 
 const postService = new PostService();

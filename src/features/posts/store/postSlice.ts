@@ -4,11 +4,13 @@ import { postActionsAsync } from './postActionsAsync';
 export type PostState = {
   tags: any[];
   categories: any[];
+  selectedPost: any;
 };
 
 const initialState: PostState = {
   tags: [],
   categories: [],
+  selectedPost: null,
 };
 
 const postSlice = createSlice({
@@ -21,6 +23,9 @@ const postSlice = createSlice({
     });
     builder.addCase(postActionsAsync.getCategoriesAsync.fulfilled, (state, action) => {
       state.categories = action.payload;
+    });
+    builder.addCase(postActionsAsync.getPostByIdAsync.fulfilled, (state, action) => {
+      state.selectedPost = action.payload;
     });
   },
 });

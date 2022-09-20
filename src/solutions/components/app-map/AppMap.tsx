@@ -9,8 +9,8 @@ type AppMapProps = {
   latitude?: number;
   longitude?: number;
   zoom?: number;
-  markers?: any[];
-  marker: any;
+  marker?: any;
+  isReadonly?: boolean;
   onSelectLocationPoint?: (e: any) => void;
   onFindLocation?: (e) => void;
   onFigureOutCurrentPosition?: (e) => void;
@@ -26,16 +26,23 @@ const AppMap = ({
   longitude = 108.277199,
   zoom = 5.5,
   marker,
-  markers,
+  isReadonly = false,
   onSelectLocationPoint,
   onFindLocation,
-  onFigureOutCurrentPosition
+  onFigureOutCurrentPosition,
 }: AppMapProps) => {
   const [viewportState, setViewportState] = useState({
     longitude,
     latitude,
     zoom,
   });
+
+  const flyToCenter = (e) => {
+    const map = e.target;
+    map.flyTo({
+      center: [longitude, latitude],
+    });
+  };
 
   return (
     <>
@@ -46,29 +53,27 @@ const AppMap = ({
         style={{ width: '80vw', height: '75vh' }}
         mapStyle='mapbox://styles/mapbox/streets-v9'
         onClick={onSelectLocationPoint}
+        onLoad={flyToCenter}
       >
         {marker && (
           <Marker anchor='left' latitude={marker.latitude} longitude={marker.longitude}>
             <AppIcon component={Room} color='#e60023' fontSize={32} />
           </Marker>
         )}
-        {markers &&
-          markers.length &&
-          markers.map((marker) => (
-            <Marker anchor='left' latitude={marker.latitude} longitude={marker.longitude}>
-              <AppIcon component={Room} color='#e60023' fontSize={32} />
-            </Marker>
-          ))}
-        <GeolocateControl
-          positionOptions={{ enableHighAccuracy: true }}
-          trackUserLocation={true}
-          onTrackUserLocationStart={onFigureOutCurrentPosition}
-        />
-        <GeocoderControl
-          accessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
-          mapboxgl={mapboxgl}
-          onResult={onFindLocation}
-        />
+        {isReadonly && (
+          <>
+            <GeolocateControl
+              positionOptions={{ enableHighAccuracy: true }}
+              trackUserLocation={true}
+              onTrackUserLocationStart={onFigureOutCurrentPosition}
+            />
+            <GeocoderControl
+              accessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
+              mapboxgl={mapboxgl}
+              onResult={onFindLocation}
+            />
+          </>
+        )}
       </Map>
     </>
   );

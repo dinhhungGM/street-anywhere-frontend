@@ -9,6 +9,9 @@ const LazyPostDetail = lazy(() =>
   import('./../../features/posts/post-detail').then((m) => ({ default: m.PostDetail })),
 );
 const LazySignIn = lazy(() => import('./../../features/auth/sign-in').then((m) => ({ default: m.SignIn })));
+const LazyPageNotFound = lazy(() =>
+  import('./../../solutions/components/app-page-not-found').then((m) => ({ default: m.AppPageNotFound })),
+);
 
 type Route = {
   id: string;
@@ -39,8 +42,13 @@ const routes: Route[] = [
   },
   {
     id: 'post-detail',
-    path: '/posts/:posId',
+    path: '/posts/:postId',
     element: <LazyPostDetail />,
+  },
+  {
+    id: 'page-not-found',
+    path: '*',
+    element: <LazyPageNotFound />,
   },
 ];
 

@@ -1,7 +1,14 @@
 .form {
-  &-control {
+  &-group {
     margin: 12px;
     display: block;
+  }
+  &-control {
+    display: block;
+    width: 100%;
+    outline: none;
+    padding: 8px;
+    font-size: 14px;
   }
 }
 

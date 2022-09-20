@@ -33,12 +33,12 @@ const AppMapPopup = ({ isOpen, onClose, onSelect }: AppMapPopupProps) => {
   const handleOnFigureOutCurrentPosition = (e) => {
     setTimeout(() => {
       const { latitude, longitude } = e.target._lastKnownPosition.coords;
-      setMarker({ latitude, longitude });
+      setQueryAddress({ latitude, longitude, location: '' });
     }, 1000);
   };
 
   const handleOnClickSelectBtn = (): void => {
-    onSelect(marker);
+    onSelect(marker || queryAddress);
   };
 
   useEffect(() => {
