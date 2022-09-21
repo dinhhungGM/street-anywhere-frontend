@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { ICategory, IPost, ITag } from '../../../solutions/models/postModels';
 import { postActionsAsync } from './postActionsAsync';
 
-export type PostState = {
-  tags: any[];
-  categories: any[];
-  selectedPost: any;
-};
+export interface PostState {
+  tags: ITag[];
+  categories: ICategory[];
+  selectedPost: IPost;
+}
 
 const initialState: PostState = {
   tags: [],

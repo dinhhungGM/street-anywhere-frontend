@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import authService from '../../../solutions/services/authService';
 import AlertUtil from '../../../solutions/utils/alertUtil';
 import { wrapperActions } from '../../wrapper/store';
-import { SignUpPayload, SignInPayload } from '../../../solutions/models/authModels';
+import { ISignUpPayload, ISignInPayload } from '../../../solutions/models/authModels';
 
 export type User = {
   username: string;
@@ -17,7 +17,7 @@ const initialState: AuthState = {
   currentUser: null,
 };
 
-export const signInActionAsync = createAsyncThunk('auth/signIn', async (payload: SignInPayload, { dispatch }) => {
+export const signInActionAsync = createAsyncThunk('auth/signIn', async (payload: ISignInPayload, { dispatch }) => {
   try {
     dispatch(wrapperActions.showLoading());
     const { data } = await authService.signIn(payload);
@@ -32,7 +32,7 @@ export const signInActionAsync = createAsyncThunk('auth/signIn', async (payload:
   }
 });
 
-export const signUpActionAsync = createAsyncThunk('auth/signUp', async (payload: SignUpPayload, { dispatch }) => {
+export const signUpActionAsync = createAsyncThunk('auth/signUp', async (payload: ISignUpPayload, { dispatch }) => {
   try {
     dispatch(wrapperActions.showLoading());
     const { data } = await authService.signUp(payload);

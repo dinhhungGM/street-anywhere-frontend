@@ -12,21 +12,21 @@ import {
   OutlinedInput,
   Select,
   Stack,
-  Typography,
+  Typography
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppMapPopup } from '../../../solutions/components/app-map-pop-up';
+import AlertUtil from '../../../solutions/utils/alertUtil';
 import { authSelectors } from '../../auth/store';
 import { postActions, postSelectors } from '../store';
 import { AppFormInput } from './../../../solutions/components/app-form-input';
 import styles from './styles.module.scss';
 import * as utils from './utils';
-import * as yup from 'yup';
-import AlertUtil from '../../../solutions/utils/alertUtil';
 
 const MenuProps = {
   PaperProps: {

@@ -38,7 +38,7 @@ const AppMap = ({
   });
 
   const flyToCenter = (e) => {
-    const map = e.target;
+    const map = e.target as mapboxgl.Map;
     map.flyTo({
       center: [longitude, latitude],
     });

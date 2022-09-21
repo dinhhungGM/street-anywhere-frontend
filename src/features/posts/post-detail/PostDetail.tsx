@@ -1,7 +1,7 @@
-import { ArrowBack, FavoriteBorder, Share } from '@mui/icons-material';
-import { Box, Button, Container, IconButton, Stack, Typography } from '@mui/material';
+import { ArrowBack, FavoriteBorder } from '@mui/icons-material';
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppMap } from '../../../solutions/components/app-map';
@@ -66,6 +66,9 @@ const PostDetail = () => {
             </Box>
           </>
         )}
+        <Box paddingY={2}>
+          {/* <PostComments postId={+selectedPost?.id} /> */}
+        </Box>
       </Container>
     </>
   );

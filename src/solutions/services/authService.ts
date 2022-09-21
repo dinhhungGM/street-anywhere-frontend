@@ -1,15 +1,15 @@
-import { SignInPayload, SignUpPayload } from '../models/authModels';
+import { ISignInPayload, ISignUpPayload } from '../models/authModels';
 import { default as axios } from './axios';
 
 class AuthenticationService {
-  signIn = async (payload: SignInPayload) => {
+  signIn = async (payload: ISignInPayload) => {
     return await axios.post('/auth/sign-in', payload, {
       headers: {
         'content-type': 'application/json',
       },
     });
   };
-  signUp = async (payload: SignUpPayload) => {
+  signUp = async (payload: ISignUpPayload) => {
     return await axios.post('/auth/sign-up', payload, {
       headers: {
         'content-type': 'application/json',
