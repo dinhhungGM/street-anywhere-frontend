@@ -2,7 +2,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { Room } from '@mui/icons-material';
 import mapboxgl from 'mapbox-gl';
 import { useState } from 'react';
-import Map, { GeolocateControl, Marker, useControl } from 'react-map-gl';
+import Map, { GeolocateControl, Marker } from 'react-map-gl';
 import { AppIcon } from '../app-icon';
 
 type AppMapProps = {
@@ -15,11 +15,6 @@ type AppMapProps = {
   onFindLocation?: (e) => void;
   onFigureOutCurrentPosition?: (e) => void;
 };
-
-function GeocoderControl(props: any) {
-  useControl(() => new MapboxGeocoder(props).on('result', props.onResult));
-  return null;
-}
 
 const AppMap = ({
   latitude = 14.058324,
@@ -37,8 +32,16 @@ const AppMap = ({
     zoom,
   });
 
-  const flyToCenter = (e) => {
+  const handleOnLoadMap = (e): void => {
     const map = e.target as mapboxgl.Map;
+    if (!isReadonly) {
+      map.addControl(
+        new MapboxGeocoder({
+          accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN,
+          mapboxgl,
+        }).on('result', onFindLocation),
+      );
+    }
     map.flyTo({
       center: [longitude, latitude],
     });
@@ -53,7 +56,7 @@ const AppMap = ({
         style={{ width: '80vw', height: '75vh' }}
         mapStyle='mapbox://styles/mapbox/streets-v9'
         onClick={onSelectLocationPoint}
-        onLoad={flyToCenter}
+        onLoad={handleOnLoadMap}
       >
         {marker && (
           <Marker anchor='left' latitude={marker.latitude} longitude={marker.longitude}>
@@ -66,11 +69,6 @@ const AppMap = ({
               positionOptions={{ enableHighAccuracy: true }}
               trackUserLocation={true}
               onTrackUserLocationStart={onFigureOutCurrentPosition}
-            />
-            <GeocoderControl
-              accessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
-              mapboxgl={mapboxgl}
-              onResult={onFindLocation}
             />
           </>
         )}
