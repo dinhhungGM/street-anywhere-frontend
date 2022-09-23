@@ -4,11 +4,14 @@ import AppMap from '../app-map/AppMap';
 
 type AppMapPopupProps = {
   isOpen: boolean;
+  currentLongitude?: number | null | undefined;
+  currentLatitude?: number | null | undefined;
+  zoom?: number | null | undefined;
   onClose: () => void;
   onSelect: (locationInfo: any) => void;
 };
 
-const AppMapPopup = ({ isOpen, onClose, onSelect }: AppMapPopupProps) => {
+const AppMapPopup = ({ isOpen, onClose, onSelect, currentLatitude, currentLongitude, zoom }: AppMapPopupProps) => {
   const [marker, setMarker] = useState<any>(null);
   const [queryAddress, setQueryAddress] = useState(null);
 
@@ -66,6 +69,9 @@ const AppMapPopup = ({ isOpen, onClose, onSelect }: AppMapPopupProps) => {
           }}
         >
           <AppMap
+            latitude={currentLatitude}
+            zoom={zoom}
+            longitude={currentLongitude}
             marker={marker}
             onSelectLocationPoint={handleOnSelectLocationPoint}
             onFindLocation={handleOnFindLocation}

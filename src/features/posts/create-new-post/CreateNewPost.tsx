@@ -1,18 +1,20 @@
-import { Close, Map, Upload } from '@mui/icons-material';
+import { Add, Close, Image, Map, PlayCircleFilled, Upload } from '@mui/icons-material';
 import {
   Box,
   Button,
   Checkbox,
   Chip,
-  Container,
   FormControl,
+  Grid,
   InputLabel,
   ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
   Stack,
-  Typography
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -27,6 +29,7 @@ import { postActions, postSelectors } from '../store';
 import { AppFormInput } from './../../../solutions/components/app-form-input';
 import styles from './styles.module.scss';
 import * as utils from './utils';
+import cx from 'classnames';
 
 const MenuProps = {
   PaperProps: {
@@ -49,6 +52,9 @@ const CreateNewPost = () => {
   //#region Initial state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isOpenMap, setIsOpenMap] = useState(false);
+  const [typeUpload, setTypeUpload] = useState('image');
+  const [currentLongitude, setCurrentLongitude] = useState<number | null>(null);
+  const [currentLatitude, setCurrentLatitude] = useState<number | null>(null);
   //#endregion
 
   //#region Initialize Form
@@ -61,13 +67,14 @@ const CreateNewPost = () => {
       longitude: '',
       latitude: '',
       file: '',
+      ytbVideoUrl: '',
       tags: [],
       categories: [],
     },
     onSubmit: (values) => {},
     validationSchema: yup.object({
-      title: yup.string().required('Required!').max(50, ''),
-      shortTitle: yup.string().required('Required').max(20, ''),
+      title: yup.string().required('Required!').max(50, 'The title should not be more than 50 characters'),
+      shortTitle: yup.string().required('Required').max(20, 'The short title should not be more than 50 characters'),
       location: yup.string().required('Required'),
       longitude: yup.number().required('Required'),
       latitude: yup.number().required('Required'),
@@ -90,12 +97,6 @@ const CreateNewPost = () => {
     form.setFieldValue('file', '');
     setSelectedFile(null);
   };
-
-  // const handleOnSelect = (locationInfo: any): void => {
-  //   form.setFieldValue('latitude', locationInfo.latitude);
-  //   form.setFieldValue('longitude', locationInfo.longitude);
-  //   form.setFieldValue('location', locationInfo.location);
-  // };
 
   const handleCreateNewPost = async () => {
     const payload = utils.constructPostPayload(form.values, currentUser.id);
@@ -131,7 +132,21 @@ const CreateNewPost = () => {
   };
   //#endregion
 
+  const handleTypeUploadChange = (_, newTypeUpload): void => {
+    setTypeUpload(newTypeUpload);
+    if (newTypeUpload === 'image') {
+      form.setFieldValue('ytbVideoUrl', '');
+    } else {
+      form.setFieldValue('file', '');
+      setSelectedFile(null);
+    }
+  };
+
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      setCurrentLongitude(+position.coords.longitude);
+      setCurrentLatitude(+position.coords.latitude);
+    });
     if (currentUser) {
       dispatch(postActions.getCategoriesAsync(null));
       dispatch(postActions.getTagsAsync(null));
@@ -142,131 +157,211 @@ const CreateNewPost = () => {
 
   return (
     <>
-      <Container>
-        <Typography textAlign='center' variant='h3'>
-          New Post
+      <Box padding={4} className={styles['form']}>
+        <Typography textAlign='center' variant='h3' marginBottom={2}>
+          Create new post
         </Typography>
-        <Box className={styles['form-group']}>
-          <AppFormInput form={form} formControlName='title' label='Title' />
-        </Box>
-        <Box className={styles['form-group']}>
-          <AppFormInput form={form} formControlName='shortTitle' label='Short title' />
-        </Box>
-        <Box className={styles['form-group']}>
-          <textarea
-            {...form.getFieldProps('description')}
-            rows={6}
-            cols={50}
-            className={styles['form-control']}
-            placeholder='Description (optional)'
-          />
-        </Box>
-        <Box className={styles['form-group']}>
-          <AppFormInput form={form} formControlName='location' label='Location' />
-        </Box>
-        <Box className={styles['form-group']}>
-          <AppFormInput form={form} formControlName='longitude' label='Longitude' disabled />
-        </Box>
-        <Box className={styles['form-group']}>
-          <AppFormInput form={form} formControlName='latitude' label='Latitude' disabled />
-        </Box>
-        <Button
-          variant='contained'
-          startIcon={<AppIcon component={Map} color='#fff' />}
-          onClick={() => setIsOpenMap(true)}
-        >
-          Select location
-        </Button>
-        {!selectedFile ? (
-          <Box className={styles['form-group']}>
-            <Button variant='contained' component='label' startIcon={<AppIcon component={Upload} color='#fff' />}>
-              Upload
-              <input hidden accept='image/*' type='file' onChange={handleFileChanges} />
-            </Button>
-          </Box>
-        ) : (
-          <>
-            <Stack spacing={2} direction='row' alignItems='center'>
-              <Typography>{selectedFile.name}</Typography>
-              <Button
-                startIcon={<AppIcon component={Close} color='#e60023' />}
-                color='error'
-                onClick={handleCancelFile}
+        <Grid container spacing={4}>
+          <Grid item md={6} sm={12}>
+            <Box className={styles['form-group']}>
+              <AppFormInput
+                form={form}
+                formControlName='title'
+                label='Title'
+                placeholder='Please fill the main title of your post (*)'
+              />
+            </Box>
+            <Box className={styles['form-group']}>
+              <AppFormInput
+                form={form}
+                formControlName='shortTitle'
+                label='Short title'
+                placeholder='Please fill the short title of your post (*)'
+                helperText='Should be no more than 20 characters'
+              />
+            </Box>
+            <Box className={cx(styles['form-group'], styles['form-group--description'])}>
+              <textarea
+                {...form.getFieldProps('description')}
+                rows={6}
+                cols={50}
+                className={styles['form-control']}
+                placeholder='Description (optional)'
+              />
+            </Box>
+            <FormControl className={styles['form-group']}>
+              <InputLabel id='tags-label'>Tags</InputLabel>
+              <Select
+                id='tags'
+                multiple
+                fullWidth
+                labelId='tags-label'
+                value={form.values.tags}
+                input={<OutlinedInput label='Tags' />}
+                MenuProps={MenuProps}
+                renderValue={(selectedValues: string[]) => {
+                  if (selectedValues.length) {
+                    return (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {utils.mapJson2Obj(selectedValues).map((value) => (
+                          <Chip key={value.id} label={value.tagName} />
+                        ))}
+                      </Box>
+                    );
+                  }
+                }}
+                onChange={handleTagsChange}
               >
-                Cancel
-              </Button>
+                {Array.isArray(tags) &&
+                  tags.map((tag) => (
+                    <MenuItem key={tag.id} value={JSON.stringify(tag)}>
+                      <Checkbox checked={form.values.tags.includes(JSON.stringify(tag))} />
+                      <ListItemText primary={tag.tagName} />
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+            <FormControl className={styles['form-group']}>
+              <InputLabel id='categories-label'>Categories</InputLabel>
+              <Select
+                multiple
+                fullWidth
+                labelId='categories-label'
+                value={form.values.categories}
+                input={<OutlinedInput label='Categories' />}
+                MenuProps={MenuProps}
+                renderValue={(selectedValues: string[]) => {
+                  if (selectedValues.length) {
+                    return (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {utils.mapJson2Obj(selectedValues).map((value) => (
+                          <Chip key={value.id} label={value.categoryName} />
+                        ))}
+                      </Box>
+                    );
+                  }
+                }}
+                onChange={handleCategoriesChange}
+              >
+                {Array.isArray(categories) &&
+                  categories.map((category: any) => (
+                    <MenuItem key={category.id} value={JSON.stringify(category)}>
+                      <Checkbox checked={form.values.categories.includes(JSON.stringify(category))} />
+                      <ListItemText primary={category.categoryName} />
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item md={6} sm={12}>
+            <Box className={styles['form-group']}>
+              <AppFormInput
+                form={form}
+                formControlName='location'
+                label='Location'
+                placeholder='Please fill the location of your post (*)'
+              />
+            </Box>
+            <Stack direction='row'>
+              <Box className={styles['form-group']} width='40%'>
+                <AppFormInput form={form} formControlName='longitude' label='Longitude (*)' disabled />
+              </Box>
+              <Box className={styles['form-group']} width='40%'>
+                <AppFormInput form={form} formControlName='latitude' label='Latitude (*)' disabled />
+              </Box>
+              <Stack
+                className={cx(styles['form-group'], styles['form-group--map'])}
+                width='20%'
+                alignItems='center'
+                justifyContent='flex-end'
+              >
+                <Button
+                  variant='contained'
+                  startIcon={<AppIcon component={Map} color='#fff' />}
+                  onClick={() => setIsOpenMap(true)}
+                  className={styles['btn-select-map']}
+                >
+                  Select on map
+                </Button>
+                <AppMapPopup
+                  currentLatitude={currentLatitude}
+                  currentLongitude={currentLongitude}
+                  isOpen={isOpenMap}
+                  onClose={handleCloseAppMapPopup}
+                  onSelect={handleOnSelectPoint}
+                  zoom={currentLatitude && currentLongitude && 13}
+                />
+              </Stack>
             </Stack>
-          </>
-        )}
-        <FormControl className={styles['form-group']}>
-          <InputLabel id='tags-label'>Tags</InputLabel>
-          <Select
-            id='tags'
-            multiple
-            fullWidth
-            labelId='tags-label'
-            value={form.values.tags}
-            input={<OutlinedInput label='Tags' />}
-            MenuProps={MenuProps}
-            renderValue={(selectedValues: string[]) => {
-              if (selectedValues.length) {
-                return (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {utils.mapJson2Obj(selectedValues).map((value) => (
-                      <Chip key={value.id} label={value.tagName} />
-                    ))}
-                  </Box>
-                );
-              }
-            }}
-            onChange={handleTagsChange}
+            <Box className={styles['form-group']}>
+              <ToggleButtonGroup
+                value={typeUpload}
+                exclusive
+                onChange={handleTypeUploadChange}
+                aria-label='type upload'
+                color='primary'
+              >
+                <ToggleButton value='image' aria-label='image'>
+                  <AppIcon component={Image} color='#9391fd' />
+                  <Typography marginLeft={2} textTransform='capitalize'>
+                    Image
+                  </Typography>
+                </ToggleButton>
+                <ToggleButton value='video' aria-label='video'>
+                  <AppIcon component={PlayCircleFilled} color='#e60023' />
+                  <Typography marginLeft={2} textTransform='capitalize'>
+                    Video
+                  </Typography>
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+            <Box className={styles['form-group']}>
+              {typeUpload === 'image' && (
+                <>
+                  {!selectedFile ? (
+                    <Button
+                      variant='contained'
+                      component='label'
+                      startIcon={<AppIcon component={Upload} color='#fff' />}
+                    >
+                      Upload
+                      <input hidden accept='image/*' type='file' onChange={handleFileChanges} />
+                    </Button>
+                  ) : (
+                    <>
+                      <Stack spacing={2} direction='row' alignItems='center'>
+                        <Typography>{selectedFile.name}</Typography>
+                        <Button
+                          startIcon={<AppIcon component={Close} color='#e60023' />}
+                          color='error'
+                          onClick={handleCancelFile}
+                        >
+                          Cancel
+                        </Button>
+                      </Stack>
+                    </>
+                  )}
+                </>
+              )}
+              {typeUpload === 'video' && (
+                <AppFormInput form={form} formControlName='ytbVideoUrl' label='Youtube video url' />
+              )}
+            </Box>
+          </Grid>
+        </Grid>
+        <Box justifyContent='flex-end' display='flex'>
+          <Button
+            variant='contained'
+            color='success'
+            onClick={handleCreateNewPost}
+            startIcon={<AppIcon component={Add} color='#fff' />}
+            disabled={!(form.isValid && form.dirty)}
+            className={styles['btn-submit']}
           >
-            {Array.isArray(tags) &&
-              tags.map((tag) => (
-                <MenuItem key={tag.id} value={JSON.stringify(tag)}>
-                  {tag.tagName}
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-        <FormControl className={styles['form-group']}>
-          <InputLabel id='categories-label'>Categories</InputLabel>
-          <Select
-            multiple
-            fullWidth
-            labelId='categories-label'
-            value={form.values.categories}
-            input={<OutlinedInput label='Categories' />}
-            MenuProps={MenuProps}
-            renderValue={(selectedValues: string[]) => {
-              if (selectedValues.length) {
-                return (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {utils.mapJson2Obj(selectedValues).map((value) => (
-                      <Chip key={value.id} label={value.categoryName} />
-                    ))}
-                  </Box>
-                );
-              }
-            }}
-            onChange={handleCategoriesChange}
-          >
-            {Array.isArray(categories) &&
-              categories.map((category: any) => (
-                <MenuItem key={category.id} value={JSON.stringify(category)}>
-                  <Checkbox />
-                  <ListItemText primary={category.categoryName} />
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-        <Box>
-          <Button variant='contained' onClick={handleCreateNewPost} disabled={!form.dirty || !form.isValid}>
-            Create
+            Submit
           </Button>
         </Box>
-        <AppMapPopup isOpen={isOpenMap} onClose={handleCloseAppMapPopup} onSelect={handleOnSelectPoint} />
-      </Container>
+      </Box>
     </>
   );
 };

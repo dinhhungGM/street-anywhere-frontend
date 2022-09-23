@@ -2,6 +2,12 @@
   &-group {
     margin: 12px;
     display: block;
+    &--description {
+      margin: 16px 12px;
+    }
+    &--map {
+      display: flex;
+    }
   }
   &-control {
     display: block;
@@ -12,3 +18,13 @@
   }
 }
 
+.btn-select-map {
+  font-size: 12px;
+  font-weight: bold;
+  height: 100%;
+}
+
+.btn-submit {
+  font-weight: bold;
+  min-width: 200px !important;
+}

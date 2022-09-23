@@ -1,7 +1,7 @@
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { Room } from '@mui/icons-material';
 import mapboxgl from 'mapbox-gl';
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import Map, { GeolocateControl, Marker } from 'react-map-gl';
 import { AppIcon } from '../app-icon';
 
@@ -31,6 +31,11 @@ const AppMap = ({
     latitude,
     zoom,
   });
+  const geoLocateControlRef = useCallback((ref) => {
+    if (ref) {
+      ref.trigger();
+    }
+  }, []);
 
   const handleOnLoadMap = (e): void => {
     const map = e.target as mapboxgl.Map;
@@ -69,6 +74,7 @@ const AppMap = ({
               positionOptions={{ enableHighAccuracy: true }}
               trackUserLocation={true}
               onTrackUserLocationStart={onFigureOutCurrentPosition}
+              ref={geoLocateControlRef}
             />
           </>
         )}
