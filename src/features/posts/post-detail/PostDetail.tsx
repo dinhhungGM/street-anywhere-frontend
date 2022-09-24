@@ -41,7 +41,7 @@ const PostDetail = () => {
           {selectedPost?.title}
         </Typography>
         <Box className={styles['post-detail__image']}>
-          {selectedPost.type === 'video' ? (
+          {selectedPost?.type === 'video' ? (
             <ReactPlayer
               url={selectedPost.videoYtbUrl}
               width='100%'
