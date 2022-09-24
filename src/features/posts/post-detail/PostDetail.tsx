@@ -59,6 +59,12 @@ const PostDetail = () => {
         <Typography paddingY={2} variant='h5'>
           Location: <span className={styles['post-detail__location']}>{selectedPost?.location}</span>
         </Typography>
+        <Typography paddingY={2} variant='h5'>
+          Longitude: <span className={styles['post-detail__location']}>{selectedPost?.longitude}</span>
+        </Typography>
+        <Typography paddingY={2} variant='h5'>
+          Latitude: <span className={styles['post-detail__location']}>{selectedPost?.latitude}</span>
+        </Typography>
         {utils.isExistLatAndLong(selectedPost) ? (
           <Box className={styles['post-detail__map']}>
             <AppMap

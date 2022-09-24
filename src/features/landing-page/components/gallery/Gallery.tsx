@@ -33,6 +33,7 @@ const Gallery = () => {
                 author={post.user.fullName}
                 avatarUrl={post.user.profilePhotoUrl}
                 tags={post.tags}
+                categories={post.categories}
                 shortTitle={post.shortTitle}
                 location={post.location}
                 postId={post.id}

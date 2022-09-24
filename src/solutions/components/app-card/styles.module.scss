@@ -43,9 +43,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    img,
-    .video {
+    min-width: 360px;
+
+    img {
       max-width: 100%;
       border-radius: 16px;
       transition: all 0.7s ease;
@@ -68,6 +68,7 @@
   &__footer {
     padding-top: 24px;
     &__avatar {
+      padding-top: 8px;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -87,6 +88,10 @@
       span {
         padding-left: 8px;
       }
+    }
+
+    &__tags {
+      display: flex;
     }
   }
 }

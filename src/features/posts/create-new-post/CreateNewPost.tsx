@@ -14,7 +14,7 @@ import {
   Stack,
   ToggleButton,
   ToggleButtonGroup,
-  Typography
+  Typography,
 } from '@mui/material';
 import cx from 'classnames';
 import { useFormik } from 'formik';
