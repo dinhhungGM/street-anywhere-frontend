@@ -4,6 +4,7 @@ import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
 import { AppIcon } from '../app-icon';
 import styles from './styles.module.scss';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 type AppCardProps = {
   imgSrc: string;
@@ -32,7 +33,7 @@ const AppCard = ({ imgSrc, alt, author, shortTitle, avatarUrl, postId, location,
           {type === 'video' ? (
             <ReactPlayer height='500px' width='100%' url={videoYtbUrl} className={styles['video']} light />
           ) : (
-            <img src={imgSrc} alt={alt} loading='lazy' />
+            <LazyLoadImage alt={alt} src={imgSrc} />
           )}
         </Box>
         <Box className={styles['card__footer']}>

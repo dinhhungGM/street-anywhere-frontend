@@ -10,6 +10,7 @@ import { LoadingSpinner } from '../../../solutions/components/loading-spinner';
 import { postActions, postSelectors } from '../store';
 import styles from './styles.module.scss';
 import * as utils from './utils';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const PostDetail = () => {
   const params = useParams();
@@ -49,7 +50,7 @@ const PostDetail = () => {
               fallback={<LoadingSpinner />}
             />
           ) : (
-            <img src={selectedPost?.imageUrl} alt={selectedPost?.shortTitle} />
+            <LazyLoadImage alt={selectedPost?.shortTitle} src={selectedPost?.imageUrl} />
           )}
         </Box>
         <Typography textAlign='justify' paddingY={3}>
