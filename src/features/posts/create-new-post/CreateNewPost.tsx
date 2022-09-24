@@ -133,6 +133,9 @@ const CreateNewPost = () => {
   //#endregion
 
   const handleTypeUploadChange = (_, newTypeUpload): void => {
+    if (!newTypeUpload) {
+      return;
+    }
     setTypeUpload(newTypeUpload);
     if (newTypeUpload === 'image') {
       form.setFieldValue('ytbVideoUrl', '');

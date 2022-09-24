@@ -1,18 +1,17 @@
+import { Search } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppCard } from '../../../../solutions/components/app-card';
-import { landingPageActions, landingPageSelectors } from '../../store';
-import { useSearchParams, useNavigate } from 'react-router-dom';
 import { AppIcon } from '../../../../solutions/components/app-icon';
-import { Search } from '@mui/icons-material';
+import { landingPageActions, landingPageSelectors } from '../../store';
 
 const Gallery = () => {
   const displayPosts = useAppSelector(landingPageSelectors.selectPosts);
   const dispatch = useAppDispatch();
   const [queryParams] = useSearchParams();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const page = queryParams.get('page');
@@ -23,7 +22,7 @@ const Gallery = () => {
 
   return (
     <>
-      {displayPosts.length ? (
+      {displayPosts?.length ? (
         <Masonry columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} spacing={2}>
           {displayPosts &&
             displayPosts.map((post) => (
@@ -65,7 +64,6 @@ const Gallery = () => {
         >
           <AppIcon component={Search} fontSize={120} />
           <Typography variant='h6' marginY={4}>No data found</Typography>
-          <Button onClick={() => navigate('/')} variant='contained'>Back to home</Button>
         </Box>
       )}
     </>
