@@ -6,18 +6,21 @@ import AlertUtil from '../../../solutions/utils/alertUtil';
 import { wrapperActions } from '../../wrapper/store';
 
 export const landingPageActionsAsync = {
-  getPostsAsync: createAsyncThunk('landingPage/getPostsAsync', async (_: any, { dispatch }) => {
-    try {
-      dispatch(wrapperActions.showLoading());
-      const { data } = await postService.getPosts();
-      return data.value;
-    } catch (error) {
-      AlertUtil.showError(error);
-      dispatch(wrapperActions.hideLoading());
-    } finally {
-      dispatch(wrapperActions.hideLoading());
-    }
-  }),
+  getPostsAsync: createAsyncThunk(
+    'landingPage/getPostsAsync',
+    async (searchParams: { page: string; category: string; tag: string }, { dispatch }) => {
+      try {
+        dispatch(wrapperActions.showLoading());
+        const { data } = await postService.getPosts(searchParams);
+        return data.value;
+      } catch (error) {
+        AlertUtil.showError(error);
+        dispatch(wrapperActions.hideLoading());
+      } finally {
+        dispatch(wrapperActions.hideLoading());
+      }
+    },
+  ),
   getAllCategoriesAsync: createAsyncThunk('landingPage/getAllCategoriesAsync', async (_: any, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());

@@ -1,15 +1,36 @@
 import { Box, Chip, Stack, Typography } from '@mui/material';
-import { useEffect } from 'react';
+import cx from 'classnames';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { landingPageActions, landingPageSelectors } from '../../store';
+import styles from './styles.module.scss';
 
 const TagClouds = () => {
   const dispatch = useAppDispatch();
   const displayCategories = useAppSelector(landingPageSelectors.selectTags);
+  const [queryParams, setQueryParams] = useSearchParams();
+  const [toggle, setToggle] = useState(false);
+
+  const checkIsActive = (tagId: number): boolean => {
+    const currentTagId = queryParams.get('tag');
+    return tagId && tagId === +currentTagId;
+  };
+
+  const filterPostByTag = (tagId: string) => {
+    if (!toggle) {
+      queryParams.set('tag', tagId);
+    } else {
+      queryParams.delete('tag');
+    }
+    setQueryParams(queryParams);
+    setToggle(!toggle);
+  };
 
   useEffect(() => {
     dispatch(landingPageActions.getAllTagsAsync(null));
   }, []);
+
   return (
     <>
       <Box
@@ -30,7 +51,13 @@ const TagClouds = () => {
           marginTop={3}
         >
           {displayCategories?.map((tag) => (
-            <Chip label={tag.tagName} key={tag.id} variant='outlined' />
+            <Chip
+              label={tag.tagName}
+              key={tag.id}
+              variant='outlined'
+              className={cx(styles.tag, checkIsActive(+tag.id) && styles.active)}
+              onClick={() => filterPostByTag(tag.id.toString())}
+            />
           ))}
         </Stack>
       </Box>

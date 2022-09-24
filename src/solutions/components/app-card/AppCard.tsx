@@ -46,7 +46,7 @@ const AppCard = ({
           {type === 'video' ? (
             <ReactPlayer height='500px' width='100%' url={videoYtbUrl} className={styles['video']} light />
           ) : (
-              <LazyLoadImage alt={alt} src={imgSrc} effect='black-and-white' />
+            <LazyLoadImage alt={alt} src={imgSrc} effect='black-and-white' />
           )}
         </Box>
         <Box className={styles['card__footer']}>
@@ -59,9 +59,9 @@ const AppCard = ({
             <Box className={styles['card__footer__tags']}>
               <Stack direction='row' spacing={1} flexWrap='wrap' marginY={1}>
                 <Typography fontWeight={700}>Tags: </Typography>
-                {tags.map((tag, idx) => (
+                {tags.map((tag) => (
                   <>
-                    <Typography key={idx} display='flex'>
+                    <Typography key={tag} display='flex'>
                       <AppIcon component={Tag} />
                       <span style={{ marginLeft: '4px' }}>{tag}</span>
                     </Typography>

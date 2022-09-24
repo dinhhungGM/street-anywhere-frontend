@@ -1,48 +1,73 @@
 import { Masonry } from '@mui/lab';
-import { Box } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppCard } from '../../../../solutions/components/app-card';
 import { landingPageActions, landingPageSelectors } from '../../store';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { AppIcon } from '../../../../solutions/components/app-icon';
+import { Search } from '@mui/icons-material';
 
 const Gallery = () => {
   const displayPosts = useAppSelector(landingPageSelectors.selectPosts);
   const dispatch = useAppDispatch();
+  const [queryParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(landingPageActions.getPostsAsync(null));
-  }, []);
+    const page = queryParams.get('page');
+    const category = queryParams.get('category');
+    const tag = queryParams.get('tag');
+    dispatch(landingPageActions.getPostsAsync({ page, category, tag }));
+  }, [queryParams]);
 
   return (
     <>
-      <Masonry columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} spacing={2}>
-        {displayPosts &&
-          displayPosts.map((post) => (
-            <Box
-              sx={{
-                margin: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              key={post.id}
-            >
-              <AppCard
-                imgSrc={post.imageUrl}
-                alt={post.shortTitle}
-                author={post.user.fullName}
-                avatarUrl={post.user.profilePhotoUrl}
-                tags={post.tags}
-                categories={post.categories}
-                shortTitle={post.shortTitle}
-                location={post.location}
-                postId={post.id}
-                type={post.type}
-                videoYtbUrl={post.videoYtbUrl}
-              />
-            </Box>
-          ))}
-      </Masonry>
+      {displayPosts.length ? (
+        <Masonry columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} spacing={2}>
+          {displayPosts &&
+            displayPosts.map((post) => (
+              <Box
+                sx={{
+                  margin: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                key={post.id}
+              >
+                <AppCard
+                  imgSrc={post.imageUrl}
+                  alt={post.shortTitle}
+                  author={post.user.fullName}
+                  avatarUrl={post.user.profilePhotoUrl}
+                  tags={post.tags}
+                  categories={post.categories}
+                  shortTitle={post.shortTitle}
+                  location={post.location}
+                  postId={post.id}
+                  type={post.type}
+                  videoYtbUrl={post.videoYtbUrl}
+                />
+              </Box>
+            ))}
+        </Masonry>
+      ) : (
+        <Box
+          sx={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+          }}
+        >
+          <AppIcon component={Search} fontSize={120} />
+          <Typography variant='h6' marginY={4}>No data found</Typography>
+          <Button onClick={() => navigate('/')} variant='contained'>Back to home</Button>
+        </Box>
+      )}
     </>
   );
 };

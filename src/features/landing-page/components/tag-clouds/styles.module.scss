@@ -1,0 +1,18 @@
+@import './../../../../solutions/assets/scss/variables';
+
+.tag {
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $primaryLightGrey;
+  }
+
+  &.active {
+    background-color: $primaryGray;
+    color: #fff;
+    &:hover {
+      color: $primaryBlack;
+    }
+  }
+}

@@ -9,17 +9,37 @@ import {
   Park,
   Public,
   SportsSoccer,
-  VideogameAsset
+  VideogameAsset,
 } from '@mui/icons-material';
 import { Box, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
-import { useEffect } from 'react';
+import cx from 'classnames';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppIcon } from '../../../../solutions/components/app-icon';
 import { landingPageActions, landingPageSelectors } from '../../store';
+import styles from './styles.module.scss';
 
 const Categories = () => {
   const dispatch = useAppDispatch();
   const displayCategories = useAppSelector(landingPageSelectors.selectCategories);
+  const [queryParams, setQueryParams] = useSearchParams();
+  const [toggle, setToggle] = useState(false);
+
+  const checkIsActive = (categoryId: number): boolean => {
+    const currentCategoryId = queryParams.get('category');
+    return categoryId && categoryId === +currentCategoryId;
+  };
+
+  const filterPostByCategory = (categoryId: string) => {
+    if (!toggle) {
+      queryParams.set('category', categoryId);
+    } else {
+      queryParams.delete('category');
+    }
+    setQueryParams(queryParams);
+    setToggle(!toggle);
+  };
 
   useEffect(() => {
     dispatch(landingPageActions.getAllCategoriesAsync(null));
@@ -38,7 +58,11 @@ const Categories = () => {
           <Typography variant='h4'>Categories</Typography>
           <List>
             {displayCategories?.map((category) => (
-              <ListItem key={category.id} sx={{ borderBottom: '1px solid #f2f5f8' }}>
+              <ListItem
+                key={category.id}
+                className={cx(styles.category, checkIsActive(category.id) && styles.active)}
+                onClick={() => filterPostByCategory(category.id.toString())}
+              >
                 <ListItemIcon>{configs[category.categoryName.toLowerCase()]}</ListItemIcon>
                 <ListItemText>{category.categoryName}</ListItemText>
               </ListItem>

@@ -1,0 +1,15 @@
+@import './../../../../solutions/assets/scss/variables';
+
+.category {
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  &:not(:last-child) {
+    border-bottom: 1px solid #f2f5f8;
+  }
+  &:hover {
+    background-color: $primaryLightGrey;
+  }
+  &.active {
+    background-color: $primaryLightGrey;
+  }
+}
