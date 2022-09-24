@@ -1,6 +1,15 @@
 import { Box, Chip, Stack, Typography } from '@mui/material';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import { landingPageActions, landingPageSelectors } from '../../store';
 
 const TagClouds = () => {
+  const dispatch = useAppDispatch();
+  const displayCategories = useAppSelector(landingPageSelectors.selectTags);
+
+  useEffect(() => {
+    dispatch(landingPageActions.getAllTagsAsync(null));
+  }, []);
   return (
     <>
       <Box
@@ -20,33 +29,13 @@ const TagClouds = () => {
           alignContent='flex-start'
           marginTop={3}
         >
-          {tags.map((tag, idx) => (
-            <Chip label={tag} key={idx} variant='outlined' />
+          {displayCategories?.map((tag) => (
+            <Chip label={tag.tagName} key={tag.id} variant='outlined' />
           ))}
         </Stack>
       </Box>
     </>
   );
 };
-
-const tags = [
-  'video',
-  'music',
-  'art',
-  'vimeo',
-  'instagram',
-  'design',
-  'list',
-  'poll',
-  'playlist',
-  'mp4',
-  'news',
-  'wallpaper',
-  'image',
-  'king',
-  'nature',
-  'flower',
-  'multiple',
-];
 
 export default TagClouds;
