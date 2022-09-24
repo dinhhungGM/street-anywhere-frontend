@@ -73,8 +73,8 @@ const CreateNewPost = () => {
     },
     onSubmit: (values) => {},
     validationSchema: yup.object({
-      title: yup.string().required('Required!').max(50, 'The title should not be more than 50 characters'),
-      shortTitle: yup.string().required('Required').max(20, 'The short title should not be more than 50 characters'),
+      title: yup.string().required('Required!').max(100, 'The title should not be more than 100 characters'),
+      shortTitle: yup.string().required('Required').max(30, 'The short title should not be more than 50 characters'),
       location: yup.string().required('Required'),
       longitude: yup.number().required('Required'),
       latitude: yup.number().required('Required'),
