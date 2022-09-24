@@ -99,7 +99,7 @@ const CreateNewPost = () => {
   };
 
   const handleCreateNewPost = async () => {
-    const payload = utils.constructPostPayload(form.values, currentUser.id);
+    const payload = utils.constructPostPayload(form.values, currentUser.id, typeUpload);
     const response = await dispatch(postActions.createPostActionAsync(payload));
     if (response.meta.requestStatus === 'fulfilled') {
       navigate('/');

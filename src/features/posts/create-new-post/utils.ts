@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export const constructPostPayload = (formValues: any, userId: any): FormData => {
+export const constructPostPayload = (formValues: any, userId: any, typeUpload: string): FormData => {
   const fd = new FormData();
   fd.append('title', formValues.title);
   fd.append('shortTitle', formValues.shortTitle);
@@ -9,9 +9,13 @@ export const constructPostPayload = (formValues: any, userId: any): FormData => 
   fd.append('latitude', formValues.latitude);
   fd.append('longitude', formValues.longitude);
   fd.append('userId', userId);
-  fd.append('type', formValues.file.type);
-  fd.append('size', formValues.file.size);
-  fd.append('media', formValues.file);
+  if (typeUpload === 'image') {
+    fd.append('type', formValues.file.type);
+    fd.append('size', formValues.file.size);
+    fd.append('media', formValues.file);
+  } else {
+    fd.append('videoYtbUrl', formValues.ytbVideoUrl);
+  }
   fd.append(
     'tags',
     JSON.stringify(
@@ -46,4 +50,4 @@ export const setValueForControl = (form, fieldName, value): void => {
 export const isValidFileType = (fileType: string): boolean => {
   const acceptedImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
   return acceptedImageTypes.includes(fileType);
-}
+};
