@@ -1,7 +1,7 @@
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { Room } from '@mui/icons-material';
 import mapboxgl from 'mapbox-gl';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Map, { GeolocateControl, Marker } from 'react-map-gl';
 import { AppIcon } from '../app-icon';
 

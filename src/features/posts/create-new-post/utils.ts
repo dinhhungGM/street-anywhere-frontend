@@ -14,6 +14,7 @@ export const constructPostPayload = (formValues: any, userId: any, typeUpload: s
     fd.append('size', formValues.file.size);
     fd.append('media', formValues.file);
   } else {
+    fd.append('type', 'video');
     fd.append('videoYtbUrl', formValues.ytbVideoUrl);
   }
   fd.append(

@@ -14,8 +14,9 @@ import {
   Stack,
   ToggleButton,
   ToggleButtonGroup,
-  Typography,
+  Typography
 } from '@mui/material';
+import cx from 'classnames';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +30,6 @@ import { postActions, postSelectors } from '../store';
 import { AppFormInput } from './../../../solutions/components/app-form-input';
 import styles from './styles.module.scss';
 import * as utils from './utils';
-import cx from 'classnames';
 
 const MenuProps = {
   PaperProps: {
@@ -355,7 +355,6 @@ const CreateNewPost = () => {
             color='success'
             onClick={handleCreateNewPost}
             startIcon={<AppIcon component={Add} color='#fff' />}
-            disabled={!(form.isValid && form.dirty)}
             className={styles['btn-submit']}
           >
             Submit

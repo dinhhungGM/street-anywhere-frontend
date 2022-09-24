@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
 import { Masonry } from '@mui/lab';
-import { useAppSelector, useAppDispatch } from '../../../../app/hooks';
-import { landingPageSelectors, landingPageActions } from '../../store';
 import { Box } from '@mui/material';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppCard } from '../../../../solutions/components/app-card';
+import { landingPageActions, landingPageSelectors } from '../../store';
 
 const Gallery = () => {
   const displayPosts = useAppSelector(landingPageSelectors.selectPosts);
@@ -36,6 +36,8 @@ const Gallery = () => {
                 shortTitle={post.shortTitle}
                 location={post.location}
                 postId={post.id}
+                type={post.type}
+                videoYtbUrl={post.videoYtbUrl}
               />
             </Box>
           ))}

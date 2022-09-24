@@ -1,5 +1,6 @@
 import { Room } from '@mui/icons-material';
 import { Box, Stack, Typography } from '@mui/material';
+import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
 import { AppIcon } from '../app-icon';
 import styles from './styles.module.scss';
@@ -13,9 +14,11 @@ type AppCardProps = {
   avatarUrl?: string;
   postId?: number;
   location?: string;
+  type?: string;
+  videoYtbUrl?: string;
 };
 
-const AppCard = ({ imgSrc, alt, author, shortTitle, avatarUrl, postId, location }: AppCardProps) => {
+const AppCard = ({ imgSrc, alt, author, shortTitle, avatarUrl, postId, location, type, videoYtbUrl }: AppCardProps) => {
   const navigate = useNavigate();
 
   const navigateToPostDetail = (): void => {
@@ -26,7 +29,11 @@ const AppCard = ({ imgSrc, alt, author, shortTitle, avatarUrl, postId, location 
     <>
       <Box className={styles.card} onClick={navigateToPostDetail}>
         <Box className={styles['card__image']} boxShadow={1} borderRadius={4}>
-          <img src={imgSrc} alt={alt} loading='lazy' />
+          {type === 'video' ? (
+            <ReactPlayer height='500px' width='100%' url={videoYtbUrl} className={styles['video']} light />
+          ) : (
+            <img src={imgSrc} alt={alt} loading='lazy' />
+          )}
         </Box>
         <Box className={styles['card__footer']}>
           <Stack direction='column'>

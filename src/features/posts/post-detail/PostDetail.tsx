@@ -1,10 +1,12 @@
 import { ArrowBack, FavoriteBorder } from '@mui/icons-material';
 import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
+import ReactPlayer from 'react-player';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppMap } from '../../../solutions/components/app-map';
+import { LoadingSpinner } from '../../../solutions/components/loading-spinner';
 import { postActions, postSelectors } from '../store';
 import styles from './styles.module.scss';
 import * as utils from './utils';
@@ -38,9 +40,19 @@ const PostDetail = () => {
           {selectedPost?.title}
         </Typography>
         <Box className={styles['post-detail__image']}>
-          <img src={selectedPost?.imageUrl} alt={selectedPost?.shortTitle} />
+          {selectedPost.type === 'video' ? (
+            <ReactPlayer
+              url={selectedPost.videoYtbUrl}
+              width='100%'
+              height='100%'
+              controls={true}
+              fallback={<LoadingSpinner />}
+            />
+          ) : (
+            <img src={selectedPost?.imageUrl} alt={selectedPost?.shortTitle} />
+          )}
         </Box>
-        <Typography textAlign='justify' paddingY={2}>
+        <Typography textAlign='justify' paddingY={3}>
           {selectedPost?.description}
         </Typography>
         <Typography paddingY={2} variant='h5'>
@@ -66,9 +78,7 @@ const PostDetail = () => {
             </Box>
           </>
         )}
-        <Box paddingY={2}>
-          {/* <PostComments postId={+selectedPost?.id} /> */}
-        </Box>
+        <Box paddingY={2}>{/* <PostComments postId={+selectedPost?.id} /> */}</Box>
       </Container>
     </>
   );

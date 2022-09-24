@@ -17,6 +17,7 @@ export interface IPost {
     fullName: string;
     profilePhotoUrl: string;
   };
+  videoYtbUrl?:string;
 }
 
 export interface ITag {
