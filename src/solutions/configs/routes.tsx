@@ -12,6 +12,7 @@ const LazySignIn = lazy(() => import('./../../features/auth/sign-in').then((m) =
 const LazyPageNotFound = lazy(() =>
   import('./../../solutions/components/app-page-not-found').then((m) => ({ default: m.AppPageNotFound })),
 );
+const LazyProfile = lazy(() => import('./../../features/profile').then((m) => ({ default: m.Profile })));
 
 type Route = {
   id: string;
@@ -44,6 +45,11 @@ const routes: Route[] = [
     id: 'post-detail',
     path: '/posts/:postId',
     element: <LazyPostDetail />,
+  },
+  {
+    id: 'profile',
+    path: '/profile',
+    element: <LazyProfile />,
   },
   {
     id: 'page-not-found',

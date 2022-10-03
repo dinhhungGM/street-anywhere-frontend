@@ -1,4 +1,4 @@
-import { Add, Login, PersonAdd, PowerSettingsNew, Search } from '@mui/icons-material';
+import { Add, Login, Person, PersonAdd, PowerSettingsNew, Search } from '@mui/icons-material';
 import { Drawer, IconButton, Stack, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -60,6 +60,11 @@ const RightMenu = () => {
           </>
         ) : (
           <>
+            <Tooltip title='Profile'>
+              <IconButton size='large' onClick={() => navigate('/profile')}>
+                  <AppIcon component={Person} color='#0288d1' />
+              </IconButton>
+            </Tooltip>
             <IconButton size='large' onClick={handleSignOut}>
               <AppIcon component={PowerSettingsNew} color='#e60023' />
             </IconButton>

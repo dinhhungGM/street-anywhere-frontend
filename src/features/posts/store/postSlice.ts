@@ -6,12 +6,14 @@ export interface PostState {
   tags: ITag[];
   categories: ICategory[];
   selectedPost: IPost;
+  myPosts: IPost[];
 }
 
 const initialState: PostState = {
   tags: [],
   categories: [],
   selectedPost: null,
+  myPosts: null,
 };
 
 const postSlice = createSlice({
@@ -27,6 +29,9 @@ const postSlice = createSlice({
     });
     builder.addCase(postActionsAsync.getPostByIdAsync.fulfilled, (state, action) => {
       state.selectedPost = action.payload;
+    });
+    builder.addCase(postActionsAsync.getPostsByUserIdAsync.fulfilled, (state, action) => {
+      state.myPosts = action.payload;
     });
   },
 });

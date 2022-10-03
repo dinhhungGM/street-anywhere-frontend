@@ -2,15 +2,10 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import authService from '../../../solutions/services/authService';
 import AlertUtil from '../../../solutions/utils/alertUtil';
 import { wrapperActions } from '../../wrapper/store';
-import { ISignUpPayload, ISignInPayload } from '../../../solutions/models/authModels';
-
-export type User = {
-  username: string;
-  password: string;
-};
+import { ISignUpPayload, ISignInPayload, IUser } from '../../../solutions/models/authModels';
 
 export type AuthState = {
-  currentUser: any;
+  currentUser: IUser;
 };
 
 const initialState: AuthState = {

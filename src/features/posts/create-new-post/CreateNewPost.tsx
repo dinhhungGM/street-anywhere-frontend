@@ -39,6 +39,8 @@ const MenuProps = {
     },
   },
 };
+const ytbUrlRegex =
+  /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/;
 
 const CreateNewPost = () => {
   //#region Initialize hook
@@ -80,6 +82,7 @@ const CreateNewPost = () => {
       latitude: yup.number().required('Required'),
       file: yup.object().required('Required'),
       categories: yup.array().required('Required'),
+      ytbVideoUrl: yup.string().matches(ytbUrlRegex, 'Youtube video url invalid'),
     }),
   });
 

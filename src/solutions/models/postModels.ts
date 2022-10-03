@@ -18,6 +18,7 @@ export interface IPost {
     profilePhotoUrl: string;
   };
   videoYtbUrl?:string;
+  userId?:number;
 }
 
 export interface ITag {

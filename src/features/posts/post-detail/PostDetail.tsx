@@ -11,14 +11,18 @@ import { postActions, postSelectors } from '../store';
 import styles from './styles.module.scss';
 import * as utils from './utils';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { authSelectors } from '../../auth/store';
 
 const PostDetail = () => {
   const params = useParams();
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(postSelectors.selectSelectedPost);
+  const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (selectedPost.userId !== currentUser.id) {
+    }
     const { postId } = params;
     dispatch(postActions.getPostByIdAsync(+postId));
   }, []);

@@ -31,6 +31,14 @@ class PostService {
   deletePost = async (postId: number) => {
     return await axios.delete(`/posts/${postId}`);
   };
+
+  getPostByUserId = async (userId: number) => {
+    return await axios.get(`/posts/user/${userId}`);
+  };
+
+  addNewView = async (postId: number) => {
+    return await axios.patch(`/posts/${postId}`);
+  };
 }
 
 const postService = new PostService();
