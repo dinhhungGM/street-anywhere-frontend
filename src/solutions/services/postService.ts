@@ -36,8 +36,8 @@ class PostService {
     return await axios.get(`/posts/user/${userId}`);
   };
 
-  addNewView = async (postId: number) => {
-    return await axios.patch(`/posts/${postId}`);
+  incrementView = async (postId: number) => {
+    return await axios.patch(`/posts/addView/${postId}`);
   };
 }
 

@@ -1,31 +1,48 @@
-import { ArrowBack, FavoriteBorder } from '@mui/icons-material';
-import { Box, Button, Container, Stack, Typography } from '@mui/material';
+import { ArrowBack, Bookmark } from '@mui/icons-material';
+import { Box, Button, Container, IconButton, Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import ReactPlayer from 'react-player';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppMap } from '../../../solutions/components/app-map';
 import { LoadingSpinner } from '../../../solutions/components/loading-spinner';
+import AlertUtil from '../../../solutions/utils/alertUtil';
+import { authSelectors } from '../../auth/store';
 import { postActions, postSelectors } from '../store';
+import ICON_CONFIGS from './icon-config';
 import styles from './styles.module.scss';
 import * as utils from './utils';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { authSelectors } from '../../auth/store';
 
 const PostDetail = () => {
   const params = useParams();
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(postSelectors.selectSelectedPost);
+  const reactions = useAppSelector(postSelectors.selectReactions);
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (selectedPost.userId !== currentUser.id) {
+  const addReaction = async (reactionId: number) => {
+    const response = await dispatch(
+      postActions.addReactionAsync({
+        reactionId,
+        postId: selectedPost.id,
+        userId: +currentUser.id,
+      }),
+    );
+    if (response.meta.requestStatus === 'fulfilled') {
+      window.location.reload();
     }
+  };
+
+  useEffect(() => {
     const { postId } = params;
+    dispatch(postActions.incrementViewAsync(+postId));
     dispatch(postActions.getPostByIdAsync(+postId));
+    dispatch(postActions.getReactionsAsync());
   }, []);
+
   return (
     <>
       <Container className={styles['post-detail']}>
@@ -38,7 +55,9 @@ const PostDetail = () => {
             <Typography>{selectedPost?.user.fullName}</Typography>
           </Stack>
           <Stack alignSelf='flex-end' direction='row' spacing={2}>
-            <Button startIcon={<AppIcon component={FavoriteBorder} />}>Like</Button>
+            <IconButton size='large'>
+              <AppIcon component={Bookmark} />
+            </IconButton>
           </Stack>
         </Stack>
         <Typography variant='h2' textAlign='center'>
@@ -57,6 +76,17 @@ const PostDetail = () => {
             <LazyLoadImage alt={selectedPost?.shortTitle} src={selectedPost?.imageUrl} />
           )}
         </Box>
+        <Stack flexDirection='row' alignItems='center' justifyContent='space-between' spacing={1} marginY={3}>
+          {reactions?.map((reaction) => (
+            <Button key={reaction.id} variant='outlined' onClick={() => addReaction(+reaction.id)}>
+              {ICON_CONFIGS[reaction.reactionType.toLowerCase()]}
+              <Typography marginLeft={2}>{reaction.reactionType}</Typography>
+              {selectedPost.reactions[reaction.reactionType] && (
+                <Typography marginLeft={1}>({selectedPost.reactions[reaction.reactionType].count})</Typography>
+              )}
+            </Button>
+          ))}
+        </Stack>
         <Typography textAlign='justify' paddingY={3}>
           {selectedPost?.description}
         </Typography>

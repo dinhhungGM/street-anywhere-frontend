@@ -1,5 +1,5 @@
-import { Category, Room, Tag } from '@mui/icons-material';
-import { Box, Stack, Typography } from '@mui/material';
+import { AddReaction, Bookmarks, Category, Room, Tag, Visibility } from '@mui/icons-material';
+import { Box, Icon, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
 import { AppIcon } from '../app-icon';
@@ -18,6 +18,8 @@ type AppCardProps = {
   location?: string;
   type?: string;
   videoYtbUrl?: string;
+  isInProfilePage?: boolean;
+  views?: number;
 };
 
 const AppCard = ({
@@ -32,6 +34,8 @@ const AppCard = ({
   videoYtbUrl,
   tags,
   categories,
+  isInProfilePage,
+  views,
 }: AppCardProps) => {
   const navigate = useNavigate();
 
@@ -82,10 +86,29 @@ const AppCard = ({
                 ))}
               </Stack>
             </Box>
-            <Box className={styles['card__footer__avatar']}>
-              <img src={avatarUrl} alt='Avatar' />
-              <Typography>{author}</Typography>
-            </Box>
+            {!isInProfilePage && (
+              <Box className={styles['card__footer__avatar']}>
+                <img src={avatarUrl} alt='Avatar' />
+                <Typography>{author}</Typography>
+              </Box>
+            )}
+            <Stack flexDirection='row' alignItems='center' justifyContent='flex-end'>
+              <Box className={styles['card__footer__views']}>
+                <AppIcon component={Visibility} />
+                <Typography>{views}</Typography>
+              </Box>
+              <Box className={styles['card__footer__reactions']}>
+                <AppIcon component={AddReaction} />
+                <Typography>0</Typography>
+              </Box>
+              <Box className={styles['card__footer__bookmarks']}>
+                <Tooltip title='Bookmark'>
+                  <IconButton>
+                    <AppIcon component={Bookmarks} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Stack>
           </Stack>
         </Box>
       </Box>

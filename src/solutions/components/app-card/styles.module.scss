@@ -93,5 +93,14 @@
     &__tags {
       display: flex;
     }
+
+    &__views,
+    &__reactions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-right: 16px;
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ICategory, IPost, ITag } from '../../../solutions/models/postModels';
+import { ICategory, IPost, ITag, IReaction } from '../../../solutions/models/postModels';
 import { postActionsAsync } from './postActionsAsync';
 
 export interface PostState {
@@ -7,6 +7,7 @@ export interface PostState {
   categories: ICategory[];
   selectedPost: IPost;
   myPosts: IPost[];
+  reactions: IReaction[];
 }
 
 const initialState: PostState = {
@@ -14,6 +15,7 @@ const initialState: PostState = {
   categories: [],
   selectedPost: null,
   myPosts: null,
+  reactions: [],
 };
 
 const postSlice = createSlice({
@@ -32,6 +34,9 @@ const postSlice = createSlice({
     });
     builder.addCase(postActionsAsync.getPostsByUserIdAsync.fulfilled, (state, action) => {
       state.myPosts = action.payload;
+    });
+    builder.addCase(postActionsAsync.getReactionsAsync.fulfilled, (state, action) => {
+      state.reactions = action.payload;
     });
   },
 });

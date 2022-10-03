@@ -1,3 +1,9 @@
+export interface IReaction {
+  id?: number;
+  reactionType?: string;
+  icon?: string;
+}
+
 export interface IPost {
   id: number;
   title: string;
@@ -17,8 +23,13 @@ export interface IPost {
     fullName: string;
     profilePhotoUrl: string;
   };
-  videoYtbUrl?:string;
-  userId?:number;
+  videoYtbUrl?: string;
+  userId?: number;
+  views?: number;
+  reactions?: {
+    count?: number;
+    users?: number[];
+  };
 }
 
 export interface ITag {

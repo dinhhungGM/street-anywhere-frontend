@@ -47,6 +47,7 @@ const Gallery = () => {
                   postId={post.id}
                   type={post.type}
                   videoYtbUrl={post.videoYtbUrl}
+                  views={post.views}
                 />
               </Box>
             ))}
@@ -63,7 +64,9 @@ const Gallery = () => {
           }}
         >
           <AppIcon component={Search} fontSize={120} />
-          <Typography variant='h6' marginY={4}>No data found</Typography>
+          <Typography variant='h6' marginY={4}>
+            No data found
+          </Typography>
         </Box>
       )}
     </>

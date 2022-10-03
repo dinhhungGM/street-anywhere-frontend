@@ -1,6 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { number } from 'yup';
 import categoryService from '../../../solutions/services/categoryService';
 import postService from '../../../solutions/services/postService';
+import reactionsService from '../../../solutions/services/reactionsService';
 import tagService from '../../../solutions/services/tagService';
 import AlertUtil from '../../../solutions/utils/alertUtil';
 import { wrapperActions } from '../../wrapper/store';
@@ -72,10 +74,10 @@ export const postActionsAsync = {
       dispatch(wrapperActions.hideLoading());
     }
   }),
-  addNewViewAsync: createAsyncThunk('post/addViewAsync', async (postId: number, { dispatch }) => {
+  incrementViewAsync: createAsyncThunk('post/incrementViewAsync', async (postId: number, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      const { data } = await postService.addNewView(postId);
+      const { data } = await postService.incrementView(postId);
       return data.value;
     } catch (error) {
       dispatch(wrapperActions.hideLoading());
@@ -85,4 +87,29 @@ export const postActionsAsync = {
       dispatch(wrapperActions.hideLoading());
     }
   }),
+  getReactionsAsync: createAsyncThunk('post/getReactionsAsync', async () => {
+    try {
+      const { data } = await reactionsService.getReactions();
+      return data.value;
+    } catch (error) {
+      AlertUtil.showError(error);
+      return Promise.reject();
+    }
+  }),
+  addReactionAsync: createAsyncThunk(
+    'post/addReactionAsync',
+    async (payload: { reactionId: number; postId: number, userId: number }, { dispatch }) => {
+      try {
+        dispatch(wrapperActions.showLoading());
+        const { data } = await reactionsService.addReaction(payload);
+        return data.value;
+      } catch (error) {
+        dispatch(wrapperActions.hideLoading());
+        AlertUtil.showError(error);
+        return Promise.reject();
+      } finally {
+        dispatch(wrapperActions.hideLoading());
+      }
+    },
+  ),
 };

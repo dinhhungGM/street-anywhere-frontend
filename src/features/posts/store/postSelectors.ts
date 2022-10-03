@@ -6,3 +6,4 @@ export const selectTags = createSelector(selectPostFeature, (postState): any[] =
 export const selectCategories = createSelector(selectPostFeature, (postState): any[] => postState.categories);
 export const selectSelectedPost = createSelector(selectPostFeature, (postState) => postState.selectedPost);
 export const selectMyPosts = createSelector(selectPostFeature, (postState) => postState.myPosts);
+export const selectReactions = createSelector(selectPostFeature, (postState) => postState.reactions);
