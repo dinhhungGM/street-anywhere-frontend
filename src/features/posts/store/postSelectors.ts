@@ -7,3 +7,4 @@ export const selectCategories = createSelector(selectPostFeature, (postState): a
 export const selectSelectedPost = createSelector(selectPostFeature, (postState) => postState.selectedPost);
 export const selectMyPosts = createSelector(selectPostFeature, (postState) => postState.myPosts);
 export const selectReactions = createSelector(selectPostFeature, (postState) => postState.reactions);
+export const selectBookmark = createSelector(selectPostFeature, (postState) => postState.bookmark);

@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppMap } from '../../../solutions/components/app-map';
 import { LoadingSpinner } from '../../../solutions/components/loading-spinner';
-import AlertUtil from '../../../solutions/utils/alertUtil';
 import { authSelectors } from '../../auth/store';
 import { postActions, postSelectors } from '../store';
 import ICON_CONFIGS from './icon-config';
@@ -36,6 +35,18 @@ const PostDetail = () => {
     }
   };
 
+  const savePostToBookmark = async () => {
+    if (!currentUser) {
+      navigate('/sign-in');
+    }
+    dispatch(
+      postActions.savePostToBookmark({
+        postId: selectedPost.id,
+        userId: currentUser.id,
+      }),
+    );
+  };
+
   useEffect(() => {
     const { postId } = params;
     dispatch(postActions.incrementViewAsync(+postId));
@@ -55,7 +66,7 @@ const PostDetail = () => {
             <Typography>{selectedPost?.user.fullName}</Typography>
           </Stack>
           <Stack alignSelf='flex-end' direction='row' spacing={2}>
-            <IconButton size='large'>
+            <IconButton size='large' onClick={savePostToBookmark}>
               <AppIcon component={Bookmark} />
             </IconButton>
           </Stack>

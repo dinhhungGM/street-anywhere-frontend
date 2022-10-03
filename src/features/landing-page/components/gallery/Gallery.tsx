@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppCard } from '../../../../solutions/components/app-card';
 import { AppIcon } from '../../../../solutions/components/app-icon';
 import { landingPageActions, landingPageSelectors } from '../../store';
+import _ from 'lodash'
 
 const Gallery = () => {
   const displayPosts = useAppSelector(landingPageSelectors.selectPosts);

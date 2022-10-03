@@ -8,6 +8,7 @@ export interface PostState {
   selectedPost: IPost;
   myPosts: IPost[];
   reactions: IReaction[];
+  bookmark: { bookmarkCount?: number; posts: IPost[] };
 }
 
 const initialState: PostState = {
@@ -16,6 +17,7 @@ const initialState: PostState = {
   selectedPost: null,
   myPosts: null,
   reactions: [],
+  bookmark: null,
 };
 
 const postSlice = createSlice({
@@ -37,6 +39,9 @@ const postSlice = createSlice({
     });
     builder.addCase(postActionsAsync.getReactionsAsync.fulfilled, (state, action) => {
       state.reactions = action.payload;
+    });
+    builder.addCase(postActionsAsync.getStoredPostByUserId.fulfilled, (state, action) => {
+      state.bookmark = action.payload;
     });
   },
 });

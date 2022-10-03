@@ -20,6 +20,7 @@ type AppCardProps = {
   videoYtbUrl?: string;
   isInProfilePage?: boolean;
   views?: number;
+  reactions?:number;
 };
 
 const AppCard = ({
@@ -101,13 +102,13 @@ const AppCard = ({
                 <AppIcon component={AddReaction} />
                 <Typography>0</Typography>
               </Box>
-              <Box className={styles['card__footer__bookmarks']}>
+              {/* <Box className={styles['card__footer__bookmarks']}>
                 <Tooltip title='Bookmark'>
                   <IconButton>
                     <AppIcon component={Bookmarks} />
                   </IconButton>
                 </Tooltip>
-              </Box>
+              </Box> */}
             </Stack>
           </Stack>
         </Box>

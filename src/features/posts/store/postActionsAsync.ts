@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { number } from 'yup';
+import bookmarkService from '../../../solutions/services/bookmarkService';
 import categoryService from '../../../solutions/services/categoryService';
 import postService from '../../../solutions/services/postService';
 import reactionsService from '../../../solutions/services/reactionsService';
@@ -98,7 +99,7 @@ export const postActionsAsync = {
   }),
   addReactionAsync: createAsyncThunk(
     'post/addReactionAsync',
-    async (payload: { reactionId: number; postId: number, userId: number }, { dispatch }) => {
+    async (payload: { reactionId: number; postId: number; userId: number }, { dispatch }) => {
       try {
         dispatch(wrapperActions.showLoading());
         const { data } = await reactionsService.addReaction(payload);
@@ -112,4 +113,33 @@ export const postActionsAsync = {
       }
     },
   ),
+  savePostToBookmark: createAsyncThunk(
+    'post/savePostToBookmark',
+    async (payload: { postId: number; userId: number }, { dispatch }) => {
+      try {
+        dispatch(wrapperActions.showLoading());
+        const { data } = await bookmarkService.savePostToBookmark(payload);
+        return data.value;
+      } catch (error) {
+        dispatch(wrapperActions.hideLoading());
+        AlertUtil.showError(error);
+        return Promise.reject();
+      } finally {
+        dispatch(wrapperActions.hideLoading());
+      }
+    },
+  ),
+  getStoredPostByUserId: createAsyncThunk('post/getStoredPostByUserId', async (userId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await bookmarkService.getStoredPostByUserId(userId);
+      return data.value;
+    } catch (error) {
+      dispatch(wrapperActions.hideLoading());
+      AlertUtil.showError(error);
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  }),
 };

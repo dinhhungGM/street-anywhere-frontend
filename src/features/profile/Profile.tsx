@@ -48,7 +48,7 @@ const Profile = () => {
                     <MyPost userId={currentUser.id} />
                   </TabPanel>
                   <TabPanel value='3'>
-                    <Bookmarks />
+                    <Bookmarks userId={currentUser.id} />
                   </TabPanel>
                 </Box>
               </Grid>
