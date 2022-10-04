@@ -363,7 +363,7 @@ const CreateNewPost = () => {
             startIcon={<AppIcon component={Add} color='#fff' />}
             className={styles['btn-submit']}
           >
-            Submit
+            Create
           </Button>
         </Box>
       </Box>
