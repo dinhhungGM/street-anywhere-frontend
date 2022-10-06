@@ -1,5 +1,5 @@
-import { ArrowBack, Bookmark } from '@mui/icons-material';
-import { Box, Button, Container, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
+import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import ReactPlayer from 'react-player';
@@ -10,6 +10,7 @@ import { AppMap } from '../../../solutions/components/app-map';
 import { LoadingSpinner } from '../../../solutions/components/loading-spinner';
 import { authSelectors } from '../../auth/store';
 import { PostBookmark } from '../post-bookmark';
+import { PostComments } from '../post-comments';
 import { PostDetailTable } from '../post-detail-table';
 import { PostOwnerProfile } from '../post-owner-profile';
 import { PostReactions } from '../post-reactions';
@@ -72,7 +73,7 @@ const PostDetail = () => {
         <Box className={styles['post-detail__image']}>
           {selectedPost?.type === 'video' ? (
             <ReactPlayer
-              url={selectedPost.videoYtbUrl}
+              url={selectedPost?.videoYtbUrl}
               width='100%'
               height='100%'
               controls={true}
@@ -82,18 +83,19 @@ const PostDetail = () => {
             <LazyLoadImage alt={selectedPost?.shortTitle} src={selectedPost?.imageUrl} />
           )}
         </Box>
-        <Stack justifyContent='center' alignItems='center'>
-          <Box width='50%'>
-            <Grid container>
-              <Grid item sm={12} md={6}>
-                <PostReactions currentUserId={currentUser?.id} postId={selectedPost?.id} />
-              </Grid>
-              <Grid item sm={12} md={6}>
-                <PostBookmark />
-              </Grid>
+        <Box paddingY={2}>
+          <Grid container>
+            <Grid item sm={12} md={3}>
+              <PostReactions currentUserId={currentUser?.id} postId={selectedPost?.id} />
             </Grid>
-          </Box>
-        </Stack>
+            <Grid item sm={12} md={6}>
+              <PostComments postId={selectedPost?.id} />
+            </Grid>
+            <Grid item sm={12} md={3}>
+              <PostBookmark />
+            </Grid>
+          </Grid>
+        </Box>
         <PostDetailTable
           location={selectedPost?.location}
           longitude={selectedPost?.longitude}

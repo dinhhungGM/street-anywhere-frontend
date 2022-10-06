@@ -1,8 +1,8 @@
 import React from 'react';
 
-type PostCommentsProps = {
-  postId: number;
-};
+interface PostCommentsProps {
+  postId?: number;
+}
 
 const PostComments = ({ postId }: PostCommentsProps) => {
   return <>PostComments</>;

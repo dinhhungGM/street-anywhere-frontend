@@ -11,7 +11,7 @@ interface IPostOwnerProfileProps {
 const PostOwnerProfile = ({ userId, avatarUrl, fullName }: IPostOwnerProfileProps) => {
   return (
     <>
-      <Box>
+      <Box paddingY={2}>
         <Stack direction='row' alignItems='center' spacing={2}>
           <img src={avatarUrl} alt={fullName} className={styles.avatar} />
           <Typography>{fullName}</Typography>
