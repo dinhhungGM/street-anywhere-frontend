@@ -1,5 +1,5 @@
 import { ArrowBack, Bookmark } from '@mui/icons-material';
-import { Box, Button, Container, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import ReactPlayer from 'react-player';
@@ -9,8 +9,11 @@ import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppMap } from '../../../solutions/components/app-map';
 import { LoadingSpinner } from '../../../solutions/components/loading-spinner';
 import { authSelectors } from '../../auth/store';
+import { PostBookmark } from '../post-bookmark';
+import { PostDetailTable } from '../post-detail-table';
+import { PostOwnerProfile } from '../post-owner-profile';
+import { PostReactions } from '../post-reactions';
 import { postActions, postSelectors } from '../store';
-import ICON_CONFIGS from './icon-config';
 import styles from './styles.module.scss';
 import * as utils from './utils';
 
@@ -18,7 +21,6 @@ const PostDetail = () => {
   const params = useParams();
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(postSelectors.selectSelectedPost);
-  const reactions = useAppSelector(postSelectors.selectReactions);
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const navigate = useNavigate();
 
@@ -51,7 +53,6 @@ const PostDetail = () => {
     const { postId } = params;
     dispatch(postActions.incrementViewAsync(+postId));
     dispatch(postActions.getPostByIdAsync(+postId));
-    dispatch(postActions.getReactionsAsync());
   }, []);
 
   return (
@@ -60,17 +61,11 @@ const PostDetail = () => {
         <Button startIcon={<AppIcon component={ArrowBack} />} onClick={() => navigate('/')}>
           Home
         </Button>
-        <Stack direction='row' spacing={2} alignItems='center' justifyContent='space-between' marginY={2}>
-          <Stack direction='row' alignItems='center' spacing={2}>
-            <img src={selectedPost?.user.profilePhotoUrl} alt='Avatar User' className={styles['post-detail__avatar']} />
-            <Typography>{selectedPost?.user.fullName}</Typography>
-          </Stack>
-          <Stack alignSelf='flex-end' direction='row' spacing={2}>
-            <IconButton size='large' onClick={savePostToBookmark}>
-              <AppIcon component={Bookmark} />
-            </IconButton>
-          </Stack>
-        </Stack>
+        <PostOwnerProfile
+          userId={currentUser.id}
+          avatarUrl={currentUser.profilePhotoUrl}
+          fullName={currentUser.fullName}
+        />
         <Typography variant='h2' textAlign='center'>
           {selectedPost?.title}
         </Typography>
@@ -87,29 +82,23 @@ const PostDetail = () => {
             <LazyLoadImage alt={selectedPost?.shortTitle} src={selectedPost?.imageUrl} />
           )}
         </Box>
-        <Stack flexDirection='row' alignItems='center' justifyContent='space-between' spacing={1} marginY={3}>
-          {reactions?.map((reaction) => (
-            <Button key={reaction.id} variant='outlined' onClick={() => addReaction(+reaction.id)}>
-              {ICON_CONFIGS[reaction.reactionType.toLowerCase()]}
-              <Typography marginLeft={2}>{reaction.reactionType}</Typography>
-              {selectedPost.reactions[reaction.reactionType] && (
-                <Typography marginLeft={1}>({selectedPost.reactions[reaction.reactionType].count})</Typography>
-              )}
-            </Button>
-          ))}
+        <Stack justifyContent='center' alignItems='center'>
+          <Box width='50%'>
+            <Grid container>
+              <Grid item sm={12} md={6}>
+                <PostReactions currentUserId={currentUser?.id} postId={selectedPost?.id} />
+              </Grid>
+              <Grid item sm={12} md={6}>
+                <PostBookmark />
+              </Grid>
+            </Grid>
+          </Box>
         </Stack>
-        <Typography textAlign='justify' paddingY={3}>
-          {selectedPost?.description}
-        </Typography>
-        <Typography paddingY={2} variant='h5'>
-          Location: <span className={styles['post-detail__location']}>{selectedPost?.location}</span>
-        </Typography>
-        <Typography paddingY={2} variant='h5'>
-          Longitude: <span className={styles['post-detail__location']}>{selectedPost?.longitude}</span>
-        </Typography>
-        <Typography paddingY={2} variant='h5'>
-          Latitude: <span className={styles['post-detail__location']}>{selectedPost?.latitude}</span>
-        </Typography>
+        <PostDetailTable
+          location={selectedPost?.location}
+          longitude={selectedPost?.longitude}
+          latitude={selectedPost?.latitude}
+        />
         {utils.isExistLatAndLong(selectedPost) ? (
           <Box className={styles['post-detail__map']}>
             <AppMap
