@@ -1,7 +1,7 @@
 import { Bookmark } from '@mui/icons-material';
 import { Box, Button } from '@mui/material';
 import React from 'react';
-import { AppIcon } from '../../../solutions/components/app-icon';
+import { AppIcon } from '../../../../../solutions/components/app-icon';
 
 interface IPostBookmarkProps {
   currentUserId?:number;
