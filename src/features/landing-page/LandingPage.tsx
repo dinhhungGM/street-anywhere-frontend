@@ -1,7 +1,6 @@
 import { Box, Grid } from '@mui/material';
-import React from 'react';
 import { Categories } from './components/categories';
-import Gallery from './components/gallery/Gallery';
+import { Gallery } from './components/gallery';
 import { TagClouds } from './components/tag-clouds';
 import { TopVideos } from './components/top-videos';
 
@@ -11,7 +10,7 @@ const LandingPage = () => {
       <Box
         sx={{
           backgroundColor: '#F5F5F7',
-          paddingY: '20px'
+          paddingY: '20px',
         }}
       >
         {/* <Trending /> */}

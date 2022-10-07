@@ -1,13 +1,12 @@
 import { Search } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
 import { Box, Typography } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, memo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppCard } from '../../../../solutions/components/app-card';
 import { AppIcon } from '../../../../solutions/components/app-icon';
 import { landingPageActions, landingPageSelectors } from '../../store';
-import _ from 'lodash'
 
 const Gallery = () => {
   const displayPosts = useAppSelector(landingPageSelectors.selectPosts);
@@ -74,4 +73,4 @@ const Gallery = () => {
   );
 };
 
-export default Gallery;
+export default memo(Gallery);
