@@ -4,31 +4,23 @@ import {
   Button,
   ButtonGroup,
   ClickAwayListener,
-  Divider,
   Grow,
   MenuItem,
   MenuList,
   Paper,
   Popper,
-  Stack,
   Typography,
 } from '@mui/material';
+import _ from 'lodash';
 import { memo, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
 import { AppIcon } from '../../../../../solutions/components/app-icon';
 import { IReaction, IReactionDetails, IUserReaction } from '../../../../../solutions/models/postModels';
 import { postActions, postSelectors } from '../../../store';
 import { default as reactionIconConfigs } from './reactionIconConfigs';
-import _ from 'lodash';
-interface IPostReactionsProps {
-  currentUserId?: number;
-  postId?: number;
-}
-
 interface IReactionItemProps {
   reaction?: IReaction;
 }
-
 const ReactionItem = ({ reaction }: IReactionItemProps) => {
   return (
     <>
@@ -38,6 +30,17 @@ const ReactionItem = ({ reaction }: IReactionItemProps) => {
   );
 };
 
+interface IReactionItemCountProps {
+  reactionDetails?: IReactionDetails;
+}
+const ReactionItemCount = ({ reactionDetails }: IReactionItemCountProps) => {
+  return <>{reactionDetails?.count ? <Typography marginLeft={1}>({reactionDetails?.count})</Typography> : null}</>;
+};
+
+interface IPostReactionsProps {
+  currentUserId?: number;
+  postId?: number;
+}
 const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -47,15 +50,29 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
   const reactions = useAppSelector(postSelectors.selectReactions);
   const postReactionDetails = useAppSelector(postSelectors.selectPostReactionDetails);
 
-  const handleMenuItemClick = (event: React.MouseEvent<HTMLLIElement, MouseEvent>, index: number) => {
+  const handleMenuItemClick = async (event: React.MouseEvent<HTMLLIElement, MouseEvent>, index: number) => {
     if (index !== selectedIndex) {
+      let response;
       const reactionId = reactions[index].id;
       if (_.isNull(currentUserReaction)) {
-        addReaction(reactionId);
+        response = await dispatch(
+          postActions.addReactionAsync({
+            reactionId,
+            postId: postId,
+            userId: currentUserId,
+          }),
+        );
       } else {
-        updateReaction(reactionId);
+        response = await dispatch(
+          postActions.updateReactionByPostReactionId({
+            postReactionId: currentUserReaction.postReactionId,
+            reactionId,
+          }),
+        );
       }
-      setSelectedIndex(index);
+      if (response.meta.requestStatus === 'fulfilled') {
+        setSelectedIndex(index);
+      }
     }
     setIsOpen(false);
   };
@@ -69,25 +86,6 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
       return;
     }
     setIsOpen(false);
-  };
-
-  const addReaction = async (reactionId: number) => {
-    dispatch(
-      postActions.addReactionAsync({
-        reactionId,
-        postId: postId,
-        userId: currentUserId,
-      }),
-    );
-  };
-
-  const updateReaction = async (reactionId: number) => {
-    dispatch(
-      postActions.updateReactionByPostReactionId({
-        postReactionId: currentUserReaction.postReactionId,
-        reactionId,
-      }),
-    );
   };
 
   const setCurrentReactionOfCurrentUser = (): void => {
@@ -108,7 +106,7 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
 
   const deletePostReaction = async () => {
     if (_.isNil(currentUserReaction)) {
-      setIsOpen(!isOpen);
+      handleToggle();
       return;
     }
     const res = await dispatch(postActions.deletePostReaction(currentUserReaction.postReactionId));
@@ -131,14 +129,19 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
     <>
       <Box position='relative'>
         <ButtonGroup variant='outlined' ref={anchorRef} aria-label='split button' fullWidth size='large'>
+          <Button
+            sx={{
+              width: '30%',
+            }}
+          >
+            <Typography marginRight={1}>({postReactionDetails?.reactionCountAll})</Typography>
+            <AppIcon component={AddReaction} color='#1976d2' />
+          </Button>
           <Button onClick={deletePostReaction}>
-            {Boolean(postReactionDetails?.reactionCountAll) ? (
-              <>
-                <Typography marginRight={2}>({postReactionDetails?.reactionCountAll})</Typography>
-                <ReactionItem reaction={reactions[selectedIndex]} />
-              </>
+            {currentUserReaction ? (
+              <ReactionItem reaction={reactions[selectedIndex]} />
             ) : (
-              <Typography>Add reaction</Typography>
+              <Typography>Add your reaction</Typography>
             )}
           </Button>
           <Button
@@ -183,6 +186,9 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
                         onClick={(event) => handleMenuItemClick(event, idx)}
                       >
                         <ReactionItem reaction={reactionItem} />
+                        <ReactionItemCount
+                          reactionDetails={postReactionDetails?.reactionDetails[reactionItem.reactionType]}
+                        />
                       </MenuItem>
                     ))}
                   </MenuList>
