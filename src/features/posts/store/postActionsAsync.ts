@@ -100,15 +100,11 @@ export const postActionsAsync = {
     'post/addReactionAsync',
     async (payload: { reactionId: number; postId: number; userId: number }, { dispatch }) => {
       try {
-        dispatch(wrapperActions.showLoading());
         const { data } = await reactionsService.addReaction(payload);
         return data.value;
       } catch (error) {
-        dispatch(wrapperActions.hideLoading());
         AlertUtil.showError(error);
         return Promise.reject();
-      } finally {
-        dispatch(wrapperActions.hideLoading());
       }
     },
   ),
@@ -161,32 +157,24 @@ export const postActionsAsync = {
     'post/updateReactionByPostReactionId',
     async (payload: { postReactionId: number; reactionId: number }, { dispatch }) => {
       try {
-        dispatch(wrapperActions.showLoading());
         const { data } = await reactionsService.updateReactionByPostReactionId(
           payload.postReactionId,
           payload.reactionId,
         );
         return data.value;
       } catch (error) {
-        dispatch(wrapperActions.hideLoading());
         AlertUtil.showError(error);
         return Promise.reject();
-      } finally {
-        dispatch(wrapperActions.hideLoading());
       }
     },
   ),
   deletePostReaction: createAsyncThunk('post/deletePostReaction', async (postReactionId: number, { dispatch }) => {
     try {
-      dispatch(wrapperActions.showLoading());
       const { data } = await reactionsService.deleteReaction(postReactionId);
       return data.value;
     } catch (error) {
-      dispatch(wrapperActions.hideLoading());
       AlertUtil.showError(error);
       return Promise.reject();
-    } finally {
-      dispatch(wrapperActions.hideLoading());
     }
   }),
 };

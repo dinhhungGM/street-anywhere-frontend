@@ -4,6 +4,7 @@ import {
   Button,
   ButtonGroup,
   ClickAwayListener,
+  Divider,
   Grow,
   MenuItem,
   MenuList,
@@ -48,13 +49,13 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
 
   const handleMenuItemClick = (event: React.MouseEvent<HTMLLIElement, MouseEvent>, index: number) => {
     if (index !== selectedIndex) {
-      setSelectedIndex(index);
       const reactionId = reactions[index].id;
       if (_.isNull(currentUserReaction)) {
         addReaction(reactionId);
       } else {
         updateReaction(reactionId);
       }
+      setSelectedIndex(index);
     }
     setIsOpen(false);
   };
@@ -107,6 +108,7 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
 
   const deletePostReaction = async () => {
     if (_.isNil(currentUserReaction)) {
+      setIsOpen(!isOpen);
       return;
     }
     const res = await dispatch(postActions.deletePostReaction(currentUserReaction.postReactionId));
@@ -128,15 +130,16 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
   return (
     <>
       <Box position='relative'>
-        <Stack direction='row' justifyContent='space-between' alignItems='center'>
-          <Stack direction='row' spacing={2}>
-            <AppIcon component={AddReaction} />
-            <Typography>{postReactionDetails?.reactionCountAll || 0}</Typography>
-          </Stack>
-        </Stack>
-        <ButtonGroup variant='outlined' ref={anchorRef} aria-label='split button' fullWidth>
+        <ButtonGroup variant='outlined' ref={anchorRef} aria-label='split button' fullWidth size='large'>
           <Button onClick={deletePostReaction}>
-            <ReactionItem reaction={reactions[selectedIndex]} />
+            {Boolean(postReactionDetails?.reactionCountAll) ? (
+              <>
+                <Typography marginRight={2}>({postReactionDetails?.reactionCountAll})</Typography>
+                <ReactionItem reaction={reactions[selectedIndex]} />
+              </>
+            ) : (
+              <Typography>Add reaction</Typography>
+            )}
           </Button>
           <Button
             size='small'
