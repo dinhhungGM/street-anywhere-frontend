@@ -42,3 +42,18 @@ export interface ICategory {
   id: number;
   categoryName: string;
 }
+
+export interface IUserReaction {
+  userId?: number;
+  fullName?: string;
+  postReactionId?: number;
+}
+
+export interface IReactionDetails {
+  count?: number;
+  users?: IUserReaction[];
+}
+export interface IPostReactionDetails {
+  reactionCountAll?: number;
+  reactionDetails?: any;
+}

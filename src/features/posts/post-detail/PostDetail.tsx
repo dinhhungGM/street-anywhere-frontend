@@ -72,11 +72,7 @@ const PostDetail = () => {
         <Box paddingY={2}>
           <Grid container spacing={2}>
             <Grid item sm={12} md={3}>
-              <PostReactions
-                currentUserId={currentUser?.id}
-                postId={selectedPost?.id}
-                reactionDetails={selectedPost?.reactions}
-              />
+              <PostReactions currentUserId={currentUser?.id} postId={selectedPost?.id} />
             </Grid>
             <Grid item sm={12} md={6}>
               <PostComments postId={selectedPost?.id} />

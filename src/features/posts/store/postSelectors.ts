@@ -8,3 +8,4 @@ export const selectSelectedPost = createSelector(selectPostFeature, (postState) 
 export const selectMyPosts = createSelector(selectPostFeature, (postState) => postState.myPosts);
 export const selectReactions = createSelector(selectPostFeature, (postState) => postState.reactions);
 export const selectBookmark = createSelector(selectPostFeature, (postState) => postState.bookmark);
+export const selectPostReactionDetails = createSelector(selectPostFeature, (postState) => postState.postReactionDetails);
