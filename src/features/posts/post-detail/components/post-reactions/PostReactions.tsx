@@ -53,10 +53,9 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
       if (_.isNull(currentUserReaction)) {
         addReaction(reactionId);
       } else {
-        
+        updateReaction(reactionId);
       }
     }
-
     setIsOpen(false);
   };
 
@@ -77,6 +76,15 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
         reactionId,
         postId: postId,
         userId: currentUserId,
+      }),
+    );
+  };
+
+  const updateReaction = async (reactionId: number) => {
+    dispatch(
+      postActions.updateReactionByPostReactionId({
+        postReactionId: currentUserReaction.postReactionId,
+        reactionId,
       }),
     );
   };

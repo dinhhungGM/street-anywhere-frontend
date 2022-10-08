@@ -157,4 +157,23 @@ export const postActionsAsync = {
       }
     },
   ),
+  updateReactionByPostReactionId: createAsyncThunk(
+    'post/updateReactionByPostReactionId',
+    async (payload: { postReactionId: number; reactionId: number }, { dispatch }) => {
+      try {
+        dispatch(wrapperActions.showLoading());
+        const { data } = await reactionsService.updateReactionByPostReactionId(
+          payload.postReactionId,
+          payload.reactionId,
+        );
+        return data.value;
+      } catch (error) {
+        dispatch(wrapperActions.hideLoading());
+        AlertUtil.showError(error);
+        return Promise.reject();
+      } finally {
+        dispatch(wrapperActions.hideLoading());
+      }
+    },
+  ),
 };

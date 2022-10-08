@@ -10,6 +10,9 @@ class ReactionsService {
   getReactionDetailsByPostId = async (postId: number) => {
     return await axios.get(`/reactions/post/${postId}`);
   };
+  updateReactionByPostReactionId = async (postReactionId: number, reactionId: number) => {
+    return await axios.patch(`/reactions/${postReactionId}`, { reactionId });
+  };
 }
 
 const reactionsService = new ReactionsService();
