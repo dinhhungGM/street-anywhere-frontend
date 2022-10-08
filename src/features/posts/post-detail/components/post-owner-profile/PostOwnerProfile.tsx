@@ -1,6 +1,5 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Stack, Typography } from '@mui/material';
 import { memo } from 'react';
-import styles from './styles.module.scss';
 
 interface IPostOwnerProfileProps {
   userId?: number;
@@ -13,7 +12,7 @@ const PostOwnerProfile = ({ userId, avatarUrl, fullName }: IPostOwnerProfileProp
     <>
       <Box paddingY={2}>
         <Stack direction='row' alignItems='center' spacing={2}>
-          <img src={avatarUrl} alt={fullName} className={styles.avatar} />
+          <Avatar alt={fullName} src={avatarUrl} />
           <Typography>{fullName}</Typography>
         </Stack>
       </Box>

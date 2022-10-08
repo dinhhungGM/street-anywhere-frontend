@@ -27,6 +27,7 @@ export interface IPost {
   userId?: number;
   views?: number;
   reactions?: {
+    reactionId?: number;
     count?: number;
     users?: number[];
   };

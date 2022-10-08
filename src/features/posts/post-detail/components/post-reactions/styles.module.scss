@@ -1,0 +1,15 @@
+.custom__select {
+  div {
+    display: flex !important;
+    padding: 12px !important;
+  }
+}
+
+.clear-reaction {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+
+  display: inline-block;
+  cursor: pointer;
+}

@@ -9,12 +9,12 @@ import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppMap } from '../../../solutions/components/app-map';
 import { LoadingSpinner } from '../../../solutions/components/loading-spinner';
 import { authSelectors } from '../../auth/store';
-import { PostBookmark } from '../post-bookmark';
-import { PostComments } from '../post-comments';
-import { PostDetailTable } from '../post-detail-table';
-import { PostOwnerProfile } from '../post-owner-profile';
-import { PostReactions } from '../post-reactions';
 import { postActions, postSelectors } from '../store';
+import { PostBookmark } from './components/post-bookmark';
+import { PostComments } from './components/post-comments';
+import { PostDetailTable } from './components/post-detail-table';
+import { PostOwnerProfile } from './components/post-owner-profile';
+import { PostReactions } from './components/post-reactions';
 import styles from './styles.module.scss';
 import * as utils from './utils';
 
@@ -24,20 +24,6 @@ const PostDetail = () => {
   const selectedPost = useAppSelector(postSelectors.selectSelectedPost);
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const navigate = useNavigate();
-
-  const addReaction = async (reactionId: number) => {
-    const response = await dispatch(
-      postActions.addReactionAsync({
-        reactionId,
-        postId: selectedPost.id,
-        userId: +currentUser.id,
-      }),
-    );
-    if (response.meta.requestStatus === 'fulfilled') {
-      window.location.reload();
-    }
-  };
-
   const savePostToBookmark = async () => {
     if (!currentUser) {
       navigate('/sign-in');
@@ -84,9 +70,13 @@ const PostDetail = () => {
           )}
         </Box>
         <Box paddingY={2}>
-          <Grid container>
+          <Grid container spacing={2}>
             <Grid item sm={12} md={3}>
-              <PostReactions currentUserId={currentUser?.id} postId={selectedPost?.id} />
+              <PostReactions
+                currentUserId={currentUser?.id}
+                postId={selectedPost?.id}
+                reactionDetails={selectedPost?.reactions}
+              />
             </Grid>
             <Grid item sm={12} md={6}>
               <PostComments postId={selectedPost?.id} />

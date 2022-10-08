@@ -1,4 +1,5 @@
 import { Box, Grid } from '@mui/material';
+import { Carousel } from './components/carousel';
 import { Categories } from './components/categories';
 import { Gallery } from './components/gallery';
 import { TagClouds } from './components/tag-clouds';
@@ -13,7 +14,7 @@ const LandingPage = () => {
           paddingY: '20px',
         }}
       >
-        {/* <Trending /> */}
+        <Carousel />
         <Grid container>
           <Grid item xs={8} paddingX={2}>
             <Gallery />

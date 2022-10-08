@@ -1,5 +1,5 @@
 import { Navigation } from '@mui/icons-material';
-import { Box, Fab } from '@mui/material';
+import { Box, Fab, Tooltip } from '@mui/material';
 import { useState, useEffect, memo } from 'react';
 import { AppIcon } from '../app-icon';
 import styles from './styles.module.scss';
@@ -29,9 +29,11 @@ const AppMoveToTop = () => {
     <>
       {isShow && (
         <Box className={styles.container}>
-          <Fab color='primary' onClick={handleMoveToTop}>
-            <AppIcon component={Navigation} color='#fff' />
-          </Fab>
+          <Tooltip title='Go to top'>
+            <Fab color='primary' onClick={handleMoveToTop}>
+              <AppIcon component={Navigation} color='#fff' />
+            </Fab>
+          </Tooltip>
         </Box>
       )}
     </>

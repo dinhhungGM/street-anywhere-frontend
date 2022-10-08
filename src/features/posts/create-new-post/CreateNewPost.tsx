@@ -1,9 +1,10 @@
-import { Add, Close, Image, Map, PlayCircleFilled, Upload } from '@mui/icons-material';
+import { Close, Image, Map, PlayCircleFilled, Upload } from '@mui/icons-material';
 import {
   Box,
   Button,
   Checkbox,
   Chip,
+  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -358,10 +359,10 @@ const CreateNewPost = () => {
         <Box justifyContent='flex-end' display='flex'>
           <Button
             variant='contained'
-            color='success'
+            color='primary'
             onClick={handleCreateNewPost}
-            startIcon={<AppIcon component={Add} color='#fff' />}
             className={styles['btn-submit']}
+            size='large'
           >
             Create
           </Button>

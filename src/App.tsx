@@ -1,5 +1,7 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import './App.css';
 import { ThemeProvider } from '@emotion/react';
 import { Suspense } from 'react';
@@ -15,7 +17,7 @@ function App() {
       <ThemeProvider theme={appTheme}>
         <Wrapper>
           <Suspense fallback={<LoadingSpinner />}>
-            <Routes >
+            <Routes>
               {routes.map((route) => (
                 <Route key={route.id} path={route.path} element={route.element} />
               ))}

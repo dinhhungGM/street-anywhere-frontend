@@ -1,14 +1,23 @@
+import { Close } from '@mui/icons-material';
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { memo, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { IReaction } from '../../../solutions/models/postModels';
-import { postActions, postSelectors } from '../store';
+import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
+import { AppIcon } from '../../../../../solutions/components/app-icon';
+import { IReaction } from '../../../../../solutions/models/postModels';
+import { postActions, postSelectors } from '../../../store';
 import { default as reactionIconConfigs } from './reactionIconConfigs';
 import styles from './styles.module.scss';
 
+interface IReactionValue {
+  reactionId?: number;
+  count?: number;
+  users?: number[];
+}
+
 interface IPostReactionsProps {
-  currentUserId: number;
-  postId: number;
+  currentUserId?: number;
+  postId?: number;
+  reactionDetails?: any;
 }
 
 interface IReactionItemProps {
@@ -24,13 +33,27 @@ const ReactionItem = ({ reaction }: IReactionItemProps) => {
   );
 };
 
-const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
+const PostReactions = ({ currentUserId, postId, reactionDetails }: IPostReactionsProps) => {
   const dispatch = useAppDispatch();
   const [reactionId, setReactionId] = useState<string | null>(null);
   const reactions = useAppSelector(postSelectors.selectReactions);
 
   const handleSelectReaction = (event: SelectChangeEvent) => {
-    setReactionId(event.target.value as string);
+    setReactionId((prevReaction) => {
+      const newReaction = event.target.value as string;
+      addReaction(+newReaction);
+      return newReaction;
+    });
+  };
+
+  const addReaction = async (reactionId: number) => {
+    dispatch(
+      postActions.addReactionAsync({
+        reactionId,
+        postId: postId,
+        userId: currentUserId,
+      }),
+    );
   };
 
   useEffect(() => {
@@ -39,13 +62,12 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
 
   return (
     <>
-      <Box>
+      <Box position='relative'>
         <FormControl fullWidth>
           <InputLabel htmlFor='react'>React</InputLabel>
           <Select
             value={reactionId}
             id='react'
-            label='React'
             onChange={handleSelectReaction}
             variant='standard'
             displayEmpty
@@ -58,6 +80,9 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
             ))}
           </Select>
         </FormControl>
+        <Box position='absolute' className={styles['clear-reaction']}>
+          <AppIcon component={Close} fontSize={28} color='#e60023' />
+        </Box>
       </Box>
     </>
   );

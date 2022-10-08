@@ -1,10 +1,10 @@
-import { AddReaction, Bookmarks, Category, Room, Tag, Visibility } from '@mui/icons-material';
-import { Box, Icon, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { AddReaction, Category, Room, Tag, Visibility } from '@mui/icons-material';
+import { Box, Stack, Typography } from '@mui/material';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
 import { AppIcon } from '../app-icon';
 import styles from './styles.module.scss';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 type AppCardProps = {
   imgSrc: string;
@@ -20,7 +20,7 @@ type AppCardProps = {
   videoYtbUrl?: string;
   isInProfilePage?: boolean;
   views?: number;
-  reactions?:number;
+  reactions?: number;
 };
 
 const AppCard = ({
