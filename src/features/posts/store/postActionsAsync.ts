@@ -176,4 +176,17 @@ export const postActionsAsync = {
       }
     },
   ),
+  deletePostReaction: createAsyncThunk('post/deletePostReaction', async (postReactionId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await reactionsService.deleteReaction(postReactionId);
+      return data.value;
+    } catch (error) {
+      dispatch(wrapperActions.hideLoading());
+      AlertUtil.showError(error);
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  }),
 };

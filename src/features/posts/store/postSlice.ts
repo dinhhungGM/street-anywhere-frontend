@@ -48,6 +48,9 @@ const postSlice = createSlice({
     builder.addCase(postActionsAsync.getReactionDetailsByPostIdAsync.fulfilled, (state, action) => {
       state.postReactionDetails = action.payload;
     });
+    builder.addCase(postActionsAsync.deletePostReaction.fulfilled, (state, action) => {
+      state.postReactionDetails = null;
+    });
   },
 });
 

@@ -105,10 +105,21 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
     }
   };
 
+  const deletePostReaction = async () => {
+    if (_.isNil(currentUserReaction)) {
+      return;
+    }
+    const res = await dispatch(postActions.deletePostReaction(currentUserReaction.postReactionId));
+    if (res.meta.requestStatus === 'fulfilled') {
+      setCurrentUserReaction(null);
+      setSelectedIndex(null);
+    }
+  };
+
   useEffect(() => {
     dispatch(postActions.getReactionsAsync());
     dispatch(postActions.getReactionDetailsByPostIdAsync(postId));
-  }, []);
+  }, [selectedIndex]);
 
   useEffect(() => {
     setCurrentReactionOfCurrentUser();
@@ -124,7 +135,7 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
           </Stack>
         </Stack>
         <ButtonGroup variant='outlined' ref={anchorRef} aria-label='split button' fullWidth>
-          <Button>
+          <Button onClick={deletePostReaction}>
             <ReactionItem reaction={reactions[selectedIndex]} />
           </Button>
           <Button

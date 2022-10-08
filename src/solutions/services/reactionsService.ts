@@ -13,6 +13,9 @@ class ReactionsService {
   updateReactionByPostReactionId = async (postReactionId: number, reactionId: number) => {
     return await axios.patch(`/reactions/${postReactionId}`, { reactionId });
   };
+  deleteReaction = async (postReactionId: number) => {
+    return await axios.delete(`/reactions/${postReactionId}`);
+  };
 }
 
 const reactionsService = new ReactionsService();
