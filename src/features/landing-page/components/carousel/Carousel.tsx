@@ -1,36 +1,28 @@
 import { Box } from '@mui/material';
-import React from 'react';
 import Slider from 'react-slick';
+import styles from './styles.module.scss';
+
+const carouselImages = ['/carousel-1.jpg', '/carousel-2.jpg', '/carousel-3.jpg', '/carousel-4.jpg', '/carousel-5.jpg'];
 
 const Carousel = () => {
   const settings = {
-    dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    autoplay: true,
+    easing: 'ease',
+    lazyLoad: 'ondemand',
+    fade: true,
   };
   return (
-    <Box>
-      <Slider {...settings}>
-        <div>
-          <h3>1</h3>
-        </div>
-        <div>
-          <h3>2</h3>
-        </div>
-        <div>
-          <h3>3</h3>
-        </div>
-        <div>
-          <h3>4</h3>
-        </div>
-        <div>
-          <h3>5</h3>
-        </div>
-        <div>
-          <h3>6</h3>
-        </div>
+    <Box className={styles.container}>
+      <Slider {...settings} dots={true}>
+        {carouselImages.map((imageUrl) => (
+          <Box className={styles.carousel} key={imageUrl}>
+            <img src={imageUrl} alt='Carousel' className='lazy' />
+          </Box>
+        ))}
       </Slider>
     </Box>
   );

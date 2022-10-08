@@ -1,9 +1,11 @@
-import { AddReaction, Category, Room, Tag, Visibility } from '@mui/icons-material';
-import { Box, Stack, Typography } from '@mui/material';
+import { AddReaction, Category, Comment, Room, Tag, Visibility, Bookmark } from '@mui/icons-material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
 import { AppIcon } from '../app-icon';
+import { AppCardCategories } from './components/app-card-categories';
+import { AppCardTags } from './components/app-card-tags';
 import styles from './styles.module.scss';
 
 type AppCardProps = {
@@ -20,7 +22,10 @@ type AppCardProps = {
   videoYtbUrl?: string;
   isInProfilePage?: boolean;
   views?: number;
-  reactions?: number;
+  reactionCount?: number;
+  bookmarkCount?: number;
+  commentCount?: number;
+  createdAt?: string;
 };
 
 const AppCard = ({
@@ -37,6 +42,10 @@ const AppCard = ({
   categories,
   isInProfilePage,
   views,
+  reactionCount,
+  bookmarkCount,
+  commentCount,
+  createdAt,
 }: AppCardProps) => {
   const navigate = useNavigate();
 
@@ -61,54 +70,29 @@ const AppCard = ({
               <AppIcon component={Room} color='#e60023' />
               <span>{location}</span>
             </Typography>
-            <Box className={styles['card__footer__tags']}>
-              <Stack direction='row' spacing={1} flexWrap='wrap' marginY={1}>
-                <Typography fontWeight={700}>Tags: </Typography>
-                {tags.map((tag) => (
-                  <>
-                    <Typography key={tag} display='flex'>
-                      <AppIcon component={Tag} />
-                      <span style={{ marginLeft: '4px' }}>{tag}</span>
-                    </Typography>
-                  </>
-                ))}
-              </Stack>
-            </Box>
-            <Box className={styles['card__footer__tags']}>
-              <Stack direction='row' spacing={2} flexWrap='wrap' marginY={1}>
-                <Typography fontWeight={700}>Categories: </Typography>
-                {categories.map((category, idx) => (
-                  <>
-                    <Typography key={idx} display='flex'>
-                      <AppIcon component={Category} />
-                      <span style={{ marginLeft: '4px' }}>{category}</span>
-                    </Typography>
-                  </>
-                ))}
-              </Stack>
-            </Box>
             {!isInProfilePage && (
               <Box className={styles['card__footer__avatar']}>
                 <img src={avatarUrl} alt='Avatar' />
                 <Typography>{author}</Typography>
               </Box>
             )}
-            <Stack flexDirection='row' alignItems='center' justifyContent='flex-end'>
+            <Stack flexDirection='row' alignItems='center' justifyContent='flex-end' marginTop={2}>
               <Box className={styles['card__footer__views']}>
                 <AppIcon component={Visibility} />
                 <Typography>{views}</Typography>
               </Box>
               <Box className={styles['card__footer__reactions']}>
                 <AppIcon component={AddReaction} />
-                <Typography>0</Typography>
+                <Typography>{reactionCount}</Typography>
               </Box>
-              {/* <Box className={styles['card__footer__bookmarks']}>
-                <Tooltip title='Bookmark'>
-                  <IconButton>
-                    <AppIcon component={Bookmarks} />
-                  </IconButton>
-                </Tooltip>
-              </Box> */}
+              <Box className={styles['card__footer__reactions']}>
+                <AppIcon component={Comment} />
+                <Typography>{commentCount}</Typography>
+              </Box>
+              <Box className={styles['card__footer__reactions']}>
+                <AppIcon component={Bookmark} />
+                <Typography>{bookmarkCount}</Typography>
+              </Box>
             </Stack>
           </Stack>
         </Box>

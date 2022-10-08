@@ -14,7 +14,7 @@ const LandingPage = () => {
           paddingY: '20px',
         }}
       >
-        <Carousel />
+        {/* <Carousel /> */}
         <Grid container>
           <Grid item xs={8} paddingX={2}>
             <Gallery />

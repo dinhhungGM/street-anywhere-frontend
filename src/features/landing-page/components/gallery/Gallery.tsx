@@ -33,21 +33,25 @@ const Gallery = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
-                key={post.id}
+                key={post?.id}
               >
                 <AppCard
-                  imgSrc={post.imageUrl}
-                  alt={post.shortTitle}
-                  author={post.user.fullName}
-                  avatarUrl={post.user.profilePhotoUrl}
-                  tags={post.tags}
-                  categories={post.categories}
-                  shortTitle={post.shortTitle}
-                  location={post.location}
-                  postId={post.id}
-                  type={post.type}
-                  videoYtbUrl={post.videoYtbUrl}
-                  views={post.views}
+                  imgSrc={post?.imageUrl}
+                  alt={post?.shortTitle}
+                  author={post?.user.fullName}
+                  avatarUrl={post?.user.profilePhotoUrl}
+                  tags={post?.tags}
+                  categories={post?.categories}
+                  shortTitle={post?.shortTitle}
+                  location={post?.location}
+                  postId={post?.id}
+                  type={post?.type}
+                  videoYtbUrl={post?.videoYtbUrl}
+                  views={post?.views}
+                  reactionCount={post?.reactionCount}
+                  bookmarkCount={post?.bookmarkCount}
+                  commentCount={post?.commentCount}
+                  createdAt={post?.createdAt}
                 />
               </Box>
             ))}

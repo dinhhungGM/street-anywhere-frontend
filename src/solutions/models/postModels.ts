@@ -26,11 +26,9 @@ export interface IPost {
   videoYtbUrl?: string;
   userId?: number;
   views?: number;
-  reactions?: {
-    reactionId?: number;
-    count?: number;
-    users?: number[];
-  };
+  reactionCount?: number;
+  bookmarkCount?: number;
+  commentCount?: number;
 }
 
 export interface ITag {
