@@ -144,19 +144,21 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
               <Typography>Add your reaction</Typography>
             )}
           </Button>
-          <Button
-            size='small'
-            aria-controls={isOpen ? 'split-button-menu' : undefined}
-            aria-expanded={isOpen ? 'true' : undefined}
-            aria-label='select merge strategy'
-            aria-haspopup='menu'
-            onClick={handleToggle}
-            sx={{
-              width: '20%',
-            }}
-          >
-            <AppIcon component={ArrowDropDown} color='#1976d2' />
-          </Button>
+          {currentUserReaction && (
+            <Button
+              size='small'
+              aria-controls={isOpen ? 'split-button-menu' : undefined}
+              aria-expanded={isOpen ? 'true' : undefined}
+              aria-label='select merge strategy'
+              aria-haspopup='menu'
+              onClick={handleToggle}
+              sx={{
+                width: '20%',
+              }}
+            >
+              <AppIcon component={ArrowDropDown} color='#1976d2' />
+            </Button>
+          )}
         </ButtonGroup>
         <Popper
           sx={{

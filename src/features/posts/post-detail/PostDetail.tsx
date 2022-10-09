@@ -96,7 +96,6 @@ const PostDetail = () => {
             </Box>
           </>
         )}
-        <Box paddingY={2}>{/* <PostComments postId={+selectedPost?.id} /> */}</Box>
       </Container>
     </>
   );
