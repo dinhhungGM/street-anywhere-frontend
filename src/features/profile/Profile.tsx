@@ -45,10 +45,10 @@ const Profile = () => {
                     <UserInformationForm currentUser={currentUser} />
                   </TabPanel>
                   <TabPanel value='2'>
-                    <MyPost userId={currentUser.id} />
+                    <MyPost userId={currentUser?.id} />
                   </TabPanel>
                   <TabPanel value='3'>
-                    <Bookmarks userId={currentUser.id} />
+                    <Bookmarks userId={currentUser?.id} />
                   </TabPanel>
                 </Box>
               </Grid>

@@ -48,7 +48,7 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
   const dispatch = useAppDispatch();
   const anchorRef = useRef<HTMLDivElement>(null);
   const reactions = useAppSelector(postSelectors.selectReactions);
-  const postReactionDetails = useAppSelector(postSelectors.selectPostReactionDetails);
+  const postReactionDetails = useAppSelector(postSelectors.selectPostReactionDetails); // select
 
   const handleMenuItemClick = async (event: React.MouseEvent<HTMLLIElement, MouseEvent>, index: number) => {
     if (index !== selectedIndex) {
