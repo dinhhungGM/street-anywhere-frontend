@@ -13,6 +13,10 @@ const LazyPageNotFound = lazy(() =>
   import('./../../solutions/components/app-page-not-found').then((m) => ({ default: m.AppPageNotFound })),
 );
 const LazyProfile = lazy(() => import('./../../features/profile').then((m) => ({ default: m.Profile })));
+const LazyShorts = lazy(() => import('./../../features/shorts').then((m) => ({ default: m.Shorts })));
+const LazyReactions = lazy(() => import('./../../features/reactions').then((m) => ({ default: m.Reactions })));
+const LazyHots = lazy(() => import('./../../features/hots').then((m) => ({ default: m.Hots })));
+const LazyExplore = lazy(() => import('./../../features/explore').then((m) => ({ default: m.Explore })));
 
 type Route = {
   id: string;
@@ -47,9 +51,24 @@ const routes: Route[] = [
     element: <LazyPostDetail />,
   },
   {
-    id: 'profile',
-    path: '/profile',
-    element: <LazyProfile />,
+    id: 'shorts',
+    path: '/shorts',
+    element: <LazyShorts />,
+  },
+  {
+    id: 'reactions',
+    path: '/reactions',
+    element: <LazyReactions />,
+  },
+  {
+    id: 'hots',
+    path: '/hots',
+    element: <LazyHots />,
+  },
+  {
+    id: 'explore',
+    path: '/explore',
+    element: <LazyExplore />,
   },
   {
     id: 'page-not-found',

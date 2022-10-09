@@ -1,6 +1,7 @@
 import { AddReaction, Explore, Home, KeyboardArrowDown, MovieCreation, Whatshot } from '@mui/icons-material';
 import { Box, IconButton, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AppIcon } from '../../../../solutions/components/app-icon';
 import { SubMiddleMenu } from '../sub-middle-menu';
 import styles from './styles.module.scss';
@@ -8,6 +9,7 @@ import styles from './styles.module.scss';
 const MiddleMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const isSubMenuOpen = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const showSubMiddleMenu = (event: React.MouseEvent<HTMLButtonElement>): void => {
     setAnchorEl(event.currentTarget);
@@ -18,7 +20,7 @@ const MiddleMenu = () => {
       <Box>
         <List className={styles.menu}>
           {configs.map((config) => (
-            <ListItemButton key={config.id} className={styles.menu__item}>
+            <ListItemButton key={config.id} className={styles.menu__item} onClick={() => navigate(config.path)}>
               <ListItemIcon>{config.icon}</ListItemIcon>
               <ListItemText>{config.title}</ListItemText>
             </ListItemButton>
@@ -42,26 +44,31 @@ const configs = [
     id: 'home_tab',
     title: 'Home',
     icon: <AppIcon component={Home} color='#44ff00' />,
+    path: '/',
   },
   {
     id: 'shorts_tab',
     title: 'Shorts',
     icon: <AppIcon component={MovieCreation} />,
+    path: '/shorts',
   },
   {
     id: 'reactions',
     title: 'Reactions',
     icon: <AppIcon component={AddReaction} color='#fbe44b' />,
+    path: '/reactions',
   },
   {
     id: 'hot_tab',
     title: 'Hot!',
     icon: <AppIcon component={Whatshot} color='#ff5b00' />,
+    path: '/hots',
   },
   {
     id: 'explore',
     title: 'Explore',
     icon: <AppIcon component={Explore} color='#0288d1' />,
+    path: '/explore',
   },
 ];
 

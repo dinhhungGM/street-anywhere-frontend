@@ -41,6 +41,7 @@ const PostBookmark = ({ currentUserId, postId }: IPostBookmarkProps) => {
 
   useEffect(() => {
     const bookmark = _.find(bookmarkDetails?.bookmarkDetails, (detail) => detail?.userId === currentUserId);
+    console.log('Bookmark', bookmark);
     setCurrentBookmark(bookmark);
   }, [bookmarkDetails]);
 
@@ -49,9 +50,9 @@ const PostBookmark = ({ currentUserId, postId }: IPostBookmarkProps) => {
       <Box>
         <Button
           fullWidth
-          startIcon={<AppIcon component={Bookmark} color={currentBookmark ? '#fff' : '#9c27b0'} />}
+          startIcon={<AppIcon component={Bookmark} color={!!currentBookmark ? '#fff' : '#9c27b0'} />}
           size='large'
-          variant={currentBookmark ? 'contained' : 'outlined'}
+          variant={!!currentBookmark ? 'contained' : 'outlined'}
           color='secondary'
           onClick={savePostToBookmark}
         >
