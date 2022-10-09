@@ -1,5 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ICategory, IPost, ITag, IReaction, IPostReactionDetails } from '../../../solutions/models/postModels';
+import {
+  ICategory,
+  IPost,
+  ITag,
+  IReaction,
+  IPostReactionDetails,
+  IBookmarkDetail,
+} from '../../../solutions/models/postModels';
 import { postActionsAsync } from './postActionsAsync';
 
 export interface PostState {
@@ -10,6 +17,7 @@ export interface PostState {
   reactions: IReaction[];
   bookmark: { bookmarkCount?: number; posts: IPost[] };
   postReactionDetails: IPostReactionDetails;
+  bookmarkDetails: { bookmarkCount?: number; bookmarkDetails?: IBookmarkDetail[] };
 }
 
 const initialState: PostState = {
@@ -20,6 +28,7 @@ const initialState: PostState = {
   reactions: [],
   bookmark: null,
   postReactionDetails: null,
+  bookmarkDetails: null,
 };
 
 const postSlice = createSlice({
@@ -50,6 +59,9 @@ const postSlice = createSlice({
     });
     builder.addCase(postActionsAsync.deletePostReaction.fulfilled, (state, action) => {
       state.postReactionDetails = null;
+    });
+    builder.addCase(postActionsAsync.getBookmarkDetailsByPostId.fulfilled, (state, action) => {
+      state.bookmarkDetails = action.payload;
     });
   },
 });

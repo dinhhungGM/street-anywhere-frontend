@@ -55,3 +55,8 @@ export interface IPostReactionDetails {
   reactionCountAll?: number;
   reactionDetails?: any;
 }
+
+export interface IBookmarkDetail {
+  bookmarkId?: number;
+  userId?: number;
+}

@@ -24,17 +24,6 @@ const PostDetail = () => {
   const selectedPost = useAppSelector(postSelectors.selectSelectedPost);
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const navigate = useNavigate();
-  const savePostToBookmark = async () => {
-    if (!currentUser) {
-      navigate('/sign-in');
-    }
-    dispatch(
-      postActions.savePostToBookmark({
-        postId: selectedPost.id,
-        userId: currentUser.id,
-      }),
-    );
-  };
 
   useEffect(() => {
     const { postId } = params;
@@ -78,7 +67,7 @@ const PostDetail = () => {
               <PostComments postId={selectedPost?.id} />
             </Grid>
             <Grid item sm={12} md={3}>
-              <PostBookmark />
+              <PostBookmark currentUserId={currentUser?.id} postId={selectedPost?.id} />
             </Grid>
           </Grid>
         </Box>

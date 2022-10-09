@@ -168,9 +168,27 @@ export const postActionsAsync = {
       }
     },
   ),
-  deletePostReaction: createAsyncThunk('post/deletePostReaction', async (postReactionId: number, { dispatch }) => {
+  deletePostReaction: createAsyncThunk('post/deletePostReaction', async (postReactionId: number) => {
     try {
       const { data } = await reactionsService.deleteReaction(postReactionId);
+      return data.value;
+    } catch (error) {
+      AlertUtil.showError(error);
+      return Promise.reject();
+    }
+  }),
+  getBookmarkDetailsByPostId: createAsyncThunk('post/getBookmarkDetailsByPostId', async (postId: number) => {
+    try {
+      const { data } = await bookmarkService.getBookmarkDetailsByPostId(postId);
+      return data.value;
+    } catch (error) {
+      AlertUtil.showError(error);
+      return Promise.reject();
+    }
+  }),
+  deleteBookmark: createAsyncThunk('post/deleteBookmark', async (bookmarkId: number) => {
+    try {
+      const { data } = await bookmarkService.deleteBookmark(bookmarkId);
       return data.value;
     } catch (error) {
       AlertUtil.showError(error);
