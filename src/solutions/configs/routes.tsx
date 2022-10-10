@@ -51,6 +51,11 @@ const routes: Route[] = [
     element: <LazyPostDetail />,
   },
   {
+    id: 'profile',
+    path: '/profile',
+    element: <LazyProfile />,
+  },
+  {
     id: 'shorts',
     path: '/shorts',
     element: <LazyShorts />,
