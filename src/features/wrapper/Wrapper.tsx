@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { AppMoveToTop } from '../../solutions/components/app-move-to-top';
+import { AppNotification } from '../../solutions/components/app-notification';
 import { LoadingSpinner } from '../../solutions/components/loading-spinner';
 import { Header } from '../header';
 
@@ -14,6 +15,7 @@ const Wrapper = ({ children }: WrapperProps) => {
       {children}
       <LoadingSpinner />
       <AppMoveToTop />
+      <AppNotification />
     </>
   );
 };

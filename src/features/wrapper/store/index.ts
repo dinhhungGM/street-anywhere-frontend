@@ -1,3 +1,5 @@
 import wrapperSlice from './wrapperSlice';
+import * as wrapperSelectors from './wrapperSelectors';
 
-export const { actions: wrapperActions, reducer: wrapperReducer } = wrapperSlice;
+const { actions: wrapperActions, reducer: wrapperReducer } = wrapperSlice;
+export { wrapperActions, wrapperReducer, wrapperSelectors };

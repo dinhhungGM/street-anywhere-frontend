@@ -1,10 +1,15 @@
 import { Action, combineReducers, configureStore, ThunkAction } from '@reduxjs/toolkit';
-import { authReducer } from '../features/auth/store';
-import { landingPageReducer } from '../features/landing-page/store';
-import { postReducer } from '../features/posts/store';
-import { wrapperReducer } from '../features/wrapper/store';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { authReducer } from '../features/auth/store';
+import { bookmarksReducer } from '../features/bookmarks/store/index';
+import { categoriesReducer } from '../features/categories/store';
+import { landingPageReducer } from '../features/landing-page/store';
+import { postReducer } from '../features/posts/store';
+import { profileReducer } from '../features/profile/store/index';
+import { reactionsReducer } from '../features/reactions/store';
+import { tagsReducer } from '../features/tags/store';
+import { wrapperReducer } from '../features/wrapper/store';
 
 const persistConfig = {
   key: 'root',
@@ -15,6 +20,11 @@ const rootReducer = combineReducers({
   auth: authReducer,
   post: postReducer,
   landingPage: landingPageReducer,
+  profile: profileReducer,
+  bookmarks: bookmarksReducer,
+  reactions: reactionsReducer,
+  categories: categoriesReducer,
+  tags: tagsReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
