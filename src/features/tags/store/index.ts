@@ -1,10 +1,10 @@
 import tagsSlice from './tagsSlice';
-import * as TagModels from './tagModels';
-import * as TagSelectors from './tagsSelectors';
+import * as tagModels from './tagModels';
+import * as tagSelectors from './tagsSelectors';
 
 const tagsReducer = tagsSlice.reducer;
 const tagsActions = {
   ...tagsSlice.actions,
 };
 
-export { tagsReducer, tagsActions, TagModels, TagSelectors };
+export { tagsReducer, tagsActions, tagModels, tagSelectors };
