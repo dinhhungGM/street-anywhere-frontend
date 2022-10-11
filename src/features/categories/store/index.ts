@@ -1,9 +1,10 @@
 import categoriesSlice from './categoriesSlice';
-import * as categoriesSelectors from './categoriesSelectors';
+import * as CategoriesSelectors from './categoriesSelectors';
+import * as CategoriesModels from './categoriesModels';
 
 const categoriesReducer = categoriesSlice.reducer;
 const categoriesActions = {
   ...categoriesSlice.actions,
 };
 
-export { categoriesReducer, categoriesActions, categoriesSelectors };
+export { categoriesReducer, categoriesActions, CategoriesSelectors, CategoriesModels };
