@@ -1,6 +1,6 @@
-import { ArrowBack } from '@mui/icons-material';
+import { ArrowBack, Comment } from '@mui/icons-material';
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import ReactPlayer from 'react-player';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -24,6 +24,7 @@ const PostDetail = () => {
   const selectedPost = useAppSelector(postSelectors.selectSelectedPost);
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const navigate = useNavigate();
+  const [isOpenComment, setIsOpenComment] = useState(false);
 
   useEffect(() => {
     const { postId } = params;
@@ -64,13 +65,22 @@ const PostDetail = () => {
               <PostReactions currentUserId={currentUser?.id} postId={selectedPost?.id} />
             </Grid>
             <Grid item sm={12} md={6}>
-              <PostComments postId={selectedPost?.id} />
+              <Button
+                fullWidth
+                size='large'
+                variant='contained'
+                startIcon={<AppIcon icon={Comment} color='#fff' />}
+                onClick={() => setIsOpenComment(!isOpenComment)}
+              >
+                Comment
+              </Button>
             </Grid>
             <Grid item sm={12} md={3}>
               <PostBookmark currentUserId={currentUser?.id} postId={selectedPost?.id} />
             </Grid>
           </Grid>
         </Box>
+        {isOpenComment && <PostComments postId={selectedPost?.id} currentUserId={currentUser?.id} />}
         <PostDetailTable
           location={selectedPost?.location}
           longitude={selectedPost?.longitude}

@@ -9,7 +9,7 @@ import {
   MenuList,
   Paper,
   Popper,
-  Typography,
+  Typography
 } from '@mui/material';
 import _ from 'lodash';
 import { memo, useEffect, useRef, useState } from 'react';

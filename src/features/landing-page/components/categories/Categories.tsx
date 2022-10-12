@@ -50,7 +50,7 @@ const Categories = () => {
                 className={cx(styles.category, checkIsActive(category.id) && styles.active)}
                 onClick={() => filterPostByCategory(category.id.toString())}
               >
-                <ListItemIcon>{Icons[category.categoryName.toLowerCase()]}</ListItemIcon>
+                <ListItemIcon>{Icons[category.categoryName]}</ListItemIcon>
                 <ListItemText>{category.categoryName}</ListItemText>
               </ListItem>
             ))}
