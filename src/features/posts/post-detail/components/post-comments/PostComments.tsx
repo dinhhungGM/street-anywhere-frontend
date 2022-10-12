@@ -3,7 +3,6 @@ import {
   Avatar,
   Box,
   Button,
-  Chip,
   Divider,
   FormControl,
   IconButton,
@@ -19,6 +18,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
 import { AppIcon } from '../../../../../solutions/components/app-icon';
 import { commentsActions, commentsSelectors } from '../../../../comments/store';
 import styles from './styles.module.scss';
+import SweetAlert from 'sweetalert2';
 
 interface PostCommentsProps {
   postId?: number;
@@ -33,19 +33,73 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
       content: '',
     },
     onSubmit: (values, { resetForm }) => {
-      dispatch(
-        commentsActions.addComment({
-          postId,
-          userId: currentUserId,
-          content: values.content,
-        }),
-      );
-      resetForm();
+      if (values.content.trim().length > 300) {
+        SweetAlert.fire({
+          title: 'Warning',
+          icon: 'warning',
+          text: 'The content of comment can not be more than 300 characters',
+        });
+      } else {
+        dispatch(
+          commentsActions.addComment({
+            postId,
+            userId: currentUserId,
+            content: values.content.trim(),
+          }),
+        );
+        resetForm();
+      }
     },
     validationSchema: yup.object({
-      content: yup.string().required('Please enter your comment to continue'),
+      content: yup.string().required('Please enter your comment to continue').trim(),
     }),
   });
+  const deleteComment = (commentId): void => {
+    SweetAlert.fire({
+      title: 'Confirm',
+      icon: 'question',
+      text: 'Are you sure to delete your comment?',
+      showCancelButton: true,
+    }).then((status) => {
+      if (status.isConfirmed) {
+        dispatch(
+          commentsActions.deleteCommentById({
+            commentId,
+            postId,
+          }),
+        );
+      }
+    });
+  };
+  const updateCommentByCommentId = async (commentId: number, content: string) => {
+    const { value: newContent } = await SweetAlert.fire({
+      input: 'textarea',
+      inputLabel: 'Enter your comment',
+      inputPlaceholder: 'Your comment...',
+      inputAttributes: {
+        'aria-label': 'Your comment',
+      },
+      showCancelButton: true,
+      inputValue: content,
+      inputValidator: (value) => {
+        if (!value.trim()) {
+          return 'Please enter your comment to continue';
+        }
+        if (value.trim().length > 300) {
+          return 'The comment can not be more than 300 characters';
+        }
+      },
+    });
+    if (newContent && newContent.trim() !== content) {
+      dispatch(
+        commentsActions.updateCommentByCommentId({
+          commentId,
+          content: newContent,
+          postId,
+        }),
+      );
+    }
+  };
   useEffect(() => {
     dispatch(commentsActions.getCommentListByPostId(postId));
   }, []);
@@ -87,10 +141,14 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
                             </Typography>
                             {currentUserId === comment?.userId && (
                               <>
-                                <IconButton color='info' size='small'>
+                                <IconButton
+                                  color='info'
+                                  size='small'
+                                  onClick={() => updateCommentByCommentId(comment?.id, comment?.content)}
+                                >
                                   <AppIcon icon={Edit} color='#0288d1' />
                                 </IconButton>
-                                <IconButton color='error' size='small'>
+                                <IconButton color='error' size='small' onClick={() => deleteComment(comment?.id)}>
                                   <AppIcon icon={Delete} color='#e60023' />
                                 </IconButton>
                               </>

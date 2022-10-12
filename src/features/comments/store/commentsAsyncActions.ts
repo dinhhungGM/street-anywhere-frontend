@@ -46,3 +46,59 @@ export const addComment = createAsyncThunk('comments/addComment', async (payload
     dispatch(wrapperActions.hideLoading());
   }
 });
+interface IDeleteCommentByIdPayload {
+  commentId: number;
+  postId: number;
+}
+export const deleteCommentById = createAsyncThunk(
+  'comments/deleteCommentById',
+  async (payload: IDeleteCommentByIdPayload, { dispatch }) => {
+    try {
+      await axios.delete(`/comments/${payload.commentId}`);
+      dispatch(getCommentListByPostId(payload.postId));
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.toString(),
+        }),
+      );
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+interface IUpdateCommentPayload {
+  commentId: number;
+  content: string;
+  postId: number;
+}
+export const updateCommentByCommentId = createAsyncThunk(
+  'comments/updateCommentByCommentId',
+  async (payload: IUpdateCommentPayload, { dispatch }) => {
+    try {
+      await axios.patch(
+        `/comments/${payload.commentId}`,
+        {
+          commentId: payload.commentId,
+          content: payload.content,
+        },
+        {
+          headers: {
+            'content-type': 'application/json',
+          },
+        },
+      );
+      dispatch(getCommentListByPostId(payload.postId));
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.toString(),
+        }),
+      );
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
