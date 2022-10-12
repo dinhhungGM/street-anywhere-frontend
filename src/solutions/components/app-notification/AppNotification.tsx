@@ -1,13 +1,17 @@
 import React, { useEffect } from 'react';
 import SweetAlert from 'sweetalert2';
-import { useAppSelector } from '../../../app/hooks';
-import { wrapperSelectors } from '../../../features/wrapper/store';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { wrapperActions, wrapperSelectors } from '../../../features/wrapper/store';
 
 const AppNotification = () => {
   const isShowNotification = useAppSelector(wrapperSelectors.selectIsShowNotification);
   const info = useAppSelector(wrapperSelectors.selectNotificationInfo);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
+    const hideNotification = (): void => {
+      dispatch(wrapperActions.hideNotification());
+    };
     if (isShowNotification) {
       switch (info.typeOfNotification) {
         case 'success': {
@@ -15,7 +19,7 @@ const AppNotification = () => {
             title: 'Success',
             icon: 'success',
             text: info.message,
-          });
+          }).then(hideNotification);
           break;
         }
         case 'error': {
@@ -23,12 +27,12 @@ const AppNotification = () => {
             title: 'Error',
             icon: 'error',
             text: info.message,
-          });
+          }).then(hideNotification);
           break;
         }
       }
     }
-  }, [isShowNotification]);
+  }, []);
   return <></>;
 };
 

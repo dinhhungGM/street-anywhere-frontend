@@ -10,7 +10,7 @@ interface PostCommentsProps {
 const PostComments = ({ postId }: PostCommentsProps) => {
   return (
     <>
-      <Button fullWidth size='large' variant='contained' startIcon={<AppIcon component={Comment} color='#fff' />}>
+      <Button fullWidth size='large' variant='contained' startIcon={<AppIcon icon={Comment} color='#fff' />}>
         Comment
       </Button>
     </>

@@ -1,11 +1,10 @@
-import { AddReaction, Category, Comment, Room, Tag, Visibility, Bookmark } from '@mui/icons-material';
-import { Box, Divider, Stack, Typography } from '@mui/material';
+import { AddReaction, Bookmark, Comment, Visibility } from '@mui/icons-material';
+import { Box, Stack, Typography } from '@mui/material';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
 import { AppIcon } from '../app-icon';
-import { AppCardCategories } from './components/app-card-categories';
-import { AppCardTags } from './components/app-card-tags';
+import { Icons } from '../icons';
 import styles from './styles.module.scss';
 
 type AppCardProps = {
@@ -67,7 +66,7 @@ const AppCard = ({
           <Stack direction='column'>
             <h3 className={styles['card__footer__caption']}>{shortTitle}</h3>
             <Typography justifyItems='center' justifyContent='flex-start' display='flex' marginY={1}>
-              <AppIcon component={Room} color='#e60023' />
+              {Icons.Location}
               <span>{location}</span>
             </Typography>
             {!isInProfilePage && (
@@ -78,19 +77,19 @@ const AppCard = ({
             )}
             <Stack flexDirection='row' alignItems='center' justifyContent='flex-end' marginTop={2}>
               <Box className={styles['card__footer__views']}>
-                <AppIcon component={Visibility} />
+                <AppIcon icon={Visibility} />
                 <Typography>{views}</Typography>
               </Box>
               <Box className={styles['card__footer__reactions']}>
-                <AppIcon component={AddReaction} />
+                <AppIcon icon={AddReaction} />
                 <Typography>{reactionCount}</Typography>
               </Box>
               <Box className={styles['card__footer__reactions']}>
-                <AppIcon component={Comment} />
+                <AppIcon icon={Comment} />
                 <Typography>{commentCount}</Typography>
               </Box>
               <Box className={styles['card__footer__reactions']}>
-                <AppIcon component={Bookmark} />
+                <AppIcon icon={Bookmark} />
                 <Typography>{bookmarkCount}</Typography>
               </Box>
             </Stack>

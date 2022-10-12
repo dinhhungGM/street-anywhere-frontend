@@ -53,7 +53,7 @@ const SignIn = () => {
             <AppFormInput type='password' label='Password' form={form} formControlName='password' />
           </Box>
           <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%' paddingY={1}>
-            <AppIcon component={PersonAdd} />
+            <AppIcon icon={PersonAdd} />
             <NavLink to='/sign-up'>Create new account</NavLink>
           </Stack>
           <Box className={styles['form-group']}>

@@ -49,7 +49,7 @@ const FeatureMenu = ({ isOpen, onClose, anchorEl }: IFunctionsMenuProps) => {
         {configs.map((config, idx) => (
           <NavLink key={config.id} to='/create-new-post'>
             <MenuItem onClick={onClose} className={styles['menu__item']}>
-              <AppIcon component={config.icon} color={config.color} />
+              <AppIcon icon={config.icon} color={config.color} />
               <span className={styles['menu__item__title']}>{config.title}</span>
             </MenuItem>
           </NavLink>

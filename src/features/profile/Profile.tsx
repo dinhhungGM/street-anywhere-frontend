@@ -34,9 +34,9 @@ const Profile = () => {
             <Grid container>
               <Grid item md={3}>
                 <TabList onChange={handleTabChange} aria-label='lab API tabs example' orientation='vertical'>
-                  <Tab icon={<AppIcon component={PermContactCalendar} />} label='Profile' value='1' />
-                  <Tab icon={<AppIcon component={ContentPaste} />} label='My Post' value='2' />
-                  <Tab icon={<AppIcon component={Bookmark} />} label='Bookmark' value='3' />
+                  <Tab icon={<AppIcon icon={PermContactCalendar} />} label='Profile' value='1' />
+                  <Tab icon={<AppIcon icon={ContentPaste} />} label='My Post' value='2' />
+                  <Tab icon={<AppIcon icon={Bookmark} />} label='Bookmark' value='3' />
                 </TabList>
               </Grid>
               <Grid item md={9}>

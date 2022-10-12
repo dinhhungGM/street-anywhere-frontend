@@ -66,57 +66,57 @@ const configs = [
   {
     id: 'art',
     title: 'Art',
-    icon: <AppIcon component={ColorLens} color='#747df6' />,
+    icon: <AppIcon icon={ColorLens} color='#747df6' />,
   },
   {
     id: 'entertainment',
     title: 'Entertainment',
-    icon: <AppIcon component={CameraIndoor} color='#9391fd' />,
+    icon: <AppIcon icon={CameraIndoor} color='#9391fd' />,
   },
   {
     id: 'game',
     title: 'Game',
-    icon: <AppIcon component={VideogameAsset} color='#44ff00' />,
+    icon: <AppIcon icon={VideogameAsset} color='#44ff00' />,
   },
   {
     id: 'History',
     title: 'History',
-    icon: <AppIcon component={Museum} color='#eab171' />,
+    icon: <AppIcon icon={Museum} color='#eab171' />,
   },
   {
     id: 'Help',
     title: 'Help',
-    icon: <AppIcon component={Help} color='#fbe44b' />,
+    icon: <AppIcon icon={Help} color='#fbe44b' />,
   },
   {
     id: 'internet',
     title: 'Internet',
-    icon: <AppIcon component={Public} color='#9391fd' />,
+    icon: <AppIcon icon={Public} color='#9391fd' />,
   },
   {
     id: 'Music',
     title: 'Music',
-    icon: <AppIcon component={Headphones} color='#44ff00' />,
+    icon: <AppIcon icon={Headphones} color='#44ff00' />,
   },
   {
     id: 'Nature',
     title: 'Nature',
-    icon: <AppIcon component={Park} color='#44ff00' />,
+    icon: <AppIcon icon={Park} color='#44ff00' />,
   },
   {
     id: 'Sports',
     title: 'Sports',
-    icon: <AppIcon component={SportsSoccer} color='#f92bfd' />,
+    icon: <AppIcon icon={SportsSoccer} color='#f92bfd' />,
   },
   {
     id: 'Technology',
     title: 'Technology',
-    icon: <AppIcon component={Memory} color='#1d1d1f' />,
+    icon: <AppIcon icon={Memory} color='#1d1d1f' />,
   },
   {
     id: 'Travel',
     title: 'Travel',
-    icon: <AppIcon component={Map} color='#e60023' />,
+    icon: <AppIcon icon={Map} color='#e60023' />,
   },
 ];
 

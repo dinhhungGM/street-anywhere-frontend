@@ -64,7 +64,7 @@ const AppMap = ({
       >
         {marker && (
           <Marker anchor='left' latitude={marker.latitude} longitude={marker.longitude}>
-            <AppIcon component={Room} color='#e60023' fontSize={32} />
+            <AppIcon icon={Room} color='#e60023' fontSize={32} />
           </Marker>
         )}
         {!isReadonly && (

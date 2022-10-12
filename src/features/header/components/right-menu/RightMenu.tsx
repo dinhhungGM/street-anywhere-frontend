@@ -30,7 +30,7 @@ const RightMenu = () => {
       <Stack spacing={2} alignItems='center' direction='row'>
         <Tooltip title='Search'>
           <IconButton size='large' color='warning' onClick={() => setIsOpenSearchBox(true)}>
-            <AppIcon component={Search} color='#747df6' />
+            <AppIcon icon={Search} color='#747df6' />
           </IconButton>
         </Tooltip>
         <Tooltip title='Features'>
@@ -42,19 +42,19 @@ const RightMenu = () => {
             aria-controls={isOpenFeatureMenu ? 'basic-menu' : undefined}
             onClick={showFeatureMenu}
           >
-            <AppIcon component={Add} color='#44ff00' />
+            <AppIcon icon={Add} color='#44ff00' />
           </IconButton>
         </Tooltip>
         {!currentUser ? (
           <>
             <Tooltip title='Sign in' onClick={() => navigate('/sign-in')}>
               <IconButton size='large'>
-                <AppIcon component={Login} />
+                <AppIcon icon={Login} />
               </IconButton>
             </Tooltip>
             <Tooltip title='Sign up' onClick={() => navigate('/sign-up')}>
               <IconButton size='large'>
-                <AppIcon component={PersonAdd} />
+                <AppIcon icon={PersonAdd} />
               </IconButton>
             </Tooltip>
           </>
@@ -62,11 +62,11 @@ const RightMenu = () => {
           <>
             <Tooltip title='Profile'>
               <IconButton size='large' onClick={() => navigate('/profile')}>
-                  <AppIcon component={Person} color='#0288d1' />
+                <AppIcon icon={Person} color='#0288d1' />
               </IconButton>
             </Tooltip>
             <IconButton size='large' onClick={handleSignOut}>
-              <AppIcon component={PowerSettingsNew} color='#e60023' />
+              <AppIcon icon={PowerSettingsNew} color='#e60023' />
             </IconButton>
           </>
         )}

@@ -2,11 +2,11 @@ import { Menu } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack } from '@mui/material';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import Icon from '../../../../solutions/components/app-icon/AppIcon';
+import { AppIcon } from '../../../../solutions/components/app-icon';
 import { SubLeftMenu } from '../sub-left-menu';
 import styles from './styles.module.scss';
 
-const HamburgerIcon = () => <Icon component={Menu} color='#0288d1' />;
+const HamburgerIcon = () => <AppIcon icon={Menu} color='#0288d1' />;
 
 const LeftMenu = () => {
   const [isShowSubLeftMenu, setIsShowSubLeftMenu] = useState(false);

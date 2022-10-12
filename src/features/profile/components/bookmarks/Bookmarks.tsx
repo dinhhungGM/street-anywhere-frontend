@@ -63,7 +63,7 @@ const Bookmarks = ({ userId }: IBookmarkProps) => {
             </Masonry>
           ) : (
             <Box className={styles['no-data']}>
-              <AppIcon component={Search} fontSize={120} />
+              <AppIcon icon={Search} fontSize={120} />
               <Typography variant='h6' marginY={4}>
                 No data found
               </Typography>

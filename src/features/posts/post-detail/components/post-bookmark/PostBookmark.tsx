@@ -50,7 +50,7 @@ const PostBookmark = ({ currentUserId, postId }: IPostBookmarkProps) => {
       <Box>
         <Button
           fullWidth
-          startIcon={<AppIcon component={Bookmark} color={!!currentBookmark ? '#fff' : '#9c27b0'} />}
+          startIcon={<AppIcon icon={Bookmark} color={!!currentBookmark ? '#fff' : '#9c27b0'} />}
           size='large'
           variant={!!currentBookmark ? 'contained' : 'outlined'}
           color='secondary'

@@ -43,31 +43,31 @@ const configs = [
   {
     id: 'home_tab',
     title: 'Home',
-    icon: <AppIcon component={Home} color='#44ff00' />,
+    icon: <AppIcon icon={Home} color='#44ff00' />,
     path: '/',
   },
   {
     id: 'shorts_tab',
     title: 'Shorts',
-    icon: <AppIcon component={MovieCreation} />,
+    icon: <AppIcon icon={MovieCreation} />,
     path: '/shorts',
   },
   {
     id: 'reactions',
     title: 'Reactions',
-    icon: <AppIcon component={AddReaction} color='#fbe44b' />,
+    icon: <AppIcon icon={AddReaction} color='#fbe44b' />,
     path: '/reactions',
   },
   {
     id: 'hot_tab',
     title: 'Hot!',
-    icon: <AppIcon component={Whatshot} color='#ff5b00' />,
+    icon: <AppIcon icon={Whatshot} color='#ff5b00' />,
     path: '/hots',
   },
   {
     id: 'explore',
     title: 'Explore',
-    icon: <AppIcon component={Explore} color='#0288d1' />,
+    icon: <AppIcon icon={Explore} color='#0288d1' />,
     path: '/explore',
   },
 ];

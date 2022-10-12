@@ -16,7 +16,7 @@ const AppCardTags = ({ tags }: IAppCardTagsProps) => {
           paddingBottom: '8px',
         }}
       >
-        <AppIcon component={Tag}></AppIcon>
+        <AppIcon icon={Tag}></AppIcon>
         <Typography fontWeight={700}>Tags: </Typography>
         <Stack direction='row' spacing={1} marginLeft={1} flexWrap='wrap'>
           {tags.map((tag) => (

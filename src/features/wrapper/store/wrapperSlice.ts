@@ -1,12 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export interface IWrapperState {
+interface INotification {
+  typeOfNotification: 'info' | 'success' | 'error' | 'warning' | 'confirm' | null;
+  message: string;
+}
+interface IWrapperState {
   isLoading: boolean;
   isShowNotification: boolean;
-  notificationInfo: {
-    typeOfNotification: 'info' | 'success' | 'error' | 'warning' | 'confirm' | null;
-    message: string;
-  };
+  notificationInfo: INotification;
+}
+
+interface IShowOrHideNotificationAction {
+  type: string;
+  payload: INotification;
 }
 
 const initialState: IWrapperState = {
@@ -25,8 +31,9 @@ const wrapperSlice = createSlice({
     hideLoading: (state) => {
       state.isLoading = false;
     },
-    showNotification: (state) => {
+    showNotification: (state, action: IShowOrHideNotificationAction) => {
       state.isShowNotification = true;
+      state.notificationInfo = action.payload;
     },
     hideNotification: (state) => {
       state.isShowNotification = false;

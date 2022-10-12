@@ -284,7 +284,7 @@ const CreateNewPost = () => {
               >
                 <Button
                   variant='contained'
-                  startIcon={<AppIcon component={Map} color='#fff' />}
+                  startIcon={<AppIcon icon={Map} color='#fff' />}
                   onClick={() => setIsOpenMap(true)}
                   className={styles['btn-select-map']}
                 >
@@ -309,13 +309,13 @@ const CreateNewPost = () => {
                 color='primary'
               >
                 <ToggleButton value='image' aria-label='image'>
-                  <AppIcon component={Image} color='#9391fd' />
+                  <AppIcon icon={Image} color='#9391fd' />
                   <Typography marginLeft={2} textTransform='capitalize'>
                     Image
                   </Typography>
                 </ToggleButton>
                 <ToggleButton value='video' aria-label='video'>
-                  <AppIcon component={PlayCircleFilled} color='#e60023' />
+                  <AppIcon icon={PlayCircleFilled} color='#e60023' />
                   <Typography marginLeft={2} textTransform='capitalize'>
                     Video
                   </Typography>
@@ -326,11 +326,7 @@ const CreateNewPost = () => {
               {typeUpload === 'image' && (
                 <>
                   {!selectedFile ? (
-                    <Button
-                      variant='contained'
-                      component='label'
-                      startIcon={<AppIcon component={Upload} color='#fff' />}
-                    >
+                    <Button variant='contained' component='label' startIcon={<AppIcon icon={Upload} color='#fff' />}>
                       Upload
                       <input hidden accept='image/*' type='file' onChange={handleFileChanges} />
                     </Button>
@@ -339,7 +335,7 @@ const CreateNewPost = () => {
                       <Stack spacing={2} direction='row' alignItems='center'>
                         <Typography>{selectedFile.name}</Typography>
                         <Button
-                          startIcon={<AppIcon component={Close} color='#e60023' />}
+                          startIcon={<AppIcon icon={Close} color='#e60023' />}
                           color='error'
                           onClick={handleCancelFile}
                         >

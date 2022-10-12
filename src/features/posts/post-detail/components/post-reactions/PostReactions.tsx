@@ -135,7 +135,7 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
             }}
           >
             <Typography marginRight={1}>({postReactionDetails?.reactionCountAll})</Typography>
-            <AppIcon component={AddReaction} color='#1976d2' />
+            <AppIcon icon={AddReaction} color='#1976d2' />
           </Button>
           <Button onClick={deletePostReaction}>
             {currentUserReaction ? (
@@ -156,7 +156,7 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
                 width: '20%',
               }}
             >
-              <AppIcon component={ArrowDropDown} color='#1976d2' />
+              <AppIcon icon={ArrowDropDown} color='#1976d2' />
             </Button>
           )}
         </ButtonGroup>

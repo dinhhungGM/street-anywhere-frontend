@@ -1,13 +1,13 @@
 import { SvgIcon } from '@mui/material';
 
 type IconProps = {
-  component: any;
+  icon: any;
   fontSize?: number;
   color?: string;
 };
 
-const AppIcon = ({ component, fontSize = 22, color = '#84849d' }: IconProps) => {
-  return <SvgIcon component={component} inheritViewBox sx={{ fontSize, color }} />;
+const AppIcon = ({ icon, fontSize = 22, color = '#84849d' }: IconProps) => {
+  return <SvgIcon component={icon} inheritViewBox sx={{ fontSize, color }} />;
 };
 
 export default AppIcon;

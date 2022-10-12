@@ -3,12 +3,12 @@ import cx from 'classnames';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
-import { landingPageActions, landingPageSelectors } from '../../store';
+import { tagsActions, tagSelectors } from '../../../tags/store';
 import styles from './styles.module.scss';
 
 const TagClouds = () => {
   const dispatch = useAppDispatch();
-  const displayCategories = useAppSelector(landingPageSelectors.selectTags);
+  const categoryList = useAppSelector(tagSelectors.selectTagList);
   const [queryParams, setQueryParams] = useSearchParams();
   const [toggle, setToggle] = useState(false);
 
@@ -28,7 +28,7 @@ const TagClouds = () => {
   };
 
   useEffect(() => {
-    dispatch(landingPageActions.getAllTagsAsync(null));
+    dispatch(tagsActions.getTagList());
   }, []);
 
   return (
@@ -50,7 +50,7 @@ const TagClouds = () => {
           alignContent='flex-start'
           marginTop={3}
         >
-          {displayCategories?.map((tag) => (
+          {categoryList?.map((tag) => (
             <Chip
               label={tag.tagName}
               key={tag.id}

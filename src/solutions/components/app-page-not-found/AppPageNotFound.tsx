@@ -19,7 +19,7 @@ const AppPageNotFound = () => {
           Looks like you came to wrong page on our server
         </Typography>
         <img src='/pagenotfound.jpg' alt='page-not-found' height='500' width='500' />
-        <Button startIcon={<AppIcon component={ArrowBack} color='#0288d1' />} onClick={handleNavigateToHome}>
+        <Button startIcon={<AppIcon icon={ArrowBack} color='#0288d1' />} onClick={handleNavigateToHome}>
           Back to home
         </Button>
       </Box>

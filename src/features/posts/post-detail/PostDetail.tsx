@@ -34,7 +34,7 @@ const PostDetail = () => {
   return (
     <>
       <Container className={styles['post-detail']}>
-        <Button startIcon={<AppIcon component={ArrowBack} />} onClick={() => navigate('/')}>
+        <Button startIcon={<AppIcon icon={ArrowBack} />} onClick={() => navigate('/')}>
           Home
         </Button>
         <PostOwnerProfile
