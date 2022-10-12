@@ -8,17 +8,18 @@ import {
   IconButton,
   List,
   ListItem,
+  Pagination,
   Stack,
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
+import SweetAlert from 'sweetalert2';
 import * as yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
 import { AppIcon } from '../../../../../solutions/components/app-icon';
 import { commentsActions, commentsSelectors } from '../../../../comments/store';
 import styles from './styles.module.scss';
-import SweetAlert from 'sweetalert2';
 
 interface PostCommentsProps {
   postId?: number;
@@ -28,6 +29,8 @@ interface PostCommentsProps {
 const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
   const dispatch = useAppDispatch();
   const commentList = useAppSelector(commentsSelectors.selectCommentList);
+  const commentCount = useAppSelector(commentsSelectors.selectCommentCount);
+  const commentRef = useRef(null);
   const form = useFormik({
     initialValues: {
       content: '',
@@ -45,6 +48,7 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
             postId,
             userId: currentUserId,
             content: values.content.trim(),
+            currentPage: pageNumber,
           }),
         );
         resetForm();
@@ -54,6 +58,7 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
       content: yup.string().required('Please enter your comment to continue').trim(),
     }),
   });
+  const [pageNumber, setPageNumber] = useState(1);
   const deleteComment = (commentId): void => {
     SweetAlert.fire({
       title: 'Confirm',
@@ -66,6 +71,7 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
           commentsActions.deleteCommentById({
             commentId,
             postId,
+            currentPage: pageNumber,
           }),
         );
       }
@@ -96,16 +102,39 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
           commentId,
           content: newContent,
           postId,
+          currentPage: pageNumber,
         }),
       );
     }
   };
+  const handleChangePage = (_, page): void => {
+    setPageNumber(page);
+  };
+
+  const scrollToCommentBox = (): void => {
+    commentRef && commentRef.current.scrollIntoView();
+  };
+  const pageCount = useMemo(() => {
+    const PAGE_SIZE = 6;
+    return Math.ceil(commentCount / PAGE_SIZE);
+  }, [commentCount]);
+
   useEffect(() => {
-    dispatch(commentsActions.getCommentListByPostId(postId));
-  }, []);
+    if (!commentList.length && pageCount > 0) {
+      setPageNumber(pageNumber - 1);
+    }
+  }, [commentList.length]);
+
+  useEffect(() => {
+    dispatch(commentsActions.getCommentListByPostId({ postId, page: pageNumber }));
+    setTimeout(() => {
+      scrollToCommentBox();
+    }, 100);
+  }, [pageNumber]);
+
   return (
     <>
-      <Box>
+      <Box ref={commentRef}>
         <Box>
           <form onSubmit={form.handleSubmit}>
             <FormControl fullWidth>
@@ -124,48 +153,56 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
           </form>
         </Box>
         <Box>
-          <Typography variant='h4'>Comments</Typography>
+          <Typography variant='h4'>Comments {commentCount ? `(${commentCount})` : null}</Typography>
           <Divider></Divider>
-          {commentList.length && (
+          {commentCount ? (
             <>
               <List>
-                {commentList.map((comment) => (
-                  <ListItem key={comment.id} className={styles.comment}>
-                    <Stack direction='row' alignItems='center' justifyContent='flex-start' spacing={2}>
-                      <Avatar alt={comment?.user?.fullName} src={comment?.user?.profilePhotoUrl} />
-                      <Box className={styles.content}>
-                        <Stack direction='row' alignItems='center' justifyContent='space-between'>
-                          <Stack direction='row' alignItems='center' justifyContent='flex-start' spacing={2}>
-                            <Typography fontWeight={600} fontSize={16}>
-                              {comment?.user?.fullName}
+                {commentList.length &&
+                  commentList.map((comment) => (
+                    <ListItem key={comment.id} className={styles.comment}>
+                      <Stack direction='row' alignItems='center' justifyContent='flex-start' spacing={2}>
+                        <Avatar alt={comment?.user?.fullName} src={comment?.user?.profilePhotoUrl} />
+                        <Box className={styles.content}>
+                          <Stack direction='row' alignItems='center' justifyContent='space-between'>
+                            <Stack direction='row' alignItems='center' justifyContent='flex-start' spacing={2}>
+                              <Typography fontWeight={600} fontSize={16}>
+                                {comment?.user?.fullName}
+                              </Typography>
+                              {currentUserId === comment?.userId && (
+                                <>
+                                  <IconButton
+                                    color='info'
+                                    size='small'
+                                    onClick={() => updateCommentByCommentId(comment?.id, comment?.content)}
+                                  >
+                                    <AppIcon icon={Edit} color='#0288d1' />
+                                  </IconButton>
+                                  <IconButton color='error' size='small' onClick={() => deleteComment(comment?.id)}>
+                                    <AppIcon icon={Delete} color='#e60023' />
+                                  </IconButton>
+                                </>
+                              )}
+                            </Stack>
+                            <Typography fontSize={12} className={styles.date} fontStyle='italic'>
+                              {comment?.isUpdated
+                                ? `(Modified) ${new Date(comment?.updatedAt).toLocaleString()}`
+                                : new Date(comment?.createdAt).toLocaleString()}
                             </Typography>
-                            {currentUserId === comment?.userId && (
-                              <>
-                                <IconButton
-                                  color='info'
-                                  size='small'
-                                  onClick={() => updateCommentByCommentId(comment?.id, comment?.content)}
-                                >
-                                  <AppIcon icon={Edit} color='#0288d1' />
-                                </IconButton>
-                                <IconButton color='error' size='small' onClick={() => deleteComment(comment?.id)}>
-                                  <AppIcon icon={Delete} color='#e60023' />
-                                </IconButton>
-                              </>
-                            )}
                           </Stack>
-                          <Typography fontSize={12} className={styles.date}>
-                            {new Date(comment?.createdAt).toLocaleString()}
-                          </Typography>
-                        </Stack>
-                        <Typography marginTop={1}>{comment?.content}</Typography>
-                      </Box>
-                    </Stack>
-                  </ListItem>
-                ))}
+                          <Typography marginTop={1}>{comment?.content}</Typography>
+                        </Box>
+                      </Stack>
+                    </ListItem>
+                  ))}
               </List>
             </>
-          )}
+          ) : null}
+          {pageCount ? (
+            <Stack justifyContent='center' alignItems='center'>
+              <Pagination count={pageCount} color='primary' page={pageNumber} onChange={handleChangePage} />
+            </Stack>
+          ) : null}
         </Box>
       </Box>
     </>

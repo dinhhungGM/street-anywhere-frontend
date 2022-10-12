@@ -2,12 +2,18 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { wrapperActions } from '../../wrapper/store';
 import { default as axios } from './../../../solutions/services/axios';
 
+interface IGetCommentListByPostId {
+  postId: number;
+  page?: number;
+}
 export const getCommentListByPostId = createAsyncThunk(
   'comments/getCommentListByPostId',
-  async (postId: number, { dispatch }) => {
+  async (params: IGetCommentListByPostId, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      const { data } = await axios.get(`/comments/post/${postId}`);
+      const baseUrl = `/comments/post/${params.postId}`;
+      const queryString = params.page !== undefined ? `${baseUrl}?page=${params.page}` : `${baseUrl}`;
+      const { data } = await axios.get(queryString);
       return data.value;
     } catch (error) {
       dispatch(
@@ -26,6 +32,7 @@ interface IAddCommentPayload {
   postId: number;
   userId: number;
   content: string;
+  currentPage?: number;
 }
 export const addComment = createAsyncThunk('comments/addComment', async (payload: IAddCommentPayload, { dispatch }) => {
   try {
@@ -34,7 +41,7 @@ export const addComment = createAsyncThunk('comments/addComment', async (payload
         'content-type': 'application/json',
       },
     });
-    dispatch(getCommentListByPostId(payload.postId));
+    dispatch(getCommentListByPostId({ postId: payload.postId, page: payload.currentPage }));
   } catch (error) {
     dispatch(
       wrapperActions.showNotification({
@@ -49,13 +56,14 @@ export const addComment = createAsyncThunk('comments/addComment', async (payload
 interface IDeleteCommentByIdPayload {
   commentId: number;
   postId: number;
+  currentPage?: number;
 }
 export const deleteCommentById = createAsyncThunk(
   'comments/deleteCommentById',
   async (payload: IDeleteCommentByIdPayload, { dispatch }) => {
     try {
       await axios.delete(`/comments/${payload.commentId}`);
-      dispatch(getCommentListByPostId(payload.postId));
+      dispatch(getCommentListByPostId({ postId: payload.postId, page: payload.currentPage }));
     } catch (error) {
       dispatch(
         wrapperActions.showNotification({
@@ -72,6 +80,7 @@ interface IUpdateCommentPayload {
   commentId: number;
   content: string;
   postId: number;
+  currentPage?: number;
 }
 export const updateCommentByCommentId = createAsyncThunk(
   'comments/updateCommentByCommentId',
@@ -89,7 +98,7 @@ export const updateCommentByCommentId = createAsyncThunk(
           },
         },
       );
-      dispatch(getCommentListByPostId(payload.postId));
+      dispatch(getCommentListByPostId({ postId: payload.postId, page: payload.currentPage }));
     } catch (error) {
       dispatch(
         wrapperActions.showNotification({

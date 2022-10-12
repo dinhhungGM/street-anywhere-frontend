@@ -4,6 +4,7 @@ export interface IComment {
   postId: number;
   userId: number;
   createdAt: string;
+  updatedAt: string;
   user: {
     fullName: string;
     id: number;
@@ -12,4 +13,5 @@ export interface IComment {
     firstName: string;
     lastName: string;
   };
+  isUpdated: boolean;
 }

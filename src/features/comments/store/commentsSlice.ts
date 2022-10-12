@@ -3,10 +3,12 @@ import { createSlice } from '@reduxjs/toolkit';
 import * as commentsAsyncActions from './commentsAsyncActions';
 
 interface ICommentsState {
+  commentCount: number;
   commentList: IComment[];
 }
 
 const initialState: ICommentsState = {
+  commentCount: 0,
   commentList: [],
 };
 
@@ -16,7 +18,8 @@ const commentsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(commentsAsyncActions.getCommentListByPostId.fulfilled, (state, action) => {
-      state.commentList = action.payload;
+      state.commentCount = action.payload.commentCount;
+      state.commentList = action.payload.commentList;
     });
   },
 });
