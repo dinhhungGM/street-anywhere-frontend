@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import { authReducer } from '../features/auth/store';
 import { bookmarksReducer } from '../features/bookmarks/store/index';
 import { categoriesReducer } from '../features/categories/store';
+import { commentsReducer } from '../features/comments/store';
 import { landingPageReducer } from '../features/landing-page/store';
 import { postReducer } from '../features/posts/store';
 import { profileReducer } from '../features/profile/store/index';
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   reactions: reactionsReducer,
   categories: categoriesReducer,
   tags: tagsReducer,
+  comments: commentsReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
