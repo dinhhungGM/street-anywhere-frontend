@@ -9,7 +9,7 @@ import {
   MenuList,
   Paper,
   Popper,
-  Typography
+  Typography,
 } from '@mui/material';
 import _ from 'lodash';
 import { memo, useEffect, useRef, useState } from 'react';
@@ -51,7 +51,7 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
   const reactions = useAppSelector(reactionsSelectors.selectReactionList);
   const postReactionDetails = useAppSelector(postSelectors.selectPostReactionDetails); // select
 
-  const handleMenuItemClick = async (_, index: number) => {
+  const handleMenuItemClick = async (e, index: number) => {
     if (index !== selectedIndex) {
       let response;
       const reactionId = reactions[index].id;
