@@ -2,6 +2,8 @@ import { Box, Button, Divider, TextField, Typography } from '@mui/material';
 import cx from 'classnames';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
+import * as yup from 'yup';
+import { useAppDispatch } from '../../../../app/hooks';
 import { IUser } from '../../../../solutions/models/authModels';
 import AlertUtil from '../../../../solutions/utils/alertUtil';
 import styles from './styles.module.scss';
@@ -13,6 +15,7 @@ interface IUserInformationFormProps {
 
 const UserInformationForm = ({ currentUser }: IUserInformationFormProps) => {
   const [uploadFile, setUploadFile] = useState(null);
+  const dispatch = useAppDispatch();
 
   const form = useFormik({
     initialValues: {
@@ -22,7 +25,14 @@ const UserInformationForm = ({ currentUser }: IUserInformationFormProps) => {
       password: '',
       passwordConfirm: '',
     },
-    onSubmit: (_) => {},
+    onSubmit: (values) => {},
+    validationSchema: yup.object({
+      firstName: yup.string().trim().required('Required'),
+      lastName: yup.string().trim().required('Required'),
+      bio: yup.string().trim(),
+      password: yup.string().trim().required('Required'),
+      passwordConfirm: yup.string().trim(),
+    }),
   });
   //#region Initialize form
   useEffect(() => {
@@ -50,9 +60,11 @@ const UserInformationForm = ({ currentUser }: IUserInformationFormProps) => {
   return (
     <>
       <Box className={styles.form}>
-        <Typography variant='h3' marginY={2}>Profile</Typography>
+        <Typography variant='h3' marginY={2}>
+          Profile
+        </Typography>
         <Divider />
-        <form>
+        <form onSubmit={form.handleSubmit}>
           <Box className={cx(styles.form__group, styles['form__group--avatar'])}>
             <img src={currentUser?.profilePhotoUrl} alt={currentUser?.fullName} />
             {!uploadFile ? (
@@ -115,7 +127,9 @@ const UserInformationForm = ({ currentUser }: IUserInformationFormProps) => {
             />
           </Box>
           <Box className={styles.form__group}>
-            <Button variant='contained'>Submit</Button>
+            <Button type='submit' variant='contained' disabled={!(form.isValid && form.dirty)}>
+              Update
+            </Button>
           </Box>
         </form>
       </Box>

@@ -28,7 +28,9 @@ const PostDetail = () => {
 
   useEffect(() => {
     const { postId } = params;
-    dispatch(postActions.incrementViewAsync(+postId));
+    if (selectedPost?.userId !== currentUser?.id) {
+      dispatch(postActions.incrementViewAsync(+postId));
+    }
     dispatch(postActions.getPostByIdAsync(+postId));
   }, []);
 

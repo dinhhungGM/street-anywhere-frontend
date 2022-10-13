@@ -24,6 +24,7 @@
     "mapbox-gl": "^2.10.0",
     "node-sass": "^7.0.3",
     "react": "^18.2.0",
+    "react-carousel-minimal": "^1.4.1",
     "react-dom": "^18.2.0",
     "react-google-login": "^5.2.2",
     "react-lazy-load-image-component": "^1.5.5",
@@ -35,7 +36,6 @@
     "react-scripts": "5.0.1",
     "redux-persist": "^6.0.0",
     "sweetalert2": "^11.4.32",
-    "swiper": "^8.4.3",
     "typescript": "^4.8.3",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"

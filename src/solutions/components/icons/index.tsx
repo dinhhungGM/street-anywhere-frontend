@@ -17,7 +17,7 @@ export const Icons = {
   Entertainment: <AppIcon icon={CameraIndoor} color='#9391fd' />,
   Games: <AppIcon icon={VideogameAsset} color='#44ff00' />,
   History: <AppIcon icon={Museum} color='#eab171' />,
-  'How To': <AppIcon icon={Help} color='#fbe44b' />,
+  'How to': <AppIcon icon={Help} color='#fbe44b' />,
   Internet: <AppIcon icon={Public} color='#9391fd' />,
   Music: <AppIcon icon={Headphones} color='#44ff00' />,
   Nature: <AppIcon icon={Park} color='#44ff00' />,

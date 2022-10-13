@@ -1,4 +1,4 @@
-import { Add, Login, Person, PersonAdd, PowerSettingsNew, Search } from '@mui/icons-material';
+import { Add, AdminPanelSettings, Login, Person, PersonAdd, PowerSettingsNew, Search } from '@mui/icons-material';
 import { Drawer, IconButton, Stack, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -65,6 +65,13 @@ const RightMenu = () => {
                 <AppIcon icon={Person} color='#0288d1' />
               </IconButton>
             </Tooltip>
+            {currentUser?.isAdmin ? (
+              <Tooltip title='Admin Dashboard'>
+                <IconButton size='large' onClick={() => navigate('/admin-dashboard')}>
+                    <AppIcon icon={AdminPanelSettings} color='#ff5b00' />
+                </IconButton>
+              </Tooltip>
+            ) : null}
             <IconButton size='large' onClick={handleSignOut}>
               <AppIcon icon={PowerSettingsNew} color='#e60023' />
             </IconButton>

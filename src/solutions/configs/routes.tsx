@@ -17,6 +17,9 @@ const LazyShorts = lazy(() => import('./../../features/shorts').then((m) => ({ d
 const LazyReactions = lazy(() => import('./../../features/reactions').then((m) => ({ default: m.Reactions })));
 const LazyHots = lazy(() => import('./../../features/hots').then((m) => ({ default: m.Hots })));
 const LazyExplore = lazy(() => import('./../../features/explore').then((m) => ({ default: m.Explore })));
+const LazyAdminDashboard = lazy(() =>
+  import('./../../features/admin-dashboard').then((m) => ({ default: m.AdminDashboard })),
+);
 
 type Route = {
   id: string;
@@ -74,6 +77,11 @@ const routes: Route[] = [
     id: 'explore',
     path: '/explore',
     element: <LazyExplore />,
+  },
+  {
+    id: 'admin-dashboard',
+    path: '/admin-dashboard',
+    element: <LazyAdminDashboard />,
   },
   {
     id: 'page-not-found',

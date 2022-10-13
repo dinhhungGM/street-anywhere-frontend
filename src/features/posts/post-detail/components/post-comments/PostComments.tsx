@@ -10,10 +10,10 @@ import {
   ListItem,
   Pagination,
   Stack,
-  Typography,
+  Typography
 } from '@mui/material';
 import { useFormik } from 'formik';
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import SweetAlert from 'sweetalert2';
 import * as yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
@@ -198,7 +198,7 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
               </List>
             </>
           ) : null}
-          {pageCount ? (
+          {pageCount > 1 ? (
             <Stack justifyContent='center' alignItems='center'>
               <Pagination count={pageCount} color='primary' page={pageNumber} onChange={handleChangePage} />
             </Stack>

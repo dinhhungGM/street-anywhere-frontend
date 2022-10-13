@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppCard } from '../../../../solutions/components/app-card';
 import { AppIcon } from '../../../../solutions/components/app-icon';
-import { postActions, postSelectors } from '../../../posts/store';
+import { profileActions, profileSelectors } from '../../store';
 import styles from './styles.module.scss';
 
 interface IMyPostProps {
@@ -13,12 +13,13 @@ interface IMyPostProps {
 }
 
 const MyPost = ({ userId }: IMyPostProps) => {
-  const myPosts = useAppSelector(postSelectors.selectMyPosts);
+  const myPosts = useAppSelector(profileSelectors.selectMyPosts);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(postActions.getPostsByUserIdAsync(userId));
+    dispatch(profileActions.getMyPost(userId));
   }, []);
+  
   return (
     <>
       <Box>
@@ -52,6 +53,9 @@ const MyPost = ({ userId }: IMyPostProps) => {
                       videoYtbUrl={post.videoYtbUrl}
                       isInProfilePage={true}
                       views={post.views}
+                      reactionCount={post.reactionCount}
+                      commentCount={post.commentCount}
+                      bookmarkCount={post.bookmarkCount}
                     />
                   </Box>
                 ))}
