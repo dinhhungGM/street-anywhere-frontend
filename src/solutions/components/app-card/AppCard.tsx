@@ -88,10 +88,12 @@ const AppCard = ({
                 <AppIcon icon={Comment} />
                 <Typography>{commentCount}</Typography>
               </Box>
-              <Box className={styles['card__footer__reactions']}>
-                <AppIcon icon={Bookmark} />
-                <Typography>{bookmarkCount}</Typography>
-              </Box>
+              {!isInProfilePage && (
+                <Box className={styles['card__footer__reactions']}>
+                  <AppIcon icon={Bookmark} />
+                  <Typography>{bookmarkCount}</Typography>
+                </Box>
+              )}
             </Stack>
           </Stack>
         </Box>

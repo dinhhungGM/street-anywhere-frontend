@@ -57,6 +57,8 @@ const Bookmarks = ({ userId }: IBookmarkProps) => {
                       videoYtbUrl={post.videoYtbUrl}
                       isInProfilePage={true}
                       views={post.views}
+                      reactionCount={post.reactionCount}
+                      commentCount={post.commentCount}
                     />
                   </Box>
                 ))}

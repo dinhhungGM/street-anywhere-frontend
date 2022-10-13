@@ -2,7 +2,6 @@ import { Action, combineReducers, configureStore, ThunkAction } from '@reduxjs/t
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { authReducer } from '../features/auth/store';
-import { bookmarksReducer } from '../features/bookmarks/store/index';
 import { categoriesReducer } from '../features/categories/store';
 import { commentsReducer } from '../features/comments/store';
 import { landingPageReducer } from '../features/landing-page/store';
@@ -22,11 +21,10 @@ const rootReducer = combineReducers({
   post: postReducer,
   landingPage: landingPageReducer,
   profile: profileReducer,
-  bookmarks: bookmarksReducer,
   reactions: reactionsReducer,
   categories: categoriesReducer,
   tags: tagsReducer,
-  comments: commentsReducer
+  comments: commentsReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
