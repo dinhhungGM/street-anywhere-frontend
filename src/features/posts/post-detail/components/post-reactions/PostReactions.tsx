@@ -16,6 +16,7 @@ import { memo, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
 import { AppIcon } from '../../../../../solutions/components/app-icon';
 import { IReaction, IReactionDetails, IUserReaction } from '../../../../../solutions/models/postModels';
+import { reactionsActions, reactionsSelectors } from '../../../../reactions/store';
 import { postActions, postSelectors } from '../../../store';
 import { default as reactionIconConfigs } from './reactionIconConfigs';
 interface IReactionItemProps {
@@ -47,10 +48,10 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
   const [currentUserReaction, setCurrentUserReaction] = useState<IUserReaction | null>(null);
   const dispatch = useAppDispatch();
   const anchorRef = useRef<HTMLDivElement>(null);
-  const reactions = useAppSelector(postSelectors.selectReactions);
+  const reactions = useAppSelector(reactionsSelectors.selectReactionList);
   const postReactionDetails = useAppSelector(postSelectors.selectPostReactionDetails); // select
 
-  const handleMenuItemClick = async (event: React.MouseEvent<HTMLLIElement, MouseEvent>, index: number) => {
+  const handleMenuItemClick = async (_, index: number) => {
     if (index !== selectedIndex) {
       let response;
       const reactionId = reactions[index].id;
@@ -117,7 +118,7 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
   };
 
   useEffect(() => {
-    dispatch(postActions.getReactionsAsync());
+    dispatch(reactionsActions.getReactionList());
     dispatch(postActions.getReactionDetailsByPostIdAsync(postId));
   }, [selectedIndex]);
 

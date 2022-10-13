@@ -3,9 +3,7 @@ import {
   Box,
   Button,
   Checkbox,
-  Chip,
-  Divider,
-  FormControl,
+  Chip, FormControl,
   Grid,
   InputLabel,
   ListItemText,
@@ -15,7 +13,7 @@ import {
   Stack,
   ToggleButton,
   ToggleButtonGroup,
-  Typography,
+  Typography
 } from '@mui/material';
 import cx from 'classnames';
 import { useFormik } from 'formik';
@@ -27,7 +25,9 @@ import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppMapPopup } from '../../../solutions/components/app-map-pop-up';
 import AlertUtil from '../../../solutions/utils/alertUtil';
 import { authSelectors } from '../../auth/store';
-import { postActions, postSelectors } from '../store';
+import { categoriesActions, categoriesSelectors } from '../../categories/store';
+import { tagsActions, tagSelectors } from '../../tags/store';
+import { postActions } from '../store';
 import { AppFormInput } from './../../../solutions/components/app-form-input';
 import styles from './styles.module.scss';
 import * as utils from './utils';
@@ -48,8 +48,8 @@ const CreateNewPost = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
-  const tags = useAppSelector(postSelectors.selectTags);
-  const categories = useAppSelector(postSelectors.selectCategories);
+  const tags = useAppSelector(tagSelectors.selectTagList);
+  const categories = useAppSelector(categoriesSelectors.selectCategoryList);
   //#endregion
 
   //#region Initial state
@@ -155,8 +155,8 @@ const CreateNewPost = () => {
       setCurrentLatitude(+position.coords.latitude);
     });
     if (currentUser) {
-      dispatch(postActions.getCategoriesAsync(null));
-      dispatch(postActions.getTagsAsync(null));
+      dispatch(tagsActions.getTagList());
+      dispatch(categoriesActions.getCategoryList());
     } else {
       navigate('/sign-in');
     }
