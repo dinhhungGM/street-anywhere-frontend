@@ -15,16 +15,15 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React, { ChangeEvent, SyntheticEvent } from 'react';
-import { AppIcon } from '../../../../solutions/components/app-icon';
-import styles from './styles.module.scss';
-import { useAppSelector, useAppDispatch } from '../../../../app/hooks';
-import { adminActions, adminSelectors } from '../../store';
-import { authSelectors } from '../../../auth/store';
-import { useEffect, useState, useMemo } from 'react';
-import { UserManagementTable } from './components/user-management-table';
 import _ from 'lodash';
-import { AppModal } from '../../../../solutions/components/app-modal';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import { AppIcon } from '../../../../solutions/components/app-icon';
+import { authSelectors } from '../../../auth/store';
+import { adminActions, adminSelectors } from '../../store';
+import { UserManagementTable } from './components/user-management-table';
+import { UserModal } from './components/user-modal';
+import styles from './styles.module.scss';
 
 const UserManagement = () => {
   const allUsers = useAppSelector(adminSelectors.selectAllUsers);
@@ -133,17 +132,13 @@ const UserManagement = () => {
           <Box className={styles.wrapper__table__content}>
             <UserManagementTable adminUserId={currentUser.id} allUsers={displayUsers} />
           </Box>
+          <UserModal
+            adminUserId={currentUser.id}
+            isOpen={isOpenCreateModal}
+            onClose={() => setIsOpenCreateModal(false)}
+          />
         </Box>
       </Box>
-      <AppModal isOpen={isOpenCreateModal} onClose={() => setIsOpenCreateModal(false)}>
-        <Box className={styles.modal} component={Paper}>
-          <Box className={styles.modal__header}>
-            <Typography variant='h4' fontWeight={600}>
-              Create User
-            </Typography>
-          </Box>
-        </Box>
-      </AppModal>
     </>
   );
 };

@@ -12,7 +12,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (currentUser && !currentUser.isAdmin) {
-      navigate(-1);
+      navigate('/');
     }
   }, []);
   return (

@@ -43,5 +43,4 @@ const AppNotification = () => {
   }, [isShowNotification]);
   return <></>;
 };
-
 export default React.memo(AppNotification);

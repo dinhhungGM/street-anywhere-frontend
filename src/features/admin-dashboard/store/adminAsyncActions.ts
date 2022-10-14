@@ -16,6 +16,7 @@ export const getAllUsersForManagement = createAsyncThunk(
           message: error.response.data.message,
         }),
       );
+      return Promise.reject();
     } finally {
       dispatch(wrapperActions.hideLoading());
     }
@@ -37,7 +38,63 @@ export const deleteUser = createAsyncThunk('admin/deleteUser', async (payload: I
         message: error.response.data.message,
       }),
     );
+    return Promise.reject();
   } finally {
     dispatch(wrapperActions.hideLoading());
   }
 });
+interface ICreateNewUserParams {
+  adminUserId: number;
+  payload: {
+    username: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    roleId: string;
+  };
+}
+export const createNewUser = createAsyncThunk(
+  'admin/createNewUser',
+  async (params: ICreateNewUserParams, { dispatch }) => {
+    try {
+      const { adminUserId, payload } = params;
+      dispatch(wrapperActions.showLoading());
+      await axios.post(`/admin/users?adminUserId=${adminUserId}`, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      dispatch(getAllUsersForManagement(adminUserId));
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+export const getAllRolesForManagement = createAsyncThunk(
+  'admin/getAllRolesForManagement',
+  async (adminUserId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/admin/roles?adminUserId=${adminUserId}`);
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
