@@ -1,6 +1,7 @@
 import { Action, combineReducers, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { adminReducer } from '../features/admin-dashboard/store';
 import { authReducer } from '../features/auth/store';
 import { categoriesReducer } from '../features/categories/store';
 import { commentsReducer } from '../features/comments/store';
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   categories: categoriesReducer,
   tags: tagsReducer,
   comments: commentsReducer,
+  admin: adminReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -30,6 +30,14 @@ const AppNotification = () => {
           }).then(hideNotification);
           break;
         }
+        case 'warning': {
+          SweetAlert.fire({
+            title: 'Warning',
+            icon: 'warning',
+            text: info.message,
+          }).then(hideNotification);
+          break;
+        }
       }
     }
   }, [isShowNotification]);

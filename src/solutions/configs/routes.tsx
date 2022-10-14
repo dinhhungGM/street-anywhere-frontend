@@ -20,11 +20,33 @@ const LazyExplore = lazy(() => import('./../../features/explore').then((m) => ({
 const LazyAdminDashboard = lazy(() =>
   import('./../../features/admin-dashboard').then((m) => ({ default: m.AdminDashboard })),
 );
+const LazyDashboardHome = lazy(() =>
+  import('./../../features/admin-dashboard/components/dashboard-home').then((m) => ({ default: m.DashboardHome })),
+);
+const LazyUserManagement = lazy(() =>
+  import('./../../features/admin-dashboard/components/user-management').then((m) => ({ default: m.UserManagement })),
+);
+const LazyCategoriesManagement = lazy(() =>
+  import('./../../features/admin-dashboard/components/categories-management').then((m) => ({
+    default: m.CategoriesManagement,
+  })),
+);
+const LazyHashTagsManagement = lazy(() =>
+  import('./../../features/admin-dashboard/components/hashtags-management').then((m) => ({
+    default: m.HashTagsManagement,
+  })),
+);
+const LazyReactionsManagement = lazy(() =>
+  import('./../../features/admin-dashboard/components/reactions-management').then((m) => ({
+    default: m.ReactionsManagement,
+  })),
+);
 
 type Route = {
   id: string;
   path: string;
   element: ReactNode;
+  children?: Route[];
 };
 
 const routes: Route[] = [
@@ -82,6 +104,33 @@ const routes: Route[] = [
     id: 'admin-dashboard',
     path: '/admin-dashboard',
     element: <LazyAdminDashboard />,
+    children: [
+      {
+        id: 'admin-dashboard/users',
+        path: 'users',
+        element: <LazyUserManagement />,
+      },
+      {
+        id: 'admin-dashboard/reactions',
+        path: 'reactions',
+        element: <LazyReactionsManagement />,
+      },
+      {
+        id: 'admin-dashboard/categories',
+        path: 'categories',
+        element: <LazyCategoriesManagement />,
+      },
+      {
+        id: 'admin-dashboard/hash-tags',
+        path: 'hash-tags',
+        element: <LazyHashTagsManagement />,
+      },
+      {
+        id: 'admin-dashboard/home',
+        path: '',
+        element: <LazyDashboardHome />,
+      },
+    ],
   },
   {
     id: 'page-not-found',

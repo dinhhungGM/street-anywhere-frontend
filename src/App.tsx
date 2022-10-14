@@ -16,9 +16,18 @@ function App() {
         <Wrapper>
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
-              {routes.map((route) => (
-                <Route key={route.id} path={route.path} element={route.element} />
-              ))}
+              {routes.map((route) => {
+                if (route.children && route.children.length) {
+                  return (
+                    <Route key={route.id} path={route.path} element={route.element}>
+                      {route.children.map((routeChild) => (
+                        <Route key={routeChild.id} path={routeChild.path} element={routeChild.element} />
+                      ))}
+                    </Route>
+                  );
+                }
+                return <Route key={route.id} path={route.path} element={route.element} />;
+              })}
             </Routes>
           </Suspense>
         </Wrapper>
