@@ -25,3 +25,10 @@ export interface IRoleManagement {
   roleName: string;
   users: IUserByRole[];
 }
+
+export interface IReactionManagement {
+  id: number;
+  reactionType: string;
+  icon: any;
+  numberOfUses: 4;
+}

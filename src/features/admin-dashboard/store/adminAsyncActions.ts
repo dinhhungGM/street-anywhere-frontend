@@ -98,3 +98,23 @@ export const getAllRolesForManagement = createAsyncThunk(
     }
   },
 );
+export const getAllReactionsForManagement = createAsyncThunk(
+  'admin/getAllReactionsForManagement',
+  async (adminUserId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/admin/reactions?adminUserId=${adminUserId}`);
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);

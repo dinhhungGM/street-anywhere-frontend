@@ -1,0 +1,15 @@
+.app-table {
+  padding: 24px;
+  &__filter-bar {
+    padding-top: 4px;
+  }
+  &__content {
+    padding-top: 12px;
+    &__thead {
+      th {
+        color: #212b36 !important;
+        font-weight: 600 !important;
+      }
+    }
+  }
+}

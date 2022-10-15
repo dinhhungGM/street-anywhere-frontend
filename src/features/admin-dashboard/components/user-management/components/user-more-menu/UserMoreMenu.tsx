@@ -1,4 +1,3 @@
-import { useRef, useState, memo, useMemo } from 'react';
 import { Delete, Edit, MoreVert } from '@mui/icons-material';
 import {
   FormControl,
@@ -9,17 +8,17 @@ import {
   Menu,
   MenuItem,
   Select,
-  TextField,
+  TextField
 } from '@mui/material';
-import { AppIcon } from '../../../../../../solutions/components/app-icon';
-import SweetAlert from 'sweetalert2';
-import { useAppDispatch, useAppSelector } from '../../../../../../app/hooks';
-import { adminActions, adminSelectors } from '../../../../store';
-import { AppModal } from '../../../../../../solutions/components/app-modal';
 import { useFormik } from 'formik';
+import { memo, useMemo, useRef, useState } from 'react';
+import SweetAlert from 'sweetalert2';
 import * as yup from 'yup';
+import { useAppDispatch, useAppSelector } from '../../../../../../app/hooks';
+import { AppIcon } from '../../../../../../solutions/components/app-icon';
+import { AppModal } from '../../../../../../solutions/components/app-modal';
+import { adminActions, adminSelectors } from '../../../../store';
 import styles from './styles.module.scss';
-import _ from 'lodash';
 
 interface IUserMoreMenuProps {
   adminUserId: number;
