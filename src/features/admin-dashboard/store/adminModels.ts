@@ -18,6 +18,7 @@ interface IUserByRole {
   lastName: string;
   profilePhotoUrl: string;
   rankId: number;
+  roleId: number;
 }
 export interface IRoleManagement {
   id: number;

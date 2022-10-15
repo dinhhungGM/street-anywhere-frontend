@@ -1,10 +1,25 @@
-import { useRef, useState, memo } from 'react';
+import { useRef, useState, memo, useMemo } from 'react';
 import { Delete, Edit, MoreVert } from '@mui/icons-material';
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import {
+  FormControl,
+  IconButton,
+  InputLabel,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material';
 import { AppIcon } from '../../../../../../solutions/components/app-icon';
 import SweetAlert from 'sweetalert2';
-import { useAppDispatch } from '../../../../../../app/hooks';
-import { adminActions } from '../../../../store';
+import { useAppDispatch, useAppSelector } from '../../../../../../app/hooks';
+import { adminActions, adminSelectors } from '../../../../store';
+import { AppModal } from '../../../../../../solutions/components/app-modal';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import styles from './styles.module.scss';
+import _ from 'lodash';
 
 interface IUserMoreMenuProps {
   adminUserId: number;
@@ -13,7 +28,32 @@ interface IUserMoreMenuProps {
 const UserMoreMenu = ({ adminUserId, user }: IUserMoreMenuProps) => {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const dispatch = useAppDispatch();
+  const form = useFormik({
+    initialValues: {
+      password: '',
+      passwordConfirm: '',
+      roleId: user.roleId,
+    },
+    onSubmit: (values) => {
+      alert('Coming soon');
+    },
+    validationSchema: yup.object({
+      password: yup
+        .string()
+        .optional()
+        .trim()
+        .min(6, 'The password should be more than 2 characters')
+        .max(50, 'The password can not be more than 50 characters'),
+      passwordConfirm: yup
+        .string()
+        .optional()
+        .trim()
+        .oneOf([yup.ref('password'), null], 'Password confirm does not match'),
+    }),
+  });
+  const allRoles = useAppSelector(adminSelectors.selectAllRoles);
 
   const handleDeleteUser = (): void => {
     setIsOpen(false);
@@ -34,16 +74,32 @@ const UserMoreMenu = ({ adminUserId, user }: IUserMoreMenuProps) => {
     });
   };
 
-  const handleUpdateUser = (): void => {
-    setIsOpen(false);
+  const checkControl = (controlName: string) => {
+    if (form.touched[controlName] && form.errors[controlName]) {
+      return {
+        helperText: form.errors[controlName],
+      };
+    }
+    return null;
   };
+
+  const closeModal = (): void => {
+    form.resetForm();
+    setIsOpenModal(false);
+  };
+
+  const roleOptions = useMemo(() => {
+    if (allRoles) {
+      return allRoles.map((role) => ({ id: role.id, roleName: role.roleName }));
+    }
+    return [];
+  }, [allRoles]);
 
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
         <AppIcon icon={MoreVert} />
       </IconButton>
-
       <Menu
         open={isOpen}
         anchorEl={ref.current}
@@ -61,13 +117,61 @@ const UserMoreMenu = ({ adminUserId, user }: IUserMoreMenuProps) => {
           <ListItemText primary='Delete' primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
-        <MenuItem>
+        <MenuItem onClick={() => setIsOpenModal(true)}>
           <ListItemIcon>
             <AppIcon icon={Edit} />
           </ListItemIcon>
           <ListItemText primary='Edit' primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
+      <AppModal
+        isOpen={isOpenModal}
+        onCancel={closeModal}
+        onClose={closeModal}
+        onOk={form.handleSubmit}
+        title='Update user'
+        okText='Update'
+      >
+        <form>
+          <FormControl fullWidth className={styles.form__control}>
+            <TextField
+              id='password'
+              type='password'
+              label='Password'
+              placeholder='Password'
+              {...form.getFieldProps('password')}
+              error={!!checkControl('password')}
+              {...checkControl('password')}
+            />
+          </FormControl>
+          <FormControl fullWidth className={styles.form__control}>
+            <TextField
+              type='password'
+              id='passwordConfirm'
+              label='Confirm password'
+              placeholder='Confirm password'
+              {...form.getFieldProps('passwordConfirm')}
+              error={!!checkControl('passwordConfirm')}
+              {...checkControl('passwordConfirm')}
+            />
+          </FormControl>
+          <FormControl fullWidth className={styles.form__control}>
+            <InputLabel htmlFor='role'>Role</InputLabel>
+            <Select
+              label='Role'
+              {...form.getFieldProps('roleId')}
+              error={!!checkControl('lastName')}
+              {...checkControl('lastName')}
+            >
+              {roleOptions.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.roleName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </form>
+      </AppModal>
     </>
   );
 };
