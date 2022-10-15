@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import { AppLineChart } from '../../../../solutions/components/app-line-chart';
 import { AppTable } from '../../../../solutions/components/app-table';
 import { authSelectors } from '../../../auth/store';
 import { adminActions, adminSelectors } from '../../store';
@@ -66,6 +67,7 @@ const ReactionsManagement = () => {
           searchPlaceholder='Search by type'
           isFilterByOption={false}
         />
+        <AppLineChart data={reactions} labelField='reactionType' valueField='numberOfUses' />
       </Box>
     </>
   );
