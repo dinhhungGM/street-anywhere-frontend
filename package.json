@@ -36,6 +36,7 @@
     "redux-persist": "^6.0.0",
     "sweetalert2": "^11.4.32",
     "web-vitals": "^2.1.4",
+    "worker-loader": "^3.0.8",
     "yup": "^0.32.11"
   },
   "scripts": {
