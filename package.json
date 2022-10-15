@@ -39,10 +39,10 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "serve dist",
-    "build": "cross-env NODE_ENV=production webpack",
-    "eject": "react-scripts eject",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
