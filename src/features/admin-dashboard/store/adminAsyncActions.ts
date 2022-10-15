@@ -118,3 +118,43 @@ export const getAllReactionsForManagement = createAsyncThunk(
     }
   },
 );
+export const getAllCategoriesForManagement = createAsyncThunk(
+  'admin/getAllCategoriesForManagement',
+  async (adminUserId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/admin/categories?adminUserId=${adminUserId}`);
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+export const getAllHashTagsForManagement = createAsyncThunk(
+  'admin/getAllHashTagsForManagement',
+  async (adminUserId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/admin/tags?adminUserId=${adminUserId}`);
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);

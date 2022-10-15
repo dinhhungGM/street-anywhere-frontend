@@ -41,6 +41,11 @@ const LazyReactionsManagement = lazy(() =>
     default: m.ReactionsManagement,
   })),
 );
+const LazyRoleManagement = lazy(() =>
+  import('./../../features/admin-dashboard/components/role-management').then((m) => ({
+    default: m.RoleManagement,
+  })),
+);
 
 type Route = {
   id: string;
@@ -109,6 +114,11 @@ const routes: Route[] = [
         id: 'admin-dashboard/users',
         path: 'users',
         element: <LazyUserManagement />,
+      },
+      {
+        id: 'admin-dashboard/roles',
+        path: 'roles',
+        element: <LazyRoleManagement />,
       },
       {
         id: 'admin-dashboard/reactions',

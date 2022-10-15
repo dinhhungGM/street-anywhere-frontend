@@ -25,10 +25,19 @@ export interface IRoleManagement {
   roleName: string;
   users: IUserByRole[];
 }
-
 export interface IReactionManagement {
   id: number;
   reactionType: string;
   icon: any;
-  numberOfUses: 4;
+  numberOfUses: number;
+}
+export interface ICategoryManagement {
+  id: number;
+  categoryName: string;
+  numberOfUses: number;
+}
+export interface IHashTagManagement {
+  id: number;
+  tagName: string;
+  numberOfUses: number;
 }

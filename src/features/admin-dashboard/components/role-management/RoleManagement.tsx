@@ -15,7 +15,7 @@ const headerConfigs = [
     isCenter: false,
   },
   {
-    header: 'Number of uses',
+    header: 'Number of users',
     isCenter: true,
   },
 ];
@@ -26,36 +26,35 @@ const rowConfigs = [
     isCenter: false,
   },
   {
-    field: 'categoryName',
+    field: 'roleName',
     isCenter: false,
   },
   {
-    field: 'numberOfUses',
+    field: 'numberOfUsers',
     isCenter: true,
   },
 ];
 
-const CategoriesManagement = () => {
-  const categories = useAppSelector(adminSelectors.selectAllCategories);
+const RoleManagement = () => {
+  const roles = useAppSelector(adminSelectors.selectAllRoles);
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(adminActions.getAllCategoriesForManagement(currentUser.id));
+    dispatch(adminActions.getAllRolesForManagement(currentUser.id));
   }, []);
-
   return (
     <>
       <Box padding={4}>
         <Typography variant='h3' marginBottom={2}>
-          Categories
+          Roles
         </Typography>
         <AppTable
           headerConfigs={headerConfigs}
           rowConfigs={rowConfigs}
-          data={categories}
+          data={roles}
           rowKey='id'
-          searchByField='categoryName'
+          searchByField='roleName'
           searchPlaceholder='Search by name'
           isFilterByOption={false}
         />
@@ -64,4 +63,4 @@ const CategoriesManagement = () => {
   );
 };
 
-export default React.memo(CategoriesManagement);
+export default React.memo(RoleManagement);

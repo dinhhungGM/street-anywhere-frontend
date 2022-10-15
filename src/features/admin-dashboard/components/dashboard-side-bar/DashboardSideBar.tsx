@@ -1,21 +1,11 @@
-import {
-  Avatar,
-  Box,
-  List,
-  ListItemButton,
-  Stack,
-  Typography,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  ListItem,
-} from '@mui/material';
-import styles from './styles.module.scss';
-import { IUser } from '../../../../solutions/models/authModels';
+import { AddReaction, Category, Groups, People, PieChart, Tag } from '@mui/icons-material';
+import { Avatar, Box, List, ListItem, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
+import cx from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { AppIcon } from '../../../../solutions/components/app-icon';
-import { Dashboard, People, PieChart, AddReaction, Category, Tag } from '@mui/icons-material';
-import cx from 'classnames';
+import { IUser } from '../../../../solutions/models/authModels';
+import GreetingImage from './../../../../solutions/assets/svg/greeting.svg';
+import styles from './styles.module.scss';
 
 const sidebarConfigs = [
   {
@@ -29,6 +19,12 @@ const sidebarConfigs = [
     title: 'Users',
     icon: <AppIcon icon={People} />,
     path: '/admin-dashboard/users',
+  },
+  {
+    id: 'admin-dashboard/roles',
+    title: 'Roles',
+    icon: <AppIcon icon={Groups} />,
+    path: '/admin-dashboard/roles',
   },
   {
     id: 'admin-dashboard/reactions',
@@ -59,7 +55,7 @@ const DashboardSideBar = ({ currentUser }: IDashboardSideBarProps) => {
       <Box className={styles.sidebar}>
         <Box className={styles.sidebar__logo}>
           <NavLink to='/admin-dashboard'>
-            <img src='/logo.png' alt='Logo' />
+            <img src={GreetingImage} alt='Greeting' />
           </NavLink>
         </Box>
         <Box className={styles.sidebar__user}>
