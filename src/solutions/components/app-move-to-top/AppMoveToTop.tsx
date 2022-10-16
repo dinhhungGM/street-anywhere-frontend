@@ -13,7 +13,7 @@ const AppMoveToTop = () => {
 
   useEffect(() => {
     const handleScrollingEvent = () => {
-      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
         setIsShow(true);
       } else {
         setIsShow(false);
