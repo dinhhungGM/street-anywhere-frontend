@@ -52,6 +52,7 @@ const AppLineChart = ({
       labels: _.map(data, labelField),
       datasets: [
         {
+          label: 'Number of uses',
           data: _.map(data, valueField),
           borderColor: color,
           backgroundColor: color,
