@@ -1,6 +1,5 @@
 .sidebar {
   width: 320px;
-  height: calc(100vh - 80px);
   padding: 12px;
   border-right: 1px solid rgba(145, 158, 171, 0.24);
   &__logo {
@@ -30,11 +29,9 @@
       text-decoration: none;
       border-radius: 8px;
       transition: background-color 0.4s ease;
+      color: unset;
       &:hover {
         background-color: rgba(145, 158, 171, 0.08);
-      }
-      &:visited {
-        color: unset;
       }
       &--active {
         background-color: rgba(32, 101, 209, 0.08);

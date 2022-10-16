@@ -1,51 +1,70 @@
-import React, { useMemo } from 'react';
+import { Box, Paper } from '@mui/material';
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { Box } from '@mui/material';
 import _ from 'lodash';
+import randomColor from 'randomcolor';
+import React, { useMemo } from 'react';
+import { Line } from 'react-chartjs-2';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
-export const defaultOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-  },
-};
 
 interface IAppLineChartProps {
   options?: any;
   data?: any;
   labelField: string;
   valueField: string;
+  chartTitle?: string;
 }
-const AppLineChart = ({ options = defaultOptions, data = [], labelField, valueField }: IAppLineChartProps) => {
+const AppLineChart = ({
+  options,
+  data = [],
+  labelField,
+  valueField,
+  chartTitle = 'Chart.js Line Chart',
+}: IAppLineChartProps) => {
+  const chartOptions = useMemo(() => {
+    return {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false,
+        },
+        title: {
+          display: true,
+          text: chartTitle,
+          position: 'bottom' as const,
+        },
+      },
+      ...options,
+    };
+  }, []);
   const chartData = useMemo(() => {
+    const color = randomColor({ format: 'rgb' });
     return {
       labels: _.map(data, labelField),
-      datasets: _.map(data, (item) => ({
-        label: item[labelField],
-        data: [],
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      })),
+      datasets: [
+        {
+          label: 'Number of uses',
+          data: _.map(data, valueField),
+          borderColor: color,
+          backgroundColor: color,
+        },
+      ],
     };
   }, [data]);
+
   return (
     <>
-      <Box>
-        <Line options={options} data={chartData} />
+      <Box padding={3} component={Paper} elevation={3}>
+        <Line options={chartOptions} data={chartData} />
       </Box>
     </>
   );
