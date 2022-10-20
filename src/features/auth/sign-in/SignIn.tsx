@@ -32,6 +32,10 @@ const SignIn = () => {
     console.log('Handle On Success', obj);
   };
 
+  const handleOnFailure = (obj: any) => {
+    console.log('Handle On Failure', obj);
+  };
+
   const handleSignIn = async () => {
     const response = await dispatch(authActions.signInActionAsync(form.values));
     if (response.meta.requestStatus === 'fulfilled') {
@@ -73,7 +77,7 @@ const SignIn = () => {
             <GoogleLogin
               clientId={process.env.REACT_APP_GOOGLE_AUTHENTICATION_CLIENT_ID as string}
               onSuccess={handleOnSuccess}
-              onFailure={handleOnSuccess}
+              onFailure={handleOnFailure}
               cookiePolicy={'single_host_origin'}
               className={styles['btn-google']}
             />
