@@ -3,7 +3,7 @@ import { IconButton, Menu } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { AppIcon } from '../app-icon';
 
-const AppMoreMenu = ({ children }) => {
+const AppMoreMenu = ({ children = null }) => {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   return (

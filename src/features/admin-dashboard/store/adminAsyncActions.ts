@@ -158,3 +158,66 @@ export const getAllHashTagsForManagement = createAsyncThunk(
     }
   },
 );
+interface ICreateNewHashTagParams {
+  adminUserId: number;
+  payload: {
+    tagName: string;
+  };
+}
+export const createNewHashTag = createAsyncThunk(
+  'admin/createNewHashTag',
+  async (params: ICreateNewHashTagParams, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      await axios.post(`/admin/tags?adminUserId=${params.adminUserId}`, params.payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'success',
+          message: 'Create successfully',
+        }),
+      );
+      dispatch(getAllHashTagsForManagement(params.adminUserId));
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+interface IDeleteTagParams {
+  adminUserId: number;
+  tagId: number;
+}
+export const deleteTag = createAsyncThunk('admin/deleteTag', async (params: IDeleteTagParams, { dispatch }) => {
+  try {
+    dispatch(wrapperActions.showLoading());
+    await axios.delete(`/admin/tags/${params.tagId}?adminUserId=${params.adminUserId}`);
+    dispatch(
+      wrapperActions.showNotification({
+        typeOfNotification: 'success',
+        message: 'Create successfully',
+      }),
+    );
+    dispatch(getAllHashTagsForManagement(params.adminUserId));
+  } catch (error) {
+    dispatch(
+      wrapperActions.showNotification({
+        typeOfNotification: 'error',
+        message: error.response.data.message,
+      }),
+    );
+    return Promise.reject();
+  } finally {
+    dispatch(wrapperActions.hideLoading());
+  }
+});

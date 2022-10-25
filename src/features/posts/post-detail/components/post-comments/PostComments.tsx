@@ -10,7 +10,7 @@ import {
   ListItem,
   Pagination,
   Stack,
-  Typography
+  Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -20,6 +20,8 @@ import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
 import { AppIcon } from '../../../../../solutions/components/app-icon';
 import { commentsActions, commentsSelectors } from '../../../../comments/store';
 import styles from './styles.module.scss';
+import _ from 'lodash';
+import { useNavigate } from 'react-router-dom';
 
 interface PostCommentsProps {
   postId?: number;
@@ -28,6 +30,7 @@ interface PostCommentsProps {
 
 const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const commentList = useAppSelector(commentsSelectors.selectCommentList);
   const commentCount = useAppSelector(commentsSelectors.selectCommentCount);
   const commentRef = useRef(null);
@@ -36,22 +39,36 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
       content: '',
     },
     onSubmit: (values, { resetForm }) => {
-      if (values.content.trim().length > 300) {
+      if (_.isNil(currentUserId)) {
         SweetAlert.fire({
-          title: 'Warning',
           icon: 'warning',
-          text: 'The content of comment can not be more than 300 characters',
+          title: 'Warning',
+          text: 'You are not sign in!',
+          showCancelButton: true,
+          confirmButtonText: 'Sign in',
+        }).then((status) => {
+          if (status.isConfirmed) {
+            navigate('/sign-in');
+          }
         });
       } else {
-        dispatch(
-          commentsActions.addComment({
-            postId,
-            userId: currentUserId,
-            content: values.content.trim(),
-            currentPage: pageNumber,
-          }),
-        );
-        resetForm();
+        if (values.content.trim().length > 300) {
+          SweetAlert.fire({
+            title: 'Warning',
+            icon: 'warning',
+            text: 'The content of comment can not be more than 300 characters',
+          });
+        } else {
+          dispatch(
+            commentsActions.addComment({
+              postId,
+              userId: currentUserId,
+              content: values.content.trim(),
+              currentPage: pageNumber,
+            }),
+          );
+          resetForm();
+        }
       }
     },
     validationSchema: yup.object({
