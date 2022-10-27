@@ -33,6 +33,7 @@ const Shorts = () => {
                   key={post?.id}
                 >
                   <AppCard
+                    key={post?.id}
                     imgSrc={post?.imageUrl}
                     alt={post?.shortTitle}
                     author={post?.user.fullName}

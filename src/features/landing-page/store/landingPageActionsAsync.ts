@@ -3,6 +3,7 @@ import categoryService from '../../../solutions/services/categoryService';
 import postService from '../../../solutions/services/postService';
 import AlertUtil from '../../../solutions/utils/alertUtil';
 import { wrapperActions } from '../../wrapper/store';
+import { default as axios } from './../../../solutions/services/axios';
 
 export const landingPageActionsAsync = {
   getPostsAsync: createAsyncThunk(
@@ -23,6 +24,18 @@ export const landingPageActionsAsync = {
     try {
       dispatch(wrapperActions.showLoading());
       const { data } = await categoryService.getAllCategories();
+      return data.value;
+    } catch (error) {
+      AlertUtil.showError(error);
+      dispatch(wrapperActions.hideLoading());
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  }),
+  getTopPosts: createAsyncThunk('landingPage/getTopPosts', async (_: any, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get('/posts/tops');
       return data.value;
     } catch (error) {
       AlertUtil.showError(error);
