@@ -9,6 +9,7 @@ import { landingPageReducer } from '../features/landing-page/store';
 import { postReducer } from '../features/posts/store';
 import { profileReducer } from '../features/profile/store/index';
 import { reactionsReducer } from '../features/reactions/store';
+import { shortsReducer } from '../features/shorts';
 import { tagsReducer } from '../features/tags/store';
 import { wrapperReducer } from '../features/wrapper/store';
 
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   tags: tagsReducer,
   comments: commentsReducer,
   admin: adminReducer,
+  shorts: shortsReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
