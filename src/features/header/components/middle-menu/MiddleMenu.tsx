@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppIcon } from '../../../../solutions/components/app-icon';
 import { SubMiddleMenu } from '../sub-middle-menu';
 import styles from './styles.module.scss';
+import SweetAlert from 'sweetalert2';
 
 const MiddleMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -15,12 +16,24 @@ const MiddleMenu = () => {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleListItemClick = (config) => {
+    if (config.isComingSoon) {
+      SweetAlert.fire({
+        title: 'Info',
+        icon: 'info',
+        text: 'Coming soon',
+      });
+    } else {
+      navigate(config.path);
+    }
+  };
+
   return (
     <>
       <Box>
         <List className={styles.menu}>
           {configs.map((config) => (
-            <ListItemButton key={config.id} className={styles.menu__item} onClick={() => navigate(config.path)}>
+            <ListItemButton key={config.id} className={styles.menu__item} onClick={() => handleListItemClick(config)}>
               <ListItemIcon>{config.icon}</ListItemIcon>
               <ListItemText>{config.title}</ListItemText>
             </ListItemButton>
@@ -63,12 +76,14 @@ const configs = [
     title: 'Hot!',
     icon: <AppIcon icon={Whatshot} color='#ff5b00' />,
     path: '/hots',
+    isComingSoon: true,
   },
   {
     id: 'explore',
     title: 'Explore',
     icon: <AppIcon icon={Explore} color='#0288d1' />,
     path: '/explore',
+    isComingSoon: true,
   },
 ];
 
