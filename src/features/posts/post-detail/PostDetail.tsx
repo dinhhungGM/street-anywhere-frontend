@@ -41,9 +41,9 @@ const PostDetail = () => {
           Home
         </Button>
         <PostOwnerProfile
-          userId={currentUser.id}
-          avatarUrl={currentUser.profilePhotoUrl}
-          fullName={currentUser.fullName}
+          userId={selectedPost.userId}
+          avatarUrl={selectedPost.user.profilePhotoUrl}
+          fullName={selectedPost.user.fullName}
         />
         <Typography variant='h2' textAlign='center'>
           {selectedPost?.title}

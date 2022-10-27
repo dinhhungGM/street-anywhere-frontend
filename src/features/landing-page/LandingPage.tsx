@@ -1,4 +1,5 @@
 import { Box, Grid } from '@mui/material';
+import { Carousel } from './components/carousel';
 import { Categories } from './components/categories';
 import { Gallery } from './components/gallery';
 import { TagClouds } from './components/tag-clouds';

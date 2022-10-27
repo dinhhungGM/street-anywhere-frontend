@@ -19,6 +19,8 @@ import { IReaction, IReactionDetails, IUserReaction } from '../../../../../solut
 import { reactionsActions, reactionsSelectors } from '../../../../reactions/store';
 import { postActions, postSelectors } from '../../../store';
 import { default as reactionIconConfigs } from './reactionIconConfigs';
+import SweetAlert from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 interface IReactionItemProps {
   reaction?: IReaction;
 }
@@ -49,30 +51,45 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
   const dispatch = useAppDispatch();
   const anchorRef = useRef<HTMLDivElement>(null);
   const reactions = useAppSelector(reactionsSelectors.selectReactionList);
-  const postReactionDetails = useAppSelector(postSelectors.selectPostReactionDetails); // select
+  const postReactionDetails = useAppSelector(postSelectors.selectPostReactionDetails);
+  const navigate = useNavigate();
 
   const handleMenuItemClick = async (e, index: number) => {
-    if (index !== selectedIndex) {
-      let response;
-      const reactionId = reactions[index].id;
-      if (_.isNull(currentUserReaction)) {
-        response = await dispatch(
-          postActions.addReactionAsync({
-            reactionId,
-            postId: postId,
-            userId: currentUserId,
-          }),
-        );
-      } else {
-        response = await dispatch(
-          postActions.updateReactionByPostReactionId({
-            postReactionId: currentUserReaction.postReactionId,
-            reactionId,
-          }),
-        );
-      }
-      if (response.meta.requestStatus === 'fulfilled') {
-        setSelectedIndex(index);
+    if (_.isNil(currentUserId)) {
+      SweetAlert.fire({
+        title: 'Warning',
+        icon: 'warning',
+        text: 'You have to sign in to continue',
+        showCancelButton: true,
+        confirmButtonText: 'Sign in',
+      }).then((status) => {
+        if (status.isConfirmed) {
+          navigate('/sign-in');
+        }
+      });
+    } else {
+      if (index !== selectedIndex) {
+        let response;
+        const reactionId = reactions[index].id;
+        if (_.isNull(currentUserReaction)) {
+          response = await dispatch(
+            postActions.addReactionAsync({
+              reactionId,
+              postId: postId,
+              userId: currentUserId,
+            }),
+          );
+        } else {
+          response = await dispatch(
+            postActions.updateReactionByPostReactionId({
+              postReactionId: currentUserReaction.postReactionId,
+              reactionId,
+            }),
+          );
+        }
+        if (response.meta.requestStatus === 'fulfilled') {
+          setSelectedIndex(index);
+        }
       }
     }
     setIsOpen(false);

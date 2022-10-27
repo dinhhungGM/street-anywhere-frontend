@@ -205,7 +205,7 @@ const AppTable = ({
                         <Typography fontWeight={600}>{item[config.field]}</Typography>
                       </TableCell>
                     ))}
-                    {isDisplayMoreMenu && <TableCell>{/* <AppMoreMenu /> */}</TableCell>}
+                    {isDisplayMoreMenu && <TableCell>{menuTemplate}</TableCell>}
                   </TableRow>
                 ))}
                 {emptyRows > 0 && (

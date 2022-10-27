@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
 import { AppIcon } from '../../../../../solutions/components/app-icon';
 import { IBookmarkDetail } from '../../../../../solutions/models/postModels';
 import { postActions, postSelectors } from '../../../store';
+import SweetAlert from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 interface IPostBookmarkProps {
   currentUserId?: number;
@@ -17,21 +19,36 @@ const PostBookmark = ({ currentUserId, postId }: IPostBookmarkProps) => {
   const [currentBookmark, setCurrentBookmark] = useState<IBookmarkDetail | null>(null);
   const [isReload, setIsReload] = useState(false);
   const bookmarkDetails = useAppSelector(postSelectors.selectBookmarkDetails);
+  const navigate = useNavigate();
 
   const savePostToBookmark = async () => {
-    let res;
-    if (currentBookmark) {
-      res = await dispatch(postActions.deleteBookmark(currentBookmark.bookmarkId));
+    if (_.isNil(currentUserId)) {
+      SweetAlert.fire({
+        icon: 'warning',
+        title: 'Warning',
+        text: 'You are not sign in!',
+        showCancelButton: true,
+        confirmButtonText: 'Sign in',
+      }).then((status) => {
+        if (status.isConfirmed) {
+          navigate('/sign-in');
+        }
+      });
     } else {
-      res = await dispatch(
-        postActions.savePostToBookmark({
-          postId: postId,
-          userId: currentUserId,
-        }),
-      );
-    }
-    if (res.meta.requestStatus === 'fulfilled') {
-      setIsReload(!isReload);
+      let res;
+      if (currentBookmark) {
+        res = await dispatch(postActions.deleteBookmark(currentBookmark.bookmarkId));
+      } else {
+        res = await dispatch(
+          postActions.savePostToBookmark({
+            postId: postId,
+            userId: currentUserId,
+          }),
+        );
+      }
+      if (res.meta.requestStatus === 'fulfilled') {
+        setIsReload(!isReload);
+      }
     }
   };
 

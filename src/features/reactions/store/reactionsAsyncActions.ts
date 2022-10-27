@@ -37,3 +37,20 @@ export const addReaction = createAsyncThunk(
     } catch (error) {}
   },
 );
+
+export const getPostsByReaction = createAsyncThunk('reactions/getPostsByReaction', async (_, { dispatch }) => {
+  try {
+    dispatch(wrapperActions.showLoading());
+    const { data } = await axios.get('/posts/reactions');
+    return data.value;
+  } catch (error) {
+    dispatch(
+      wrapperActions.showNotification({
+        typeOfNotification: 'error',
+        message: error.toString(),
+      }),
+    );
+  } finally {
+    dispatch(wrapperActions.hideLoading());
+  }
+});

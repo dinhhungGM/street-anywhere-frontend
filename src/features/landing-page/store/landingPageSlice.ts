@@ -4,10 +4,12 @@ import { landingPageActionsAsync } from './landingPageActionsAsync';
 
 type LandingPageState = {
   posts: IPost[];
+  topPosts: IPost[];
 };
 
 const initialState: LandingPageState = {
   posts: [],
+  topPosts: [],
 };
 
 const landingPageSlice = createSlice({
@@ -17,6 +19,9 @@ const landingPageSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(landingPageActionsAsync.getPostsAsync.fulfilled, (state, action) => {
       state.posts = action.payload;
+    });
+    builder.addCase(landingPageActionsAsync.getTopPosts.fulfilled, (state, action) => {
+      state.topPosts = action.payload;
     });
   },
 });
