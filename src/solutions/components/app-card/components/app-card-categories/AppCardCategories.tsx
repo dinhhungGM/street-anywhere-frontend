@@ -16,9 +16,11 @@ const AppCardCategories = ({ categories }: IAppCardCategoriesProps) => {
           paddingBottom: '8px',
         }}
       >
-        <AppIcon icon={Category}></AppIcon>
-        <Typography fontWeight={700}>Categories: </Typography>
-        <Stack direction='row' spacing={1} marginLeft={1} flexWrap='wrap'>
+        <Stack direction='row' marginLeft={1} flexWrap='wrap' gap={1}>
+          <Stack direction='row' spacing={1}>
+            <AppIcon icon={Category}></AppIcon>
+            <Typography fontWeight={700}>Categories: </Typography>
+          </Stack>
           {categories.map((category) => (
             <>
               <Chip key={category} label={category} size='small' />
