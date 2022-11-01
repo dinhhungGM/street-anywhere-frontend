@@ -38,19 +38,30 @@ const AppBarChart = ({
   }, []);
 
   const chartData = useMemo(() => {
-    const labels = _.map(data, labelField);
+    const config = _.reduce(
+      data,
+      (acc, item) => {
+        const value = item[valueField];
+        if (value) {
+          acc.labels.push(item[labelField]);
+          acc.data.push(value);
+        }
+        return acc;
+      },
+      { labels: [], data: [] },
+    );
     return {
-      labels,
+      labels: config.labels,
       datasets: [
         {
           label: 'Number of uses',
-          data: _.map(data, valueField),
-          backgroundColor: randomColor({ count: labels.length, format: 'rgb' }),
+          data: config.data,
+          backgroundColor: randomColor({ count: config.labels.length, format: 'rgb' }),
         },
       ],
     };
   }, [data]);
-
+  console.log('chartData', chartData);
   return (
     <>
       <Box component={Paper} padding={2} elevation={3}>
