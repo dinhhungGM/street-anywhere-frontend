@@ -1,4 +1,13 @@
-import { Add, AdminPanelSettings, Login, Person, PersonAdd, PowerSettingsNew, Search } from '@mui/icons-material';
+import {
+  Add,
+  AdminPanelSettings,
+  Login,
+  Person,
+  PersonAdd,
+  PowerSettingsNew,
+  Search,
+  Notifications,
+} from '@mui/icons-material';
 import { Drawer, IconButton, Stack, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +16,7 @@ import { AppIcon } from '../../../../solutions/components/app-icon';
 import { authActions, authSelectors } from '../../../auth/store';
 import { SearchBox } from '../search-box';
 import { FeatureMenu } from './../feature-menu';
+import _ from 'lodash';
 
 const RightMenu = () => {
   const [isOpenSearchBox, setIsOpenSearchBox] = useState<boolean>(false);
@@ -45,7 +55,7 @@ const RightMenu = () => {
             <AppIcon icon={Add} color='#44ff00' />
           </IconButton>
         </Tooltip>
-        {!currentUser ? (
+        {_.isNil(currentUser) ? (
           <>
             <Tooltip title='Sign in' onClick={() => navigate('/sign-in')}>
               <IconButton size='large'>
@@ -65,10 +75,15 @@ const RightMenu = () => {
                 <AppIcon icon={Person} color='#0288d1' />
               </IconButton>
             </Tooltip>
+            <Tooltip title='Notification'>
+              <IconButton size='large'>
+                <AppIcon icon={Notifications} color='#84849d' />
+              </IconButton>
+            </Tooltip>
             {currentUser?.isAdmin ? (
               <Tooltip title='Admin Dashboard'>
                 <IconButton size='large' onClick={() => navigate('/admin-dashboard')}>
-                    <AppIcon icon={AdminPanelSettings} color='#ff5b00' />
+                  <AppIcon icon={AdminPanelSettings} color='#ff5b00' />
                 </IconButton>
               </Tooltip>
             ) : null}
