@@ -2,6 +2,7 @@ import { Widgets } from '@mui/icons-material';
 import { Box, Paper, Typography } from '@mui/material';
 import React from 'react';
 import { AppIcon } from '../app-icon';
+import CountUp from 'react-countup';
 
 interface IAppInfoWidgetProps {
   icon?: any;
@@ -41,7 +42,7 @@ const AppInfoWidget = ({
       >
         <AppIcon icon={icon} fontSize={iconSize} color={iconColor} />
         <Typography variant='h3' paddingY={3}>
-          {`${value.toString()}`.length > 4 ? replaceText : value}
+          <CountUp end={+value} />
         </Typography>
         <Typography variant='h6'>{title}</Typography>
       </Box>

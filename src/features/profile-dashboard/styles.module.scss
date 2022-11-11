@@ -1,14 +1,14 @@
 .dashboard {
   padding: 20px;
   &-add-cover-image {
-    position: absolute;
-    bottom: 16px;
-    right: 16px;
-    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-transform: initial;
+    position: absolute !important;
+    bottom: 16px !important;
+    right: 16px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-transform: initial !important;
   }
   &-user {
     display: flex;
@@ -21,8 +21,14 @@
       justify-content: space-between;
     }
     &-avatar {
-      width: 120px;
-      height: 120px;
+      width: 120px !important;
+      height: 120px !important;
+    }
+    &-upload {
+      position: absolute !important;
+      bottom: 0;
+      right: 4px;
+      background-color: #5837d0 !important;
     }
   }
 }

@@ -107,6 +107,9 @@ const AppCard = ({
                 </Box>
               )}
             </Stack>
+            <Typography marginTop={2} textAlign='right' fontStyle='italic'>
+              <b>Created at</b>: {new Date(createdAt).toLocaleString()}
+            </Typography>
           </Stack>
         </Box>
       </Box>
