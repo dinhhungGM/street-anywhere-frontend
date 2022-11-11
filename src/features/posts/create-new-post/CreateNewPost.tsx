@@ -1,20 +1,5 @@
 import { Close, Image, Map, PlayCircleFilled, Upload } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Chip, FormControl,
-  Grid,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography
-} from '@mui/material';
+import { Box, Button, FormControl, Grid, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import cx from 'classnames';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -23,6 +8,7 @@ import * as yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppMapPopup } from '../../../solutions/components/app-map-pop-up';
+import { AppSelect } from '../../../solutions/components/app-select';
 import AlertUtil from '../../../solutions/utils/alertUtil';
 import { authSelectors } from '../../auth/store';
 import { categoriesActions, categoriesSelectors } from '../../categories/store';
@@ -31,6 +17,7 @@ import { postActions } from '../store';
 import { AppFormInput } from './../../../solutions/components/app-form-input';
 import styles from './styles.module.scss';
 import * as utils from './utils';
+import SweetAlert from 'sweetalert2';
 
 const MenuProps = {
   PaperProps: {
@@ -109,16 +96,6 @@ const CreateNewPost = () => {
       navigate('/');
     }
   };
-
-  const handleTagsChange = (event: any): void => {
-    const { value } = event.target;
-    form.setFieldValue('tags', value);
-  };
-
-  const handleCategoriesChange = (event: any): void => {
-    const { value } = event.target;
-    form.setFieldValue('categories', value);
-  };
   //#endregion
 
   //#region Handle Popup
@@ -147,6 +124,39 @@ const CreateNewPost = () => {
       form.setFieldValue('file', '');
       setSelectedFile(null);
     }
+  };
+
+  const handleHashTagsChange = (_, newValues): void => {
+    console.log('newValues', newValues);
+  };
+
+  const handleCategoriesChange = (_, newValues): void => {
+    console.log('newValues', newValues);
+  };
+
+  const showFormPopup = async (title: string, inputLabel: string): Promise<any> => {
+    const { value } = await SweetAlert.fire({
+      icon: 'info',
+      title,
+      input: 'text',
+      inputLabel,
+      inputValue: '',
+      showCancelButton: true,
+      confirmButtonText: 'Create',
+      inputValidator: (value) => {
+        const specialCharacterRegex = /[^A-Za-z 0-9]/g;
+        if (!value || !value.trim()) {
+          return 'You need to write something!';
+        }
+        if (value.length > 15) {
+          return 'Value cannot be more than 15 characters';
+        }
+        if (specialCharacterRegex.test(value)) {
+          return 'Value can be contain special character';
+        }
+      },
+    });
+    return value;
   };
 
   useEffect(() => {
@@ -196,68 +206,30 @@ const CreateNewPost = () => {
                 placeholder='Description (optional)'
               />
             </Box>
+            <Stack direction='row' justifyContent='flex-start' alignItems='center'>
+              <FormControl className={cx(styles['form-group'], styles['dropdown'])}>
+                <AppSelect
+                  data={tags}
+                  mappingLabelField='tagName'
+                  isMultipleSelect={true}
+                  optionLabel='Select hash tags'
+                  onChange={handleHashTagsChange}
+                  value={form.values.tags}
+                />
+              </FormControl>
+              <Button variant='contained' onClick={() => showFormPopup('New Hashtag', 'Enter new hashtag')}>
+                Add new
+              </Button>
+            </Stack>
             <FormControl className={styles['form-group']}>
-              <InputLabel id='tags-label'>Tags</InputLabel>
-              <Select
-                id='tags'
-                multiple
-                fullWidth
-                labelId='tags-label'
-                value={form.values.tags}
-                input={<OutlinedInput label='Tags' />}
-                MenuProps={MenuProps}
-                renderValue={(selectedValues: string[]) => {
-                  if (selectedValues.length) {
-                    return (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {utils.mapJson2Obj(selectedValues).map((value) => (
-                          <Chip key={value.id} label={value.tagName} />
-                        ))}
-                      </Box>
-                    );
-                  }
-                }}
-                onChange={handleTagsChange}
-              >
-                {Array.isArray(tags) &&
-                  tags.map((tag) => (
-                    <MenuItem key={tag.id} value={JSON.stringify(tag)}>
-                      <Checkbox checked={form.values.tags.includes(JSON.stringify(tag))} />
-                      <ListItemText primary={tag.tagName} />
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
-            <FormControl className={styles['form-group']}>
-              <InputLabel id='categories-label'>Categories</InputLabel>
-              <Select
-                multiple
-                fullWidth
-                labelId='categories-label'
-                value={form.values.categories}
-                input={<OutlinedInput label='Categories' />}
-                MenuProps={MenuProps}
-                renderValue={(selectedValues: string[]) => {
-                  if (selectedValues.length) {
-                    return (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {utils.mapJson2Obj(selectedValues).map((value) => (
-                          <Chip key={value.id} label={value.categoryName} />
-                        ))}
-                      </Box>
-                    );
-                  }
-                }}
+              <AppSelect
+                data={categories}
+                mappingLabelField='categoryName'
+                isMultipleSelect={true}
+                optionLabel='Select categories'
                 onChange={handleCategoriesChange}
-              >
-                {Array.isArray(categories) &&
-                  categories.map((category: any) => (
-                    <MenuItem key={category.id} value={JSON.stringify(category)}>
-                      <Checkbox checked={form.values.categories.includes(JSON.stringify(category))} />
-                      <ListItemText primary={category.categoryName} />
-                    </MenuItem>
-                  ))}
-              </Select>
+                value={form.values.categories}
+              />
             </FormControl>
           </Grid>
           <Grid item md={6} sm={12}>
