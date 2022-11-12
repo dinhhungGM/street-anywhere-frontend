@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import * as profileAsyncActions from './profileDashboardAsyncActions';
+import { IMyPost } from './profileDashBoardModels';
 
 interface IProfileState {
-  postsOfCurrentUser: any[];
+  postsOfCurrentUser: IMyPost[];
 }
 
 const initialState: IProfileState = {
