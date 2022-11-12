@@ -2,7 +2,6 @@ import { AddReaction, Bookmark, Comment, Delete, Edit, Map, Room, Visibility } f
 import {
   Avatar,
   Box,
-  Divider,
   Grid,
   IconButton,
   ListItemIcon,
@@ -13,12 +12,70 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import _ from 'lodash';
 import React from 'react';
+import ReactPlayer from 'react-player';
+import { useNavigate } from 'react-router-dom';
+import SweetAlert from 'sweetalert2';
+import { AppCardCategories } from '../../../solutions/components/app-card-categories';
+import { AppCardTags } from '../../../solutions/components/app-card-tags';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppInfoWidget } from '../../../solutions/components/app-info-widget';
 import { AppMoreMenu } from '../../../solutions/components/app-more-menu';
 
-const MyPost = () => {
+interface IMyPostProps {
+  tags?: string[];
+  postId?: number;
+  mediaUrl?:string;
+  fullName?: string;
+  latitude?: number;
+  location?: string;
+  viewCount?: number;
+  longitude?: number;
+  createdAt?: string;
+  shortTitle?: string;
+  description?: string;
+  typeOfMedia?: string;
+  categories?: string[];
+  commentCount?: number;
+  reactionCount?: number;
+  bookmarkCount?: number;
+}
+const MyPost = ({
+  tags,
+  postId,
+  fullName,
+  latitude,
+  location,
+  viewCount,
+  longitude,
+  createdAt,
+  categories,
+  shortTitle,
+  description,
+  typeOfMedia,
+  commentCount,
+  reactionCount,
+  bookmarkCount,
+}: IMyPostProps) => {
+  const navigate = useNavigate();
+
+  const deletePost = async () => {
+    SweetAlert.fire({
+      icon: 'warning',
+      title: 'Confirm',
+      showCancelButton: true,
+      showConfirmButton: true,
+      confirmButtonText: 'Delete',
+      confirmButtonColor: '#e60023',
+      text: 'Are you sure to remove this post?',
+    });
+  };
+
+  const navigateToPostDetail = (): void => {
+    navigate(`/posts/${postId}`);
+  };
+
   return (
     <>
       <Box
@@ -35,9 +92,9 @@ const MyPost = () => {
             <Avatar />
             <Box>
               <Typography variant='h6' fontWeight={700}>
-                Nguyen Duc Hoa
+                {fullName}
               </Typography>
-              <Typography fontSize={14}>{new Date().toLocaleString()}</Typography>
+              <Typography fontSize={14}>{new Date(createdAt).toLocaleString()}</Typography>
             </Box>
           </Stack>
           <AppMoreMenu>
@@ -47,7 +104,7 @@ const MyPost = () => {
               </ListItemIcon>
               <ListItemText>Update</ListItemText>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={deletePost}>
               <ListItemIcon>
                 <AppIcon icon={Delete} />
               </ListItemIcon>
@@ -60,41 +117,69 @@ const MyPost = () => {
             height: '100%',
           }}
         >
-          <Grid container spacing={2}>
-            <Grid item sm={12} md={6}>
-              <Stack justifyContent='center' alignItems='center' marginTop={2} height='100%'>
-                <img
-                  src='https://picsum.photos/200'
-                  alt=''
-                  style={{
-                    maxHeight: '100%',
-                  }}
-                />
+          <Grid container spacing={3}>
+            <Grid item sm={12} md={5}>
+              <Stack justifyContent='center' alignItems='center' marginTop={2} height='100%' paddingY={2}>
+                {typeOfMedia === 'image' ? (
+                  <img
+                    src='https://picsum.photos/200'
+                    alt=''
+                    style={{
+                      maxHeight: '100%',
+                    }}
+                  />
+                ) : (
+                  <ReactPlayer
+                    height='100%'
+                    width='100%'
+                    url='https://www.youtube.com/watch?v=k2AuWmOoaYE&list=RDk2AuWmOoaYE&start_radio=1'
+                    light
+                    style={{
+                      maxHeight: '800px',
+                    }}
+                  />
+                )}
               </Stack>
             </Grid>
-            <Grid item sm={12} md={6}>
-              <Box marginTop={2}>
-                <Typography>Description</Typography>
-                <Stack direction='row' spacing={2} alignItems='center' justifyContent='flex-start'>
+            <Grid item sm={12} md={7}>
+              <Box marginTop={2} height='100%'>
+                <Typography variant='h4'>{shortTitle}</Typography>
+                {_.isNil(description) && <Typography textAlign='justify'>{description}</Typography>}
+                <Stack direction='row' spacing={2} alignItems='center' justifyContent='flex-start' marginBottom={1}>
                   <AppIcon icon={Room} color='#e60023' />
-                  <Typography>Location</Typography>
+                  <Typography
+                    sx={{
+                      width: '90%',
+                    }}
+                  >
+                    {location}
+                  </Typography>
+                  <AppCardTags tags={tags} />
+                  <AppCardCategories categories={categories} />
                   <Tooltip title='View on map' placement='top'>
                     <IconButton size='large' color='primary'>
                       <AppIcon icon={Map} color='#0288d1' />
                     </IconButton>
                   </Tooltip>
                 </Stack>
-                <Stack direction='row' spacing={2} alignItems='center' justifyContent='center'>
+                <Stack
+                  direction='row'
+                  spacing={2}
+                  alignItems='center'
+                  justifyContent='center'
+                  width='100%'
+                  marginTop='auto'
+                >
                   <AppInfoWidget
-                    icon={AddReaction}
+                    value={reactionCount}
                     title='Reactions'
-                    value={3}
+                    icon={AddReaction}
                     iconColor='#fbe44b'
                     isInteractive={true}
                   />
-                  <AppInfoWidget icon={Comment} title='Comments' value={3} isInteractive={true} />
-                  <AppInfoWidget icon={Visibility} title='Views' value={3} iconColor='#eab171' />
-                  <AppInfoWidget icon={Bookmark} title='Bookmarks' value={3} iconColor='#0288d1' />
+                  <AppInfoWidget icon={Comment} title='Comments' value={commentCount} isInteractive={true} />
+                  <AppInfoWidget icon={Visibility} title='Views' value={viewCount} iconColor='#eab171' />
+                  <AppInfoWidget icon={Bookmark} title='Bookmarks' value={bookmarkCount} iconColor='#0288d1' />
                 </Stack>
               </Box>
             </Grid>

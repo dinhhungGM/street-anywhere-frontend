@@ -10,6 +10,7 @@ import { authSelectors } from '../auth/store';
 import styles from './styles.module.scss';
 import * as profileAsyncActions from './profileDashboardAsyncActions';
 import * as profileSelectors from './profileDashBoardSelectors';
+import { MyPost } from './my-post';
 
 const ProfileDashBoard = () => {
   const navigate = useNavigate();
@@ -70,8 +71,14 @@ const ProfileDashBoard = () => {
             <AppInfoWidget icon={Bookmark} title='Bookmarks' iconColor='#0288d1' value={5} />
           </Stack>
         </Box>
-        <Box>
-          <Grid container>
+        <Box
+          sx={{
+            backgroundColor: '#f2f5f8',
+            padding: '16px',
+            borderRadius: '8px',
+          }}
+        >
+          <Grid container spacing={2}>
             <Grid item sm={12} md={4}>
               <Box component={Paper} elevation={2} padding={2}>
                 <Typography textAlign='center' marginBottom={2}>
@@ -81,7 +88,29 @@ const ProfileDashBoard = () => {
               </Box>
             </Grid>
             <Grid item sm={12} md={8}>
-              <Box paddingY={2}></Box>
+              <Box>
+                {posts?.map((post) => (
+                  <MyPost
+                    key={post.id}
+                    tags={post.tags}
+                    postId={post.id}
+                    viewCount={post.views}
+                    typeOfMedia={post.type}
+                    latitude={post.latitude}
+                    location={post.location}
+                    createdAt={post.createdAt}
+                    longitude={post.longitude}
+                    shortTitle={post.shortTitle}
+                    categories={post.categories}
+                    description={post.description}
+                    commentCount={post.commentCount}
+                    fullName={currentUser?.fullName}
+                    bookmarkCount={post.bookmarkCount}
+                    reactionCount={post.reactionCount}
+                    mediaUrl={post.type === 'image' ? post.imageUrl : post.videoYtbUrl}
+                  />
+                ))}
+              </Box>
             </Grid>
           </Grid>
         </Box>
