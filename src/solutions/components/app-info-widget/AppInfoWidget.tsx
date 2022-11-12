@@ -3,7 +3,7 @@ import { Box, Paper, Typography } from '@mui/material';
 import React from 'react';
 import { AppIcon } from '../app-icon';
 import CountUp from 'react-countup';
-
+import styles from './styles.module.scss';
 interface IAppInfoWidgetProps {
   icon?: any;
   width?: number;
@@ -12,8 +12,9 @@ interface IAppInfoWidgetProps {
   iconSize?: number;
   iconColor?: string;
   coverImage?: string;
+  isInteractive?: boolean;
   value?: string | number | null;
-  replaceText?: string;
+  onClick?: () => void;
 }
 const AppInfoWidget = ({
   iconColor,
@@ -22,8 +23,9 @@ const AppInfoWidget = ({
   iconSize = 40,
   icon = Widgets,
   title = 'Title',
-  replaceText = '',
   coverImage = 'unset',
+  isInteractive = false,
+  onClick = () => {},
 }: IAppInfoWidgetProps) => {
   return (
     <>
@@ -38,7 +40,10 @@ const AppInfoWidget = ({
           flexDirection: 'column',
           alignItems: 'center',
           padding: '12px',
+          cursor: isInteractive ? 'pointer' : 'initial',
         }}
+        onClick={onClick}
+        className={isInteractive ? styles['hoverable-box'] : null}
       >
         <AppIcon icon={icon} fontSize={iconSize} color={iconColor} />
         <Typography variant='h3' paddingY={3}>
