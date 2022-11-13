@@ -2,12 +2,12 @@ import { Autocomplete, Box, TextField } from '@mui/material';
 import React from 'react';
 
 interface IAppSelect {
-  data: any;
-  value: any;
+  data?: any;
+  value?: any;
   optionLabel?: string;
-  mappingLabelField: string;
+  mappingLabelField?: string;
   isMultipleSelect?: boolean;
-  onChange: (event: any, newValue: any) => void;
+  onChange?: (event: any, newValue: any) => void;
 }
 
 const AppSelect = ({
@@ -33,7 +33,7 @@ const AppSelect = ({
           onChange={onChange}
           multiple={isMultipleSelect}
           getOptionLabel={(optionItem) => optionItem[mappingLabelField]}
-          renderInput={(params) => <TextField {...params} variant='standard' label={optionLabel} />}
+          renderInput={(params) => <TextField {...params} label={optionLabel} />}
         />
       </Box>
     </>

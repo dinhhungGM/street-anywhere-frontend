@@ -45,8 +45,8 @@ const AppModal = ({
             width: width || '800px',
           }}
         >
-          <Box className={styles.modal__header}>
-            <Stack direction='row' alignItems='center' justifyContent='space-between'>
+          <Box className={styles.modal__header} paddingBottom={1}>
+            <Stack direction='row' alignItems='center' justifyContent='space-between' >
               <Typography variant='h5' fontWeight={700}>
                 {title || 'Modal title'}
               </Typography>

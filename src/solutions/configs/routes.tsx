@@ -3,7 +3,7 @@ import { lazy, ReactNode } from 'react';
 const LazyLandingPage = lazy(() => import('../../features/landing-page').then((m) => ({ default: m.LandingPage })));
 const LazySignUp = lazy(() => import('../../features/auth/sign-up').then((m) => ({ default: m.SignUp })));
 const LazyCreateNewPost = lazy(() =>
-  import('./../../features/posts/create-new-post').then((m) => ({ default: m.CreateNewPost })),
+  import('./../../features/posts/create-new-post-v2').then((m) => ({ default: m.CreateNewPostV2 })),
 );
 const LazyPostDetail = lazy(() =>
   import('./../../features/posts/post-detail').then((m) => ({ default: m.PostDetail })),
@@ -45,7 +45,9 @@ const LazyRoleManagement = lazy(() =>
     default: m.RoleManagement,
   })),
 );
-const LazyProfileDashBoard = lazy(() => import('../../features/profile-dashboard').then((m) => ({ default: m.ProfileDashboard })));
+const LazyProfileDashBoard = lazy(() =>
+  import('../../features/profile-dashboard').then((m) => ({ default: m.ProfileDashboard })),
+);
 
 type Route = {
   id: string;
