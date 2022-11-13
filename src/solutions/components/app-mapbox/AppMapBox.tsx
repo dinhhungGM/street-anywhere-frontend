@@ -19,15 +19,19 @@ interface IAppMapBox {
   mapHeight?: string;
   language?: string;
   isDisplayGeoDirection?: boolean;
+  onClickOnMap?: (e) => any;
+  onSearchOnMap?: (e) => any;
 }
 const AppMapBox = ({
   baseLat = 14.058324,
   baseLong = 108.277199,
   baseZoom = 5.5,
   mapWidth = '100%',
-  mapHeight = '800px',
+  mapHeight = '100%',
   language = 'en',
   isDisplayGeoDirection = false,
+  onClickOnMap = (e) => {},
+  onSearchOnMap = (e) => {},
 }: IAppMapBox) => {
   const mapRef = useRef();
   useEffect(() => {
@@ -55,6 +59,10 @@ const AppMapBox = ({
     const mapboxLanguage = new MapboxLanguage({
       defaultLanguage: language,
     });
+
+    // Init event
+    map.on('click', onClickOnMap);
+    mapboxGeocoder.on('result', onSearchOnMap);
 
     // Add control
     isDisplayGeoDirection && map.addControl(mapboxDirections, 'top-left');
