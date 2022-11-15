@@ -1,4 +1,4 @@
-import { Add, Map, PostAdd, UploadFile } from '@mui/icons-material';
+import { Add, Close, Map, PostAdd, UploadFile } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -33,6 +33,10 @@ import { categoriesActions, categoriesSelectors } from '../../categories/store';
 import { tagsActions, tagSelectors } from '../../tags/store';
 import * as yup from 'yup';
 import { Marker } from 'mapbox-gl';
+import { ICategory } from '../../categories/store/categoriesModels';
+import { ITag } from '../../tags/store/tagModels';
+import { AppIconButton } from '../../../solutions/components/app-icon-button';
+import { AppUploadButton } from '../../../solutions/components/app-upload-button';
 
 const CreateNewPostV2 = () => {
   const navigate = useNavigate();
@@ -64,6 +68,9 @@ const CreateNewPostV2 = () => {
       latitude: yup.number().required('Required!').typeError('Invalid latitude value'),
     }),
   });
+  const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
+  const [selectedHashtags, setSelectedHashtags] = useState<ITag[]>([]);
+  const [file, setFile] = useState<File | null>(null);
 
   const changeContentType = (event: ChangeEvent<HTMLInputElement>): void => {
     setContentType((event.target as HTMLInputElement).value);
@@ -165,6 +172,36 @@ const CreateNewPostV2 = () => {
     setIsOpenMap(false);
   };
 
+  const handleHashTagChange = (_, newValues): void => {
+    setSelectedHashtags(newValues);
+  };
+
+  const handleCategoryChange = (_, newValues): void => {
+    setSelectedCategories(newValues);
+  };
+
+  const handleUploadFile = (event) => {
+    const file = event.target.files[0] as File;
+    if (!_.isNil(file)) {
+      const isValidExt = ['image/gif', 'image/jpeg', 'image/png'].includes(file.type);
+      if (isValidExt) {
+        setFile(file);
+      } else {
+        SweetAlert.fire({
+          title: 'Error',
+          icon: 'error',
+          text: 'Invalid file type. It should be a image file',
+        });
+      }
+    } else {
+      SweetAlert.fire({
+        title: 'Error',
+        icon: 'error',
+        text: 'Please choose an image file to upload',
+      });
+    }
+  };
+
   useEffect(() => {
     if (_.isNil(currentUser)) {
       SweetAlert.fire({
@@ -261,16 +298,23 @@ const CreateNewPostV2 = () => {
                     </RadioGroup>
                   </FormControl>
                   <Box marginTop={1}>
-                    {contentType === 'image' && (
-                      <Button
-                        type='button'
-                        variant='contained'
-                        startIcon={<AppIcon icon={UploadFile} color='#fff' />}
-                        sx={{ textTransform: 'initial' }}
-                      >
-                        Upload image
-                      </Button>
-                    )}
+                    {contentType === 'image' &&
+                      (_.isNil(file) ? (
+                        <AppUploadButton
+                          buttonLabel='Upload image'
+                          acceptFile='image/*'
+                          onUploadingFile={handleUploadFile}
+                        />
+                      ) : (
+                        <Stack direction='row' spacing={2} alignItems='center'>
+                          <Typography>{file.name}</Typography>
+                          <AppIconButton
+                            tooltip='Cancel'
+                            icon={<AppIcon icon={Close} color='#e60023' />}
+                            onClick={() => setFile(null)}
+                          />
+                        </Stack>
+                      ))}
                     {contentType === 'youtube' && (
                       <TextField
                         sx={{
@@ -362,41 +406,37 @@ const CreateNewPostV2 = () => {
                       </Box>
                     )}
                   </Box>
-                  <Stack direction='row' alignItems='center' justifyContent='space-between' marginTop={1} spacing={2}>
+                  <Stack direction='row' alignItems='center' justifyContent='space-between' marginTop={2} spacing={2}>
                     <AppSelect
                       data={categories}
                       mappingLabelField='categoryName'
                       isMultipleSelect={true}
                       optionLabel='Categories'
-                      value={undefined}
+                      value={selectedCategories}
+                      onChange={handleCategoryChange}
                     />
-                    <Tooltip title='Add new category' placement='top'>
-                      <IconButton
-                        size='large'
-                        color='info'
-                        onClick={() => openCreateFormPopup('New category', 'Enter new category', 20, createNewCategory)}
-                      >
-                        <AppIcon icon={Add} color='#0288d1' />
-                      </IconButton>
-                    </Tooltip>
+                    <AppIconButton
+                      tooltip='Add new category'
+                      icon={<AppIcon icon={Add} color='#0288d1' />}
+                      buttonColor='info'
+                      onClick={() => openCreateFormPopup('New category', 'Enter new category', 20, createNewCategory)}
+                    />
                   </Stack>
-                  <Stack direction='row' alignItems='center' justifyContent='space-between' marginTop={1} spacing={2}>
+                  <Stack direction='row' alignItems='center' justifyContent='space-between' marginTop={2} spacing={2}>
                     <AppSelect
                       data={hashtags}
                       mappingLabelField='tagName'
                       isMultipleSelect={true}
                       optionLabel='Hashtags'
-                      value={undefined}
+                      value={selectedHashtags}
+                      onChange={handleHashTagChange}
                     />
-                    <Tooltip title='Add new hashtag' placement='top'>
-                      <IconButton
-                        size='large'
-                        color='info'
-                        onClick={() => openCreateFormPopup('New hashtag', 'Enter new hashtag', 10, createNewHashTag)}
-                      >
-                        <AppIcon icon={Add} color='#0288d1' />
-                      </IconButton>
-                    </Tooltip>
+                    <AppIconButton
+                      tooltip='Add new hashtag'
+                      icon={<AppIcon icon={Add} color='#0288d1' />}
+                      buttonColor='info'
+                      onClick={() => openCreateFormPopup('New hashtag', 'Enter new hashtag', 10, createNewHashTag)}
+                    />
                   </Stack>
                 </Grid>
                 <Grid item sm={12} md={6}>

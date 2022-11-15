@@ -31,6 +31,7 @@ const AppSelect = ({
           value={value}
           options={data}
           onChange={onChange}
+          disableCloseOnSelect
           multiple={isMultipleSelect}
           getOptionLabel={(optionItem) => optionItem[mappingLabelField]}
           renderInput={(params) => <TextField {...params} label={optionLabel} />}
