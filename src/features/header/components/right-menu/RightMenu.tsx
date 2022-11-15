@@ -8,7 +8,7 @@ import {
   Search,
   Notifications,
 } from '@mui/icons-material';
-import { Drawer, IconButton, Stack, Tooltip } from '@mui/material';
+import { Badge, Drawer, IconButton, Stack, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../../../app/hooks';
@@ -77,7 +77,9 @@ const RightMenu = () => {
             </Tooltip>
             <Tooltip title='Notification'>
               <IconButton size='large'>
-                <AppIcon icon={Notifications} color='#84849d' />
+                <Badge color='error' badgeContent={10}>
+                  <AppIcon icon={Notifications} color='#84849d' />
+                </Badge>
               </IconButton>
             </Tooltip>
             {currentUser?.isAdmin ? (

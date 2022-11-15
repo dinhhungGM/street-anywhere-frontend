@@ -1,9 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import bookmarkService from '../../../solutions/services/bookmarkService';
-import categoryService from '../../../solutions/services/categoryService';
 import postService from '../../../solutions/services/postService';
 import reactionsService from '../../../solutions/services/reactionsService';
-import tagService from '../../../solutions/services/tagService';
 import AlertUtil from '../../../solutions/utils/alertUtil';
 import { wrapperActions } from '../../wrapper/store';
 
@@ -13,32 +11,6 @@ export const postActionsAsync = {
       dispatch(wrapperActions.showLoading());
       const { data } = await postService.createNewPost(payload);
       AlertUtil.showSuccess(data.message);
-      return data.value;
-    } catch (error) {
-      dispatch(wrapperActions.hideLoading());
-      AlertUtil.showError(error);
-      return Promise.reject();
-    } finally {
-      dispatch(wrapperActions.hideLoading());
-    }
-  }),
-  getTagsAsync: createAsyncThunk('post/getTags', async (_: any, { dispatch }) => {
-    try {
-      dispatch(wrapperActions.showLoading());
-      const { data } = await tagService.getAllTags();
-      return data.value;
-    } catch (error) {
-      dispatch(wrapperActions.hideLoading());
-      AlertUtil.showError(error);
-      return Promise.reject();
-    } finally {
-      dispatch(wrapperActions.hideLoading());
-    }
-  }),
-  getCategoriesAsync: createAsyncThunk('post/getCategories', async (_: any, { dispatch }) => {
-    try {
-      dispatch(wrapperActions.showLoading());
-      const { data } = await categoryService.getAllCategories();
       return data.value;
     } catch (error) {
       dispatch(wrapperActions.hideLoading());
@@ -85,15 +57,6 @@ export const postActionsAsync = {
       return Promise.reject();
     } finally {
       dispatch(wrapperActions.hideLoading());
-    }
-  }),
-  getReactionsAsync: createAsyncThunk('post/getReactionsAsync', async () => {
-    try {
-      const { data } = await reactionsService.getReactions();
-      return data.value;
-    } catch (error) {
-      AlertUtil.showError(error);
-      return Promise.reject();
     }
   }),
   addReactionAsync: createAsyncThunk(

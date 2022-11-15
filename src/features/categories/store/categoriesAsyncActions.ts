@@ -18,3 +18,34 @@ export const getCategoryList = createAsyncThunk('categories/getCategoryList', as
     dispatch(wrapperActions.hideLoading());
   }
 });
+
+export const createNewCategory = createAsyncThunk(
+  'categories/createNewCategory',
+  async (categoryName: string, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      await axios.post(
+        '/categories',
+        {
+          categoryName,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      dispatch(getCategoryList());
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
