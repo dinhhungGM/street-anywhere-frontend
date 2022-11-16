@@ -24,7 +24,7 @@ export const createNewHashTag = createAsyncThunk(
   async (tagName: string, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      await axios.post(
+      const { data } = await axios.post(
         '/tags',
         {
           tagName,
@@ -36,6 +36,7 @@ export const createNewHashTag = createAsyncThunk(
         },
       );
       dispatch(getTagList());
+      return data.value;
     } catch (error) {
       dispatch(
         wrapperActions.showNotification({

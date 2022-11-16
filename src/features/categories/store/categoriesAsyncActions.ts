@@ -24,7 +24,7 @@ export const createNewCategory = createAsyncThunk(
   async (categoryName: string, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      await axios.post(
+      const { data } = await axios.post(
         '/categories',
         {
           categoryName,
@@ -36,6 +36,7 @@ export const createNewCategory = createAsyncThunk(
         },
       );
       dispatch(getCategoryList());
+      return data.value;
     } catch (error) {
       dispatch(
         wrapperActions.showNotification({

@@ -1,4 +1,4 @@
-import { Add, Close, Map, PostAdd, UploadFile } from '@mui/icons-material';
+import { Add, Close, Map, PostAdd } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -7,36 +7,61 @@ import {
   FormControlLabel,
   FormLabel,
   Grid,
-  IconButton,
   Paper,
   Radio,
   RadioGroup,
   Stack,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import _ from 'lodash';
-import { ChangeEvent, useEffect, useState, useMemo } from 'react';
+import { Marker } from 'mapbox-gl';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
+import * as yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppIcon } from '../../../solutions/components/app-icon';
+import { AppIconButton } from '../../../solutions/components/app-icon-button';
 import { AppMapBox, IPoint } from '../../../solutions/components/app-mapbox';
 import { AppModal } from '../../../solutions/components/app-modal';
+import { AppRadioGroup } from '../../../solutions/components/app-radio-group';
 import { AppSelect } from '../../../solutions/components/app-select';
+import { AppUploadButton } from '../../../solutions/components/app-upload-button';
 import { authSelectors } from '../../auth/store';
 import { categoriesActions, categoriesSelectors } from '../../categories/store';
-import { tagsActions, tagSelectors } from '../../tags/store';
-import * as yup from 'yup';
-import { Marker } from 'mapbox-gl';
 import { ICategory } from '../../categories/store/categoriesModels';
+import { tagsActions, tagSelectors } from '../../tags/store';
 import { ITag } from '../../tags/store/tagModels';
-import { AppIconButton } from '../../../solutions/components/app-icon-button';
-import { AppUploadButton } from '../../../solutions/components/app-upload-button';
+
+const contentTypeOptions = [
+  {
+    id: 1,
+    value: 'image',
+    label: 'Image',
+  },
+  {
+    id: 2,
+    value: 'youtube',
+    label: 'Youtube',
+  },
+];
+
+const locationOptions = [
+  {
+    id: 1,
+    value: 'manual',
+    label: 'Enter manually',
+  },
+  {
+    id: 2,
+    value: 'select',
+    label: 'Select on map',
+  },
+];
 
 const CreateNewPostV2 = () => {
   const navigate = useNavigate();
@@ -56,9 +81,25 @@ const CreateNewPostV2 = () => {
       longitude: '',
       latitude: '',
       description: '',
+      videoYtbUrl: '',
     },
     onSubmit: async (value, { resetForm }) => {
       console.log('form value', value);
+      // Check media
+      if (contentType === 'image') {
+        if (_.isNil(file)) {
+          SweetAlert.fire({
+            title: 'Error',
+            icon: 'error',
+            text: 'Please choose an image  file to continue',
+          });
+        } else {
+          delete form.values.videoYtbUrl;
+        }
+      } else if (contentType === 'youtube') {
+      }
+      // Check categories
+      // Check hashtags
     },
     validationSchema: yup.object().shape({
       title: yup.string().trim().required('Required!').max(50, 'Can not be more than 50 characters'),
@@ -114,15 +155,16 @@ const CreateNewPostV2 = () => {
 
   const createNewCategory = async (categoryName: string) => {
     const response = await dispatch(categoriesActions.createNewCategory(categoryName));
+    console.log(response);
     if (response.meta.requestStatus === 'fulfilled') {
-      console.log('Create new category successfully');
+      setSelectedCategories([...selectedCategories, response.payload]);
     }
   };
 
   const createNewHashTag = async (hashtag: string) => {
     const response = await dispatch(tagsActions.createNewHashTag(hashtag));
     if (response.meta.requestStatus === 'fulfilled') {
-      console.log('Create new hashtag successfully');
+      setSelectedHashtags([...selectedHashtags, response.payload]);
     }
   };
 
@@ -179,6 +221,8 @@ const CreateNewPostV2 = () => {
   const handleCategoryChange = (_, newValues): void => {
     setSelectedCategories(newValues);
   };
+
+  console.log('render');
 
   const handleUploadFile = (event) => {
     const file = event.target.files[0] as File;
@@ -277,26 +321,12 @@ const CreateNewPostV2 = () => {
                     error={isInvalidControl('shortTitle')}
                     helperText={getErrorMessage('shortTitle')}
                   />
-                  <FormControl>
-                    <FormLabel
-                      id='demo-radio-buttons-group-label'
-                      sx={{
-                        fontWeight: 700,
-                      }}
-                    >
-                      Content type
-                    </FormLabel>
-                    <RadioGroup
-                      row
-                      name='radio-buttons-group'
-                      onChange={changeContentType}
-                      value={contentType}
-                      aria-labelledby='demo-radio-buttons-group-label'
-                    >
-                      <FormControlLabel value='image' control={<Radio />} label='Image' />
-                      <FormControlLabel value='youtube' control={<Radio />} label='Youtube' />
-                    </RadioGroup>
-                  </FormControl>
+                  <AppRadioGroup
+                    label='Content type'
+                    options={contentTypeOptions}
+                    value={contentType}
+                    onChange={changeContentType}
+                  />
                   <Box marginTop={1}>
                     {contentType === 'image' &&
                       (_.isNil(file) ? (
@@ -323,30 +353,17 @@ const CreateNewPostV2 = () => {
                         }}
                         fullWidth
                         label='Youtube link'
+                        {...form.getFieldProps('videoYtbUrl')}
                       />
                     )}
                   </Box>
                   <Box marginTop={1}>
-                    <FormControl>
-                      <FormLabel
-                        id='location-mode'
-                        sx={{
-                          fontWeight: 700,
-                        }}
-                      >
-                        Location
-                      </FormLabel>
-                      <RadioGroup
-                        row
-                        value={locationMode}
-                        name='location-mode-group'
-                        aria-labelledby='location-mode'
-                        onChange={changeLocationMode}
-                      >
-                        <FormControlLabel value='manual' control={<Radio />} label='Enter manually' />
-                        <FormControlLabel value='select' control={<Radio />} label='Select on map' />
-                      </RadioGroup>
-                    </FormControl>
+                    <AppRadioGroup
+                      label='Location'
+                      options={locationOptions}
+                      value={locationMode}
+                      onChange={changeLocationMode}
+                    />
                   </Box>
                   <Box marginTop={1}>
                     {(locationMode === 'manual' || marker) && (

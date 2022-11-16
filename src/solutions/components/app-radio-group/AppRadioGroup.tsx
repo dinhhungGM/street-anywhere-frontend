@@ -3,19 +3,17 @@ import React from 'react';
 
 interface IAppRadioGroupProps {
   control?: any;
-  options: any[];
   label?: string;
   value?: string | null;
   isFullWidth?: boolean;
   isHorizontal?: boolean;
-  mappingValueField: string;
-  onChange: (e) => any;
+  options?: { id: number; value: string; label: string }[];
+  onChange?: (e) => any;
 }
 const AppRadioGroup = ({
   value,
   options = [],
   label = 'Label',
-  mappingValueField,
   isFullWidth = true,
   control = <Radio />,
   isHorizontal = true,
@@ -40,12 +38,7 @@ const AppRadioGroup = ({
           aria-labelledby='demo-radio-buttons-group-label'
         >
           {options.map((item) => (
-            <FormControlLabel
-              control={control}
-              key={item[mappingValueField]}
-              value={item[mappingValueField]}
-              label={item[mappingValueField]}
-            />
+            <FormControlLabel control={control} key={item.id} value={item.value} label={item.label} />
           ))}
         </RadioGroup>
       </FormControl>
