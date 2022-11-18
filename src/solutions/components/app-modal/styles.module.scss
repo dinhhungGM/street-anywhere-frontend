@@ -20,3 +20,9 @@
     padding-top: 8px;
   }
 }
+
+@media screen and (max-width: 1024px) {
+  .modal {
+    width: 80vw !important;
+  }
+}
