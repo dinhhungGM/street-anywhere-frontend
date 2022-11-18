@@ -1,19 +1,5 @@
 import { Add, Close, Map, PostAdd } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Grid,
-  Paper,
-  Radio,
-  RadioGroup,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Divider, Grid, Paper, Stack, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import _ from 'lodash';
 import { Marker } from 'mapbox-gl';
@@ -36,6 +22,8 @@ import { categoriesActions, categoriesSelectors } from '../../categories/store';
 import { ICategory } from '../../categories/store/categoriesModels';
 import { tagsActions, tagSelectors } from '../../tags/store';
 import { ITag } from '../../tags/store/tagModels';
+import { postActions } from '../store';
+import styles from './styles.module.scss';
 
 const contentTypeOptions = [
   {
@@ -45,29 +33,31 @@ const contentTypeOptions = [
   },
   {
     id: 2,
-    value: 'youtube',
-    label: 'Youtube',
+    value: 'video',
+    label: 'Video',
   },
 ];
 
-const locationOptions = [
-  {
-    id: 1,
-    value: 'manual',
-    label: 'Enter manually',
-  },
-  {
-    id: 2,
-    value: 'select',
-    label: 'Select on map',
-  },
-];
+const showError = (errorMessage: string): void => {
+  SweetAlert.fire({
+    title: 'Error',
+    icon: 'error',
+    text: errorMessage,
+  });
+};
+
+const showSuccess = (message: string): void => {
+  SweetAlert.fire({
+    title: 'Success',
+    icon: 'success',
+    text: message,
+  });
+};
 
 const CreateNewPostV2 = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [contentType, setContentType] = useState('image');
-  const [locationMode, setLocationMode] = useState('manual');
   const [isOpenMap, setIsOpenMap] = useState(false);
   const [marker, setMarker] = useState<IPoint | null>(null);
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
@@ -80,26 +70,60 @@ const CreateNewPostV2 = () => {
       location: '',
       longitude: '',
       latitude: '',
-      description: '',
       videoYtbUrl: '',
     },
-    onSubmit: async (value, { resetForm }) => {
-      console.log('form value', value);
+    onSubmit: async (values) => {
+      const formData = new FormData();
+      formData.append('title', values.title);
+      formData.append('shortTitle', values.shortTitle);
+      formData.append('longitude', values.longitude);
+      formData.append('latitude', values.latitude);
+      formData.append('location', values.location);
+      formData.append('userId', currentUser.id.toString());
+
       // Check media
       if (contentType === 'image') {
         if (_.isNil(file)) {
-          SweetAlert.fire({
-            title: 'Error',
-            icon: 'error',
-            text: 'Please choose an image  file to continue',
-          });
+          showError('Please choose an image  file to continue');
+          return;
         } else {
-          delete form.values.videoYtbUrl;
+          formData.append('type', 'image');
+          formData.append('media', file);
         }
-      } else if (contentType === 'youtube') {
+      } else if (contentType === 'video') {
+        const { videoYtbUrl } = form.values;
+        if (!videoYtbUrl.trim()) {
+          showError('Please fill youtube link');
+          return;
+        }
+        formData.append('type', 'video');
+        formData.append('videoYtbUrl', videoYtbUrl);
       }
       // Check categories
+      if (!selectedCategories.length) {
+        showError('Please select category for post');
+        return;
+      }
       // Check hashtags
+      if (!selectedCategories.length) {
+        showError('Please select hashtag for post');
+        return;
+      }
+      // Check description
+      if (description) {
+        formData.append('description', encodeURIComponent(description));
+      }
+
+      // Success
+      const tagIds = _.map(selectedHashtags, 'id');
+      const categoryIds = _.map(selectedCategories, 'id');
+      formData.append('tags', JSON.stringify(tagIds));
+      formData.append('categories', JSON.stringify(categoryIds));
+      const result = await dispatch(postActions.createPostActionAsync(formData));
+      if (result.meta.requestStatus === 'fulfilled') {
+        showSuccess('Create successfully');
+        navigate('/');
+      }
     },
     validationSchema: yup.object().shape({
       title: yup.string().trim().required('Required!').max(50, 'Can not be more than 50 characters'),
@@ -112,14 +136,10 @@ const CreateNewPostV2 = () => {
   const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
   const [selectedHashtags, setSelectedHashtags] = useState<ITag[]>([]);
   const [file, setFile] = useState<File | null>(null);
+  const [description, setDescription] = useState('');
 
   const changeContentType = (event: ChangeEvent<HTMLInputElement>): void => {
     setContentType((event.target as HTMLInputElement).value);
-  };
-
-  const changeLocationMode = (event: ChangeEvent<HTMLInputElement>): void => {
-    const value = (event.target as HTMLInputElement).value;
-    setLocationMode(value);
   };
 
   const openMap = (): void => {
@@ -141,7 +161,7 @@ const CreateNewPostV2 = () => {
           return 'Not empty';
         }
         if (value.length > maxLength) {
-          return `Can not be more than ${maxLength} characters`;
+          return `Can not be more than ${ maxLength } characters`;
         }
       },
       showCancelButton: true,
@@ -155,7 +175,6 @@ const CreateNewPostV2 = () => {
 
   const createNewCategory = async (categoryName: string) => {
     const response = await dispatch(categoriesActions.createNewCategory(categoryName));
-    console.log(response);
     if (response.meta.requestStatus === 'fulfilled') {
       setSelectedCategories([...selectedCategories, response.payload]);
     }
@@ -169,16 +188,12 @@ const CreateNewPostV2 = () => {
   };
 
   const isInvalidControl = (ctlName: string): boolean => {
-    return form.touched[ctlName] && form.errors[ctlName];
+    return !!form.touched[ctlName] && !!form.errors[ctlName];
   };
 
   const getErrorMessage = (ctlName: string): string => {
     return form.touched[ctlName] && form.errors[ctlName];
   };
-
-  const isFormValid = useMemo(() => {
-    return form.dirty && form.isValid;
-  }, [form.touched]);
 
   const selectedMarker = useMemo(() => {
     return new Marker();
@@ -222,8 +237,6 @@ const CreateNewPostV2 = () => {
     setSelectedCategories(newValues);
   };
 
-  console.log('render');
-
   const handleUploadFile = (event) => {
     const file = event.target.files[0] as File;
     if (!_.isNil(file)) {
@@ -231,18 +244,10 @@ const CreateNewPostV2 = () => {
       if (isValidExt) {
         setFile(file);
       } else {
-        SweetAlert.fire({
-          title: 'Error',
-          icon: 'error',
-          text: 'Invalid file type. It should be a image file',
-        });
+        showError('Invalid file type. It should be a image file');
       }
     } else {
-      SweetAlert.fire({
-        title: 'Error',
-        icon: 'error',
-        text: 'Please choose an image file to upload',
-      });
+      showError('Please choose an image file to upload');
     }
   };
 
@@ -278,27 +283,28 @@ const CreateNewPostV2 = () => {
           justifyContent: 'center',
           alignItems: 'center',
           height: 'calc(100% - 80px)',
-        }}
-      >
+        }}>
         <Box
           sx={{
             backgroundColor: '#fff',
-            width: '80%',
+            width: {
+              sm: '100%',
+              md: '80%',
+            },
             height: 'fit-content',
           }}
           padding={2}
           elevation={2}
           borderRadius={2}
-          component={Paper}
-        >
+          component={Paper}>
           <Typography textAlign='center' variant='h2' textTransform='uppercase' fontWeight={600}>
             New Post
           </Typography>
           <Divider>Information</Divider>
-          <form onSubmit={form.handleSubmit}>
-            <Box marginTop={2}>
-              <Grid container spacing={2}>
-                <Grid item sm={12} md={6}>
+          <form onSubmit={form.handleSubmit} style={{ width: '100%' }}>
+            <Box marginTop={2} width='100%'>
+              <Grid container spacing={2} width='100%'>
+                <Grid item xs={12} sm={12} md={6} alignItems='center' justifyContent='center'>
                   <TextField
                     sx={{
                       display: 'block',
@@ -345,7 +351,7 @@ const CreateNewPostV2 = () => {
                           />
                         </Stack>
                       ))}
-                    {contentType === 'youtube' && (
+                    {contentType === 'video' && (
                       <TextField
                         sx={{
                           display: 'block',
@@ -358,70 +364,52 @@ const CreateNewPostV2 = () => {
                     )}
                   </Box>
                   <Box marginTop={1}>
-                    <AppRadioGroup
-                      label='Location'
-                      options={locationOptions}
-                      value={locationMode}
-                      onChange={changeLocationMode}
+                    <Typography fontWeight={700} color='rgba(0, 0, 0, 0.6)'>
+                      Location
+                    </Typography>
+                    <Stack direction='row' spacing={3} justifyContent='space-between' alignItems='center' marginTop={1}>
+                      <TextField
+                        sx={{
+                          display: 'block',
+                        }}
+                        fullWidth
+                        label='Longitude'
+                        {...form.getFieldProps('longitude')}
+                        error={isInvalidControl('longitude')}
+                        helperText={getErrorMessage('longitude')}
+                      />
+                      <TextField
+                        sx={{
+                          display: 'block',
+                        }}
+                        fullWidth
+                        label='Latitude'
+                        {...form.getFieldProps('latitude')}
+                        error={isInvalidControl('latitude')}
+                        helperText={getErrorMessage('latitude')}
+                      />
+                    </Stack>
+                    <TextField
+                      sx={{
+                        display: 'block',
+                        marginTop: '12px',
+                      }}
+                      fullWidth
+                      label='Address'
+                      {...form.getFieldProps('location')}
+                      error={isInvalidControl('location')}
+                      helperText={getErrorMessage('location')}
                     />
-                  </Box>
-                  <Box marginTop={1}>
-                    {(locationMode === 'manual' || marker) && (
-                      <>
-                        <Stack
-                          direction='row'
-                          spacing={3}
-                          justifyContent='space-between'
-                          alignItems='center'
-                          marginTop={1}
-                        >
-                          <TextField
-                            sx={{
-                              display: 'block',
-                            }}
-                            fullWidth
-                            label='Longitude'
-                            {...form.getFieldProps('longitude')}
-                            error={isInvalidControl('longitude')}
-                            helperText={getErrorMessage('longitude')}
-                          />
-                          <TextField
-                            sx={{
-                              display: 'block',
-                            }}
-                            fullWidth
-                            label='Latitude'
-                            {...form.getFieldProps('latitude')}
-                            error={isInvalidControl('latitude')}
-                            helperText={getErrorMessage('latitude')}
-                          />
-                        </Stack>
-                        <TextField
-                          sx={{
-                            display: 'block',
-                            marginTop: '12px',
-                          }}
-                          fullWidth
-                          label='Location'
-                          {...form.getFieldProps('location')}
-                          error={isInvalidControl('location')}
-                          helperText={getErrorMessage('location')}
-                        />
-                      </>
-                    )}
-                    {locationMode === 'select' && (
-                      <Box marginTop={marker ? 1 : 0}>
-                        <Button
-                          type='button'
-                          variant='contained'
-                          onClick={openMap}
-                          sx={{ textTransform: 'initial' }}
-                          startIcon={<AppIcon icon={Map} color='#fff' />}
-                        >
-                          Select on map
-                        </Button>
-                      </Box>
-                    )}
+                    <Box marginTop={1}>
+                      <Button
+                        type='button'
+                        variant='contained'
+                        onClick={openMap}
+                        sx={{ textTransform: 'initial' }}
+                        startIcon={<AppIcon icon={Map} color='#fff' />}>
+                        Select on map
+                      </Button>
+                    </Box>
                   </Box>
                   <Stack direction='row' alignItems='center' justifyContent='space-between' marginTop={2} spacing={2}>
                     <AppSelect
@@ -456,17 +444,15 @@ const CreateNewPostV2 = () => {
                     />
                   </Stack>
                 </Grid>
-                <Grid item sm={12} md={6}>
-                  <Box height='100%'>
+                <Grid item xs={12} sm={12} md={6} alignItems='center' justifyContent='center'>
+                  <Box height='500px' width='100%'>
                     <ReactQuill
                       id='description'
                       theme='snow'
                       placeholder='Description (optional)'
-                      style={{
-                        height: '90%',
-                      }}
-                      value={form.values.description}
-                      onChange={form.handleChange}
+                      className={styles['text-editor']}
+                      value={description}
+                      onChange={setDescription}
                     />
                   </Box>
                 </Grid>
@@ -480,9 +466,7 @@ const CreateNewPostV2 = () => {
                 sx={{
                   textTransform: 'inherit',
                   fontSize: '18px',
-                }}
-                disabled={!isFormValid}
-              >
+                }}>
                 Create
               </Button>
             </Stack>
@@ -496,8 +480,7 @@ const CreateNewPostV2 = () => {
         onCancel={closeMap}
         width='1200px'
         okText='Select'
-        onOk={handleOnSelectPoint}
-      >
+        onOk={handleOnSelectPoint}>
         <AppMapBox mapHeight='600px' onClickOnMap={handleClickOnMap} onSearchOnMap={handleOnSearchOnMap} />
       </AppModal>
     </>

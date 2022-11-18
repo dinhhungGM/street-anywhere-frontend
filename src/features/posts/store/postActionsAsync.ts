@@ -14,7 +14,7 @@ export const postActionsAsync = {
       return data.value;
     } catch (error) {
       dispatch(wrapperActions.hideLoading());
-      AlertUtil.showError(error);
+      AlertUtil.showError(error.response.data.message);
       return Promise.reject();
     } finally {
       dispatch(wrapperActions.hideLoading());
