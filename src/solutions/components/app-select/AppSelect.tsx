@@ -35,6 +35,7 @@ const AppSelect = ({
           multiple={isMultipleSelect}
           getOptionLabel={(optionItem) => optionItem[mappingLabelField]}
           renderInput={(params) => <TextField {...params} label={optionLabel} />}
+          isOptionEqualToValue={(option, value) => option[mappingLabelField] === value[mappingLabelField]}
         />
       </Box>
     </>
