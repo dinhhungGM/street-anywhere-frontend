@@ -1,5 +1,5 @@
 .hoverable-box {
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease !important;
   &:hover {
     transform: scale(1.05);
   }
