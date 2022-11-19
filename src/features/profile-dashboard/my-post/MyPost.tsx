@@ -13,20 +13,23 @@ import {
   Typography,
 } from '@mui/material';
 import _ from 'lodash';
-import React from 'react';
+import React, { useState } from 'react';
 import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
+import { useAppDispatch } from '../../../app/hooks';
 import { AppCardCategories } from '../../../solutions/components/app-card-categories';
 import { AppCardTags } from '../../../solutions/components/app-card-tags';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppInfoWidget } from '../../../solutions/components/app-info-widget';
+import { AppModal } from '../../../solutions/components/app-modal';
 import { AppMoreMenu } from '../../../solutions/components/app-more-menu';
+import * as profileAsyncActions from './../profileDashboardAsyncActions';
 
 interface IMyPostProps {
   tags?: string[];
   postId?: number;
-  mediaUrl?:string;
+  mediaUrl?: string;
   fullName?: string;
   latitude?: number;
   location?: string;
@@ -59,6 +62,8 @@ const MyPost = ({
   bookmarkCount,
 }: IMyPostProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [isOpenMap, setIsOpenMap] = useState(false);
 
   const deletePost = async () => {
     SweetAlert.fire({
@@ -69,11 +74,24 @@ const MyPost = ({
       confirmButtonText: 'Delete',
       confirmButtonColor: '#e60023',
       text: 'Are you sure to remove this post?',
+    }).then((status) => {
+      if (status.isConfirmed) {
+        dispatch(profileAsyncActions.deletePostById(+postId));
+      }
     });
   };
 
-  const navigateToPostDetail = (): void => {
-    navigate(`/posts/${postId}`);
+  const showMapModal = (): void => {
+    setIsOpenMap(true);
+  };
+
+  const hideMapModal = (): void => {
+    setIsOpenMap(false);
+  };
+
+  const navigateToPostDetail = (e): void => {
+    e.stopPropagation();
+    navigate(`/posts/${ postId }`);
   };
 
   return (
@@ -85,8 +103,7 @@ const MyPost = ({
           padding: '12px',
           marginBottom: '12px',
         }}
-        component={Paper}
-      >
+        component={Paper}>
         <Stack direction='row' alignItems='center' justifyContent='space-between'>
           <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={2}>
             <Avatar />
@@ -115,8 +132,7 @@ const MyPost = ({
         <Box
           sx={{
             height: '100%',
-          }}
-        >
+          }}>
           <Grid container spacing={3}>
             <Grid item sm={12} md={5}>
               <Stack justifyContent='center' alignItems='center' marginTop={2} height='100%' paddingY={2}>
@@ -150,26 +166,24 @@ const MyPost = ({
                   <Typography
                     sx={{
                       width: '90%',
-                    }}
-                  >
+                    }}>
                     {location}
                   </Typography>
-                  <AppCardTags tags={tags} />
-                  <AppCardCategories categories={categories} />
                   <Tooltip title='View on map' placement='top'>
-                    <IconButton size='large' color='primary'>
+                    <IconButton size='large' color='primary' onClick={showMapModal}>
                       <AppIcon icon={Map} color='#0288d1' />
                     </IconButton>
                   </Tooltip>
                 </Stack>
+                <AppCardTags tags={tags} />
+                <AppCardCategories categories={categories} />
                 <Stack
                   direction='row'
                   spacing={2}
                   alignItems='center'
                   justifyContent='center'
                   width='100%'
-                  marginTop='auto'
-                >
+                  marginTop='auto'>
                   <AppInfoWidget
                     value={reactionCount}
                     title='Reactions'
@@ -186,6 +200,12 @@ const MyPost = ({
           </Grid>
         </Box>
       </Box>
+      <AppModal
+        title='Map'
+        isOpen={isOpenMap}
+        isDisplayCancelButton={false}
+        onClose={hideMapModal}
+        onOk={hideMapModal}></AppModal>
     </>
   );
 };

@@ -4,6 +4,7 @@ import React from 'react';
 import { AppIcon } from '../app-icon';
 import CountUp from 'react-countup';
 import styles from './styles.module.scss';
+import { AppModal } from '../app-modal';
 interface IAppInfoWidgetProps {
   icon?: any;
   width?: number;
@@ -33,7 +34,7 @@ const AppInfoWidget = ({
         component={Paper}
         elevation={2}
         sx={{
-          width: `${width}px`,
+          width: `${ width }px`,
           background: coverImage,
           display: 'flex',
           justifyContent: 'center',
@@ -43,8 +44,7 @@ const AppInfoWidget = ({
           cursor: isInteractive ? 'pointer' : 'initial',
         }}
         onClick={onClick}
-        className={isInteractive ? styles['hoverable-box'] : null}
-      >
+        className={isInteractive ? styles['hoverable-box'] : null}>
         <AppIcon icon={icon} fontSize={iconSize} color={iconColor} />
         <Typography variant='h3' paddingY={3}>
           <CountUp end={+value} />
