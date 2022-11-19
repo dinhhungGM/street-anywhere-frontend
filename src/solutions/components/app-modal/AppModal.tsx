@@ -41,6 +41,9 @@ const AppModal = ({
         onClose={onClose}
         aria-labelledby='modal-modal-title'
         aria-describedby='modal-modal-description'
+        sx={{
+          outline: 'none',
+        }}
         {...restProps}>
         <Box
           className={cx(styles.modal, classes)}

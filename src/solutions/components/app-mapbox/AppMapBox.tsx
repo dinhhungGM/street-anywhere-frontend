@@ -2,7 +2,7 @@ import * as MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-d
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import { Box } from '@mui/material';
-import mapboxgl, { Marker } from 'mapbox-gl';
+import mapboxgl, { Marker, Popup } from 'mapbox-gl';
 import React, { useEffect, useRef } from 'react';
 
 // The following is required to stop "npm build" from transpiling mapbox code.
@@ -19,6 +19,7 @@ interface IAppMapBox {
   language?: string;
   mapHeight?: string;
   isTracing?: boolean;
+  address?: string;
   isDisplayGeoDirection?: boolean;
   desPoint?: { long: number; lat: number; };
   sourcePoint?: { long: number; lat: number; };
@@ -27,11 +28,12 @@ interface IAppMapBox {
 }
 const AppMapBox = ({
   baseZoom = 5.5,
+  address = null,
   language = 'en',
   desPoint = null,
   mapWidth = '100%',
   isTracing = false,
-  mapHeight = '100%',
+  mapHeight = '600px',
   sourcePoint = null,
   baseLat = 14.058324,
   baseLong = 108.277199,
@@ -67,17 +69,23 @@ const AppMapBox = ({
     });
 
     // Init event
-    map.on('click', onClickOnMap);
     map.on('load', function () {
       let sourceMarker = new Marker();
-      const desMarker = new Marker();
+      let desMarker = new Marker();
+      const desPopup = new Popup({ offset: 25 });
       if (sourcePoint) {
-        sourceMarker.setLngLat([sourcePoint.long, sourcePoint.lat]);
+        sourceMarker.setLngLat([sourcePoint.long, sourcePoint.lat]).addTo(this);
       }
       if (desPoint) {
+        if (address) {
+          desPopup.setText(address);
+          desMarker.setPopup(desPopup);
+        }
         desMarker.setLngLat([desPoint.long, desPoint.lat]);
+        desMarker.addTo(this);
       }
     });
+    map.on('click', onClickOnMap);
     mapboxGeocoder.on('result', onSearchOnMap);
 
     // Add control

@@ -22,8 +22,11 @@ import { AppCardCategories } from '../../../solutions/components/app-card-catego
 import { AppCardTags } from '../../../solutions/components/app-card-tags';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppInfoWidget } from '../../../solutions/components/app-info-widget';
+import { AppListUserReact } from '../../../solutions/components/app-list-user-react';
+import { AppMapBox } from '../../../solutions/components/app-mapbox';
 import { AppModal } from '../../../solutions/components/app-modal';
 import { AppMoreMenu } from '../../../solutions/components/app-more-menu';
+import { AppUserComment } from '../../../solutions/components/app-user-comment';
 import * as profileAsyncActions from './../profileDashboardAsyncActions';
 
 interface IMyPostProps {
@@ -64,6 +67,8 @@ const MyPost = ({
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isOpenMap, setIsOpenMap] = useState(false);
+  const [isOpenReactionModal, setIsOpenReactionModal] = useState(false);
+  const [isOpenCommentModal, setIsOpenCommentModal] = useState(false);
 
   const deletePost = async () => {
     SweetAlert.fire({
@@ -87,6 +92,22 @@ const MyPost = ({
 
   const hideMapModal = (): void => {
     setIsOpenMap(false);
+  };
+
+  const showReactionModal = (): void => {
+    setIsOpenReactionModal(true);
+  };
+
+  const hideReactionModal = (): void => {
+    setIsOpenReactionModal(false);
+  };
+
+  const showCommentModal = (): void => {
+    setIsOpenCommentModal(true);
+  };
+
+  const hideCommentModal = (): void => {
+    setIsOpenCommentModal(false);
   };
 
   const navigateToPostDetail = (e): void => {
@@ -189,9 +210,16 @@ const MyPost = ({
                     title='Reactions'
                     icon={AddReaction}
                     iconColor='#fbe44b'
-                    isInteractive={true}
+                    isInteractive={reactionCount !== 0}
+                    onClick={reactionCount !== 0 ? showReactionModal : null}
                   />
-                  <AppInfoWidget icon={Comment} title='Comments' value={commentCount} isInteractive={true} />
+                  <AppInfoWidget
+                    icon={Comment}
+                    title='Comments'
+                    value={commentCount}
+                    isInteractive={commentCount !== 0}
+                    onClick={commentCount !== 0 ? showCommentModal : null}
+                  />
                   <AppInfoWidget icon={Visibility} title='Views' value={viewCount} iconColor='#eab171' />
                   <AppInfoWidget icon={Bookmark} title='Bookmarks' value={bookmarkCount} iconColor='#0288d1' />
                 </Stack>
@@ -200,12 +228,25 @@ const MyPost = ({
           </Grid>
         </Box>
       </Box>
+      <AppModal title='Map' isOpen={isOpenMap} isDisplayCancelButton={false} onClose={hideMapModal} onOk={hideMapModal}>
+        <AppMapBox desPoint={{ long: longitude, lat: latitude }} baseZoom={8.5} address={location} />
+      </AppModal>
       <AppModal
-        title='Map'
-        isOpen={isOpenMap}
+        title='Reactions'
+        isOpen={isOpenReactionModal}
         isDisplayCancelButton={false}
-        onClose={hideMapModal}
-        onOk={hideMapModal}></AppModal>
+        onClose={hideReactionModal}
+        onOk={hideReactionModal}>
+        <AppListUserReact postId={postId} />
+      </AppModal>
+      <AppModal
+        title='Comments'
+        isOpen={isOpenCommentModal}
+        isDisplayCancelButton={false}
+        onClose={hideCommentModal}
+        onOk={hideCommentModal}>
+        <AppUserComment postId={postId} />
+      </AppModal>
     </>
   );
 };
