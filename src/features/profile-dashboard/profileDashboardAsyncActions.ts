@@ -7,7 +7,7 @@ export const getAllPostsOfCurrentUser = createAsyncThunk(
   async (userId: number, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      const { data } = await axios.get(`/posts/user/${userId}`);
+      const { data } = await axios.get(`/posts/user/${ userId }`);
       return data.value;
     } catch (error) {
       dispatch(
@@ -22,3 +22,21 @@ export const getAllPostsOfCurrentUser = createAsyncThunk(
     }
   },
 );
+
+export const deletePostById = createAsyncThunk('profile/deletePostById', async (postId: number, { dispatch }) => {
+  try {
+    dispatch(wrapperActions.showLoading());
+    const { data } = await axios.delete(`/posts/${ postId }`);
+    return data.value;
+  } catch (error) {
+    dispatch(
+      wrapperActions.showNotification({
+        typeOfNotification: 'error',
+        message: error.response.data.message,
+      }),
+    );
+    return Promise.reject();
+  } finally {
+    dispatch(wrapperActions.hideLoading());
+  }
+});
