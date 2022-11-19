@@ -19,7 +19,6 @@ const ProfileDashBoard = () => {
   const posts = useAppSelector(profileSelectors.selectPostsOfCurrentUser);
   const profileDetail = useAppSelector(profileSelectors.selectProfileDetail);
 
-
   useEffect(() => {
     if (_.isNil(currentUser)) {
       navigate('/sign-in');
@@ -100,6 +99,7 @@ const ProfileDashBoard = () => {
                     key={post.id}
                     tags={post.tags}
                     postId={post.id}
+                    title={post.title}
                     viewCount={post.views}
                     typeOfMedia={post.type}
                     latitude={post.latitude}
@@ -113,7 +113,7 @@ const ProfileDashBoard = () => {
                     fullName={currentUser?.fullName}
                     bookmarkCount={post.bookmarkCount}
                     reactionCount={post.reactionCount}
-                    mediaUrl={post.type === 'image' ? post.imageUrl : post.videoYtbUrl}
+                    mediaUrl={post.type.includes('image') ? post.imageUrl : post.videoYtbUrl}
                   />
                 ))}
               </Box>

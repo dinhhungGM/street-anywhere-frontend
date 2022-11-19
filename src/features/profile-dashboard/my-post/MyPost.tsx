@@ -28,9 +28,11 @@ import { AppModal } from '../../../solutions/components/app-modal';
 import { AppMoreMenu } from '../../../solutions/components/app-more-menu';
 import { AppUserComment } from '../../../solutions/components/app-user-comment';
 import * as profileAsyncActions from './../profileDashboardAsyncActions';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 interface IMyPostProps {
   tags?: string[];
+  title?: string;
   postId?: number;
   mediaUrl?: string;
   fullName?: string;
@@ -49,8 +51,10 @@ interface IMyPostProps {
 }
 const MyPost = ({
   tags,
+  title,
   postId,
   fullName,
+  mediaUrl,
   latitude,
   location,
   viewCount,
@@ -157,19 +161,21 @@ const MyPost = ({
           <Grid container spacing={3}>
             <Grid item sm={12} md={5}>
               <Stack justifyContent='center' alignItems='center' marginTop={2} height='100%' paddingY={2}>
-                {typeOfMedia === 'image' ? (
-                  <img
-                    src='https://picsum.photos/200'
-                    alt=''
-                    style={{
-                      maxHeight: '100%',
-                    }}
-                  />
+                {typeOfMedia.includes('image') ? (
+                  <Box
+                    sx={{
+                      '& img': {
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                      },
+                    }}>
+                    <LazyLoadImage alt={title} src={mediaUrl} effect='black-and-white' />
+                  </Box>
                 ) : (
                   <ReactPlayer
                     height='100%'
                     width='100%'
-                    url='https://www.youtube.com/watch?v=k2AuWmOoaYE&list=RDk2AuWmOoaYE&start_radio=1'
+                    url={mediaUrl}
                     light
                     style={{
                       maxHeight: '800px',
