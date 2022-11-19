@@ -7,12 +7,12 @@ import {
   ListItemText,
   Stack,
   Tab,
-  Tabs,
-  Typography,
+  Tabs
 } from '@mui/material';
 import _ from 'lodash';
 import { memo, useEffect, useMemo, useState } from 'react';
 import SweetAlert from 'sweetalert2';
+import { AppReactionProgress } from '../app-reaction-progress';
 import AppTabPanel from '../app-tab-panel/AppTabPanel';
 import { default as axios } from './../../services/axios';
 
@@ -41,7 +41,10 @@ const AppListUserReact = ({ postId }: AppListUserReactProps) => {
     }
     let results = [];
     for (const reaction in data.reactionDetails) {
-      results = [...results, ...data.reactionDetails[reaction].users];
+      results.push({
+        label: reaction,
+        progressValue: Math.round((data.reactionDetails[reaction].count / data.reactionCountAll) * 100),
+      });
     }
     return results;
   }, [data]);
@@ -88,29 +91,30 @@ const AppListUserReact = ({ postId }: AppListUserReactProps) => {
                 {tabs.map((tab, idx) => (
                   <Tab
                     key={idx}
-                    label={`${ tab } (${ idx === 0 ? allReactions.length : data.reactionDetails[tab]?.count })`}
+                    label={`${ tab } (${ idx === 0 ? data.reactionCountAll : data.reactionDetails[tab]?.count })`}
                     value={idx}
                   />
                 ))}
               </Tabs>
             </Stack>
-            {tabs.map((tab, idx) => (
+            {tabs?.map((tab, idx) => (
               <AppTabPanel key={idx} value={activeTab} index={idx}>
-                <List>
-                  {!activeTab
-                    ? allReactions.map((user) => (
-                      <ListItemButton key={user.userId}>
-                        <Avatar />
-                        <ListItemText sx={{ marginLeft: '12px' }}>{user.fullName}</ListItemText>
-                      </ListItemButton>
-                    ))
-                    : data.reactionDetails[tab]?.users?.map((user) => (
+                {idx === 0 ? (
+                  <>
+                    {allReactions?.map((reaction, idx) => (
+                      <AppReactionProgress key={idx} label={reaction.label} progressValue={reaction.progressValue} />
+                    ))}
+                  </>
+                ) : (
+                  <List>
+                    {data.reactionDetails[tab]?.users?.map((user) => (
                       <ListItemButton key={user.userId}>
                         <Avatar />
                         <ListItemText sx={{ marginLeft: '12px' }}>{user.fullName}</ListItemText>
                       </ListItemButton>
                     ))}
-                </List>
+                  </List>
+                )}
               </AppTabPanel>
             ))}
           </>

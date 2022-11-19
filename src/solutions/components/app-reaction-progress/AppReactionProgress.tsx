@@ -1,17 +1,27 @@
-import { AddReaction } from '@mui/icons-material';
 import { Box, LinearProgress, Stack, Typography } from '@mui/material';
 import React from 'react';
-import { AppIcon } from '../app-icon';
+import randomColor from 'randomcolor';
 
-const AppReactionProgress = () => {
+interface AppReactionProgressProps {
+  label?: string;
+  progressValue: number;
+}
+const AppReactionProgress = ({ label = 'Label', progressValue }: AppReactionProgressProps) => {
   return (
     <>
       <Stack direction='row' alignItems='center' justifyContent='flex-start'>
         <Box width='10%'>
-          <Typography>Label</Typography>
+          <Typography>{label}</Typography>
         </Box>
-        <Box width='90%'>
-          <LinearProgress value={80} variant='determinate' />
+        <Box
+          width='80%'
+          sx={{
+            color: randomColor({ format: 'hex', luminosity: 'dark' }),
+          }}>
+          <LinearProgress value={progressValue} variant='determinate' color='inherit' />
+        </Box>
+        <Box width='10%' marginLeft={2}>
+          <Typography>{progressValue}%</Typography>
         </Box>
       </Stack>
     </>
