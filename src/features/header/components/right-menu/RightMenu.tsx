@@ -17,22 +17,21 @@ import { authActions, authSelectors } from '../../../auth/store';
 import { SearchBox } from '../search-box';
 import { FeatureMenu } from './../feature-menu';
 import _ from 'lodash';
+import { AppIconButton } from '../../../../solutions/components/app-icon-button';
 
 const RightMenu = () => {
   const [isOpenSearchBox, setIsOpenSearchBox] = useState<boolean>(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const isOpenFeatureMenu = Boolean(anchorEl);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
 
-  const showFeatureMenu = (event: React.MouseEvent<HTMLButtonElement>): void => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleSignOut = (): void => {
     dispatch(authActions.signOut());
     navigate('/');
+  };
+
+  const navigateToCreateNewPostPage = (): void => {
+    navigate('/create-new-post');
   };
 
   return (
@@ -43,18 +42,11 @@ const RightMenu = () => {
             <AppIcon icon={Search} color='#747df6' />
           </IconButton>
         </Tooltip>
-        <Tooltip title='Features'>
-          <IconButton
-            size='large'
-            color='success'
-            aria-haspopup='true'
-            aria-expanded={isOpenFeatureMenu ? 'true' : undefined}
-            aria-controls={isOpenFeatureMenu ? 'basic-menu' : undefined}
-            onClick={showFeatureMenu}
-          >
-            <AppIcon icon={Add} color='#44ff00' />
-          </IconButton>
-        </Tooltip>
+        <AppIconButton
+          tooltip='Create new post'
+          icon={<AppIcon icon={Add} color='#44ff00' />}
+          onClick={navigateToCreateNewPostPage}
+        />
         {_.isNil(currentUser) ? (
           <>
             <Tooltip title='Sign in' onClick={() => navigate('/sign-in')}>
@@ -94,7 +86,6 @@ const RightMenu = () => {
             </IconButton>
           </>
         )}
-        <FeatureMenu anchorEl={anchorEl} onClose={() => setAnchorEl(null)} isOpen={isOpenFeatureMenu} />
         <Drawer anchor='bottom' open={isOpenSearchBox} onClose={() => setIsOpenSearchBox(false)}>
           <SearchBox />
         </Drawer>
