@@ -1,7 +1,6 @@
 import { Category } from '@mui/icons-material';
 import { Box, Chip, Stack, Typography } from '@mui/material';
 import React from 'react';
-import helperUtils from '../../utils/helperUtils';
 import { AppIcon } from '../app-icon';
 
 interface IAppCardCategoriesProps {
@@ -23,7 +22,7 @@ const AppCardCategories = ({ categories }: IAppCardCategoriesProps) => {
           </Stack>
           {categories.map((category) => (
             <>
-              <Chip key={helperUtils.createUUID()} label={category} size='small' />
+              <Chip key={category} label={category} size='small' />
             </>
           ))}
         </Stack>

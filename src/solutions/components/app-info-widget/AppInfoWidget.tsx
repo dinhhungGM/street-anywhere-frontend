@@ -46,7 +46,7 @@ const AppInfoWidget = ({
         onClick={onClick}
         className={isInteractive ? styles['hoverable-box'] : null}>
         <AppIcon icon={icon} fontSize={iconSize} color={iconColor} />
-        <Typography variant='h3' paddingY={3}>
+        <Typography variant='h5' paddingY={3} fontWeight={600}>
           <CountUp end={+value} />
         </Typography>
         <Typography variant='h6'>{title}</Typography>

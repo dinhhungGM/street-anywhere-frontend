@@ -1,16 +1,39 @@
-import { AddAPhoto, AddReaction, Bookmark, Comment, Diversity1, Upload } from '@mui/icons-material';
-import { Avatar, Box, Button, Divider, Grid, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { AddAPhoto, AddReaction, Bookmark, Comment, Diversity1, Search, Upload } from '@mui/icons-material';
+import { Masonry } from '@mui/lab';
+import {
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
 import _ from 'lodash';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SweetAlert from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { AppIcon } from '../../solutions/components/app-icon';
 import { AppInfoWidget } from '../../solutions/components/app-info-widget';
 import { authSelectors } from '../auth/store';
-import styles from './styles.module.scss';
-import * as profileAsyncActions from './profileDashboardAsyncActions';
-import * as profileSelectors from './profileDashBoardSelectors';
 import { MyPost } from './my-post';
+import * as profileAsyncActions from './profileDashboardAsyncActions';
+import { IMyPost } from './profileDashBoardModels';
+import * as profileSelectors from './profileDashBoardSelectors';
+import styles from './styles.module.scss';
+
+const showSuccess = (message: string): void => {
+  SweetAlert.fire({
+    title: 'Succees',
+    icon: 'success',
+    text: message,
+  });
+};
 
 const ProfileDashBoard = () => {
   const navigate = useNavigate();
@@ -18,7 +41,50 @@ const ProfileDashBoard = () => {
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const posts = useAppSelector(profileSelectors.selectPostsOfCurrentUser);
   const profileDetail = useAppSelector(profileSelectors.selectProfileDetail);
+  const [search, setSearch] = useState('');
 
+  // Delete post
+  const deletePost = async (postId: number) => {
+    SweetAlert.fire({
+      icon: 'warning',
+      title: 'Confirm',
+      showCancelButton: true,
+      showConfirmButton: true,
+      confirmButtonText: 'Delete',
+      confirmButtonColor: '#e60023',
+      text: 'Are you sure to remove this post?',
+    })
+      .then((status) => {
+        if (status.isConfirmed) {
+          return dispatch(profileAsyncActions.deletePostById(postId));
+        }
+        return null;
+      })
+      .then((prevValue) => {
+        if (prevValue) {
+          if (prevValue.meta.requestStatus === 'fulfilled') {
+            showSuccess('Delete post successfully');
+            dispatch(profileAsyncActions.getAllPostsOfCurrentUser(currentUser.id));
+          }
+        }
+      });
+  };
+  // Update post
+
+  // Filter post
+  const displayPosts = useMemo(() => {
+    const filterPosts = _.filter(posts, (post) => {
+      if (!search.trim() || !post || !posts.length) {
+        return true;
+      }
+      const regex = new RegExp(search, 'i');
+      const isMatch = post.shortTitle.match(regex) || post.title.match(regex);
+      return isMatch;
+    });
+    return filterPosts as IMyPost[];
+  }, [posts, search]);
+
+  // Load post and user information
   useEffect(() => {
     if (_.isNil(currentUser)) {
       navigate('/sign-in');
@@ -77,12 +143,7 @@ const ProfileDashBoard = () => {
             <AppInfoWidget icon={Bookmark} title='Bookmarks' iconColor='#0288d1' value={5} />
           </Stack>
         </Box>
-        <Box
-          sx={{
-            backgroundColor: '#f2f5f8',
-            padding: '16px',
-            borderRadius: '8px',
-          }}>
+        <Box paddingY={2}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={4}>
               <Box component={Paper} elevation={2} padding={2}>
@@ -92,31 +153,85 @@ const ProfileDashBoard = () => {
                 <Divider />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={12} md={8}>
-              <Box>
-                {posts?.map((post) => (
-                  <MyPost
-                    key={post.id}
-                    tags={post.tags}
-                    postId={post.id}
-                    title={post.title}
-                    viewCount={post.views}
-                    typeOfMedia={post.type}
-                    latitude={post.latitude}
-                    location={post.location}
-                    createdAt={post.createdAt}
-                    longitude={post.longitude}
-                    shortTitle={post.shortTitle}
-                    categories={post.categories}
-                    description={post.description}
-                    commentCount={post.commentCount}
-                    fullName={currentUser?.fullName}
-                    bookmarkCount={post.bookmarkCount}
-                    reactionCount={post.reactionCount}
-                    mediaUrl={post.type.includes('image') ? post.imageUrl : post.videoYtbUrl}
-                  />
-                ))}
+            <Grid item xs={12} sm={12} md={4}>
+              <Box component={Paper} elevation={2} padding={2}>
+                <Typography textAlign='center' marginBottom={2}>
+                  Description
+                </Typography>
+                <Divider />
               </Box>
+            </Grid>
+            <Grid item xs={12} sm={12} md={4}>
+              <Box component={Paper} elevation={2} padding={2}>
+                <Typography textAlign='center' marginBottom={2}>
+                  Description
+                </Typography>
+                <Divider />
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+        <Box
+          sx={{
+            backgroundColor: '#f2f5f8',
+            padding: '16px',
+            borderRadius: '8px',
+          }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={12} md={12} flexWrap='wrap'>
+              <Box
+                sx={{
+                  backgroundColor: '#fff',
+                }}
+                marginBottom={2}>
+                <TextField
+                  fullWidth
+                  placeholder='Search post...'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <AppIcon icon={Search} />
+                      </InputAdornment>
+                    ),
+                  }}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </Box>
+
+              {displayPosts.length ? (
+                <Masonry columns={{ sm: 1, md: 1, lg: 2, xl: 2 }} spacing={2}>
+                  {displayPosts?.map((post) => (
+                    <MyPost
+                      key={post.id}
+                      tags={post.tags}
+                      postId={post.id}
+                      title={post.title}
+                      viewCount={post.views}
+                      typeOfMedia={post.type}
+                      latitude={post.latitude}
+                      location={post.location}
+                      createdAt={post.createdAt}
+                      longitude={post.longitude}
+                      shortTitle={post.shortTitle}
+                      categories={post.categories}
+                      description={post.description}
+                      commentCount={post.commentCount}
+                      fullName={currentUser?.fullName}
+                      bookmarkCount={post.bookmarkCount}
+                      reactionCount={post.reactionCount}
+                      mediaUrl={post.type.includes('image') ? post.imageUrl : post.videoYtbUrl}
+                      onDeletePost={() => deletePost(post.id)}
+                    />
+                  ))}
+                </Masonry>
+              ) : (
+                <>
+                  <Typography textAlign='center' variant='h5'>
+                    No posts found
+                  </Typography>
+                </>
+              )}
             </Grid>
           </Grid>
         </Box>

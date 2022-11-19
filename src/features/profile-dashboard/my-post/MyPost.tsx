@@ -1,7 +1,8 @@
-import { AddReaction, Bookmark, Comment, Delete, Edit, Map, Room, Visibility } from '@mui/icons-material';
+import { AddReaction, Bookmark, Comment, Delete, Edit, Map, Room, Shortcut, Visibility } from '@mui/icons-material';
 import {
   Avatar,
   Box,
+  Button,
   Grid,
   IconButton,
   ListItemIcon,
@@ -10,14 +11,13 @@ import {
   Paper,
   Stack,
   Tooltip,
-  Typography,
+  Typography
 } from '@mui/material';
 import _ from 'lodash';
 import React, { useState } from 'react';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
-import SweetAlert from 'sweetalert2';
-import { useAppDispatch } from '../../../app/hooks';
 import { AppCardCategories } from '../../../solutions/components/app-card-categories';
 import { AppCardTags } from '../../../solutions/components/app-card-tags';
 import { AppIcon } from '../../../solutions/components/app-icon';
@@ -27,8 +27,6 @@ import { AppMapBox } from '../../../solutions/components/app-mapbox';
 import { AppModal } from '../../../solutions/components/app-modal';
 import { AppMoreMenu } from '../../../solutions/components/app-more-menu';
 import { AppUserComment } from '../../../solutions/components/app-user-comment';
-import * as profileAsyncActions from './../profileDashboardAsyncActions';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 interface IMyPostProps {
   tags?: string[];
@@ -48,6 +46,8 @@ interface IMyPostProps {
   commentCount?: number;
   reactionCount?: number;
   bookmarkCount?: number;
+  onDeletePost?: () => any;
+  onUpdatePost?: () => any;
 }
 const MyPost = ({
   tags,
@@ -67,28 +67,13 @@ const MyPost = ({
   commentCount,
   reactionCount,
   bookmarkCount,
+  onDeletePost = () => null,
+  onUpdatePost = () => null,
 }: IMyPostProps) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [isOpenMap, setIsOpenMap] = useState(false);
   const [isOpenReactionModal, setIsOpenReactionModal] = useState(false);
   const [isOpenCommentModal, setIsOpenCommentModal] = useState(false);
-
-  const deletePost = async () => {
-    SweetAlert.fire({
-      icon: 'warning',
-      title: 'Confirm',
-      showCancelButton: true,
-      showConfirmButton: true,
-      confirmButtonText: 'Delete',
-      confirmButtonColor: '#e60023',
-      text: 'Are you sure to remove this post?',
-    }).then((status) => {
-      if (status.isConfirmed) {
-        dispatch(profileAsyncActions.deletePostById(+postId));
-      }
-    });
-  };
 
   const showMapModal = (): void => {
     setIsOpenMap(true);
@@ -123,10 +108,10 @@ const MyPost = ({
     <>
       <Box
         sx={{
-          width: '100%',
-          position: 'relative',
           padding: '12px',
+          minWidth: '500px',
           marginBottom: '12px',
+          position: 'relative',
         }}
         component={Paper}>
         <Stack direction='row' alignItems='center' justifyContent='space-between'>
@@ -140,13 +125,13 @@ const MyPost = ({
             </Box>
           </Stack>
           <AppMoreMenu>
-            <MenuItem>
+            <MenuItem onClick={onUpdatePost}>
               <ListItemIcon>
                 <AppIcon icon={Edit} />
               </ListItemIcon>
               <ListItemText>Update</ListItemText>
             </MenuItem>
-            <MenuItem onClick={deletePost}>
+            <MenuItem onClick={onDeletePost}>
               <ListItemIcon>
                 <AppIcon icon={Delete} />
               </ListItemIcon>
@@ -167,17 +152,21 @@ const MyPost = ({
                       '& img': {
                         maxWidth: '100%',
                         maxHeight: '100%',
+                        transition: 'all .3s ease',
+                        '&:hover': {
+                          transform: 'scale(2)',
+                        },
                       },
                     }}>
                     <LazyLoadImage alt={title} src={mediaUrl} effect='black-and-white' />
                   </Box>
                 ) : (
                   <ReactPlayer
-                    height='100%'
+                    light
                     width='100%'
                     url={mediaUrl}
-                    light
                     style={{
+                      minHeight: '300px',
                       maxHeight: '800px',
                     }}
                   />
@@ -203,19 +192,21 @@ const MyPost = ({
                   </Tooltip>
                 </Stack>
                 <AppCardTags tags={tags} />
-                <AppCardCategories categories={categories} />
+                <Box marginY={1}>
+                  <AppCardCategories categories={categories} />
+                </Box>
                 <Stack
-                  direction='row'
-                  spacing={2}
-                  alignItems='center'
-                  justifyContent='center'
+                  spacing={1}
                   width='100%'
-                  marginTop='auto'>
+                  direction='row'
+                  marginTop='auto'
+                  alignItems='center'
+                  justifyContent='center'>
                   <AppInfoWidget
-                    value={reactionCount}
                     title='Reactions'
                     icon={AddReaction}
                     iconColor='#fbe44b'
+                    value={reactionCount}
                     isInteractive={reactionCount !== 0}
                     onClick={reactionCount !== 0 ? showReactionModal : null}
                   />
@@ -232,6 +223,15 @@ const MyPost = ({
               </Box>
             </Grid>
           </Grid>
+          <Box textAlign='right' marginTop={2}>
+            <Button
+              variant='contained'
+              color='primary'
+              startIcon={<AppIcon icon={Shortcut} color='#fff' />}
+              onClick={navigateToPostDetail}>
+              View more
+            </Button>
+          </Box>
         </Box>
       </Box>
       <AppModal title='Map' isOpen={isOpenMap} isDisplayCancelButton={false} onClose={hideMapModal} onOk={hideMapModal}>
@@ -239,18 +239,18 @@ const MyPost = ({
       </AppModal>
       <AppModal
         title='Reactions'
-        isOpen={isOpenReactionModal}
-        isDisplayCancelButton={false}
+        onOk={hideReactionModal}
         onClose={hideReactionModal}
-        onOk={hideReactionModal}>
+        isOpen={isOpenReactionModal}
+        isDisplayCancelButton={false}>
         <AppListUserReact postId={postId} />
       </AppModal>
       <AppModal
-        title='Comments'
+        onOk={hideCommentModal}
+        onClose={hideCommentModal}
         isOpen={isOpenCommentModal}
         isDisplayCancelButton={false}
-        onClose={hideCommentModal}
-        onOk={hideCommentModal}>
+        title={`Comments(${ commentCount })`}>
         <AppUserComment postId={postId} />
       </AppModal>
     </>
