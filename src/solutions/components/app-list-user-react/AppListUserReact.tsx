@@ -2,17 +2,16 @@ import {
   Avatar,
   Box,
   CircularProgress,
-  Divider,
   List,
-  ListItem,
   ListItemButton,
   ListItemText,
   Stack,
   Tab,
   Tabs,
+  Typography,
 } from '@mui/material';
 import _ from 'lodash';
-import { memo, useEffect, useState, useMemo } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import SweetAlert from 'sweetalert2';
 import AppTabPanel from '../app-tab-panel/AppTabPanel';
 import { default as axios } from './../../services/axios';
@@ -23,6 +22,7 @@ interface AppListUserReactProps {
 const AppListUserReact = ({ postId }: AppListUserReactProps) => {
   const [data, setData] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
@@ -32,7 +32,7 @@ const AppListUserReact = ({ postId }: AppListUserReactProps) => {
     if (_.isNil(data)) {
       return [];
     }
-    return ['all', ...Object.keys(data)];
+    return ['all', ...Object.keys(data.reactionDetails)];
   }, [data]);
 
   const allReactions = useMemo(() => {
@@ -40,8 +40,8 @@ const AppListUserReact = ({ postId }: AppListUserReactProps) => {
       return [];
     }
     let results = [];
-    for (const reaction in data) {
-      results = [...results, ...data[reaction]];
+    for (const reaction in data.reactionDetails) {
+      results = [...results, ...data.reactionDetails[reaction].users];
     }
     return results;
   }, [data]);
@@ -49,7 +49,8 @@ const AppListUserReact = ({ postId }: AppListUserReactProps) => {
   useEffect(() => {
     const getReactionDetails = async () => {
       try {
-        const { data } = await axios.get(`/posts/reaction-details/${ postId }`);
+        setIsLoading(true);
+        const { data } = await axios.get(`/reactions/post/${ postId }`);
         setData(data.value);
       } catch (error) {
         SweetAlert.fire({
@@ -57,6 +58,8 @@ const AppListUserReact = ({ postId }: AppListUserReactProps) => {
           icon: 'error',
           text: error.response.data.message,
         });
+      } finally {
+        setIsLoading(false);
       }
     };
     getReactionDetails();
@@ -72,7 +75,7 @@ const AppListUserReact = ({ postId }: AppListUserReactProps) => {
           overflowY: 'auto',
           overflowX: 'hidden',
         }}>
-        {_.isNil(data) ? (
+        {isLoading ? (
           <>
             <Stack alignItems='center' justifyContent='center' paddingY={4}>
               <CircularProgress color='primary' />
@@ -83,7 +86,11 @@ const AppListUserReact = ({ postId }: AppListUserReactProps) => {
             <Stack alignItems='center' justifyContent='center'>
               <Tabs value={activeTab} onChange={handleTabChange}>
                 {tabs.map((tab, idx) => (
-                  <Tab key={idx} label={`${ tab } (${ idx === 0 ? allReactions.length : data[tab]?.length })`} value={idx} />
+                  <Tab
+                    key={idx}
+                    label={`${ tab } (${ idx === 0 ? allReactions.length : data.reactionDetails[tab]?.count })`}
+                    value={idx}
+                  />
                 ))}
               </Tabs>
             </Stack>
@@ -97,7 +104,7 @@ const AppListUserReact = ({ postId }: AppListUserReactProps) => {
                         <ListItemText sx={{ marginLeft: '12px' }}>{user.fullName}</ListItemText>
                       </ListItemButton>
                     ))
-                    : data[tab]?.map((user) => (
+                    : data.reactionDetails[tab]?.users?.map((user) => (
                       <ListItemButton key={user.userId}>
                         <Avatar />
                         <ListItemText sx={{ marginLeft: '12px' }}>{user.fullName}</ListItemText>
