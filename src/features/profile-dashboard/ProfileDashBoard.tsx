@@ -17,12 +17,15 @@ const ProfileDashBoard = () => {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const posts = useAppSelector(profileSelectors.selectPostsOfCurrentUser);
+  const profileDetail = useAppSelector(profileSelectors.selectProfileDetail);
+
 
   useEffect(() => {
     if (_.isNil(currentUser)) {
       navigate('/sign-in');
     } else {
       dispatch(profileAsyncActions.getAllPostsOfCurrentUser(currentUser.id));
+      dispatch(profileAsyncActions.getProfileOfUser(currentUser.id));
     }
   }, []);
 
@@ -70,8 +73,8 @@ const ProfileDashBoard = () => {
           </Box>
           <Stack direction='row' spacing={2} alignItems='center' justifyContent='center' paddingY={2}>
             <AppInfoWidget icon={Diversity1} title='Followers' iconColor='#44ff00' value={2} />
-            <AppInfoWidget icon={AddReaction} title='Reactions' iconColor='#fbe44b' value={3} />
-            <AppInfoWidget icon={Comment} title='Comments' value={4} />
+            <AppInfoWidget icon={AddReaction} title='Reactions' iconColor='#fbe44b' value={2} />
+            <AppInfoWidget icon={Comment} title='Comments' value={profileDetail?.commentCount} />
             <AppInfoWidget icon={Bookmark} title='Bookmarks' iconColor='#0288d1' value={5} />
           </Stack>
         </Box>

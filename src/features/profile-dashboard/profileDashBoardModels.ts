@@ -19,3 +19,19 @@ export interface IMyPost {
   reactionCount?: number;
   bookmarkCount?: number;
 }
+export interface IProfileDetail {
+  id?: number;
+  bio?: string;
+  phone?: string;
+  email?: string;
+  roleId?: number;
+  rankId?: number;
+  imgType?: string;
+  username?: string;
+  fullName?: string;
+  lastName?: string;
+  firstName?: string;
+  description?: string;
+  commentCount?: number;
+  bookmarkCount?: number;
+}
