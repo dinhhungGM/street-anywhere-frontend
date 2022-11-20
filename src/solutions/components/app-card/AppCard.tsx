@@ -5,8 +5,8 @@ import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
 import { AppIcon } from '../app-icon';
 import { Icons } from '../icons';
-import { AppCardCategories } from './components/app-card-categories';
-import { AppCardTags } from './components/app-card-tags';
+import { AppCardCategories } from '../app-card-categories';
+import { AppCardTags } from '../app-card-tags';
 import styles from './styles.module.scss';
 
 type AppCardProps = {
@@ -107,6 +107,9 @@ const AppCard = ({
                 </Box>
               )}
             </Stack>
+            <Typography marginTop={2} textAlign='right' fontStyle='italic'>
+              <b>Created at</b>: {new Date(createdAt).toLocaleString()}
+            </Typography>
           </Stack>
         </Box>
       </Box>

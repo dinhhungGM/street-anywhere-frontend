@@ -1,23 +1,27 @@
 export interface IRole {
   id?: number;
-  roleName?:string;
+  roleName?: string;
 }
 export interface IRank {
-  id?:number;
-  rankName?:string;
+  id?: number;
+  rankName?: string;
 }
 
 export interface IUser {
   id?: number;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-  fullName?:string;
-  profilePhotoUrl?: string;
-  bio?: string;
-  role?: IRole, 
+  role?: IRole;
   rank?: IRank;
-  isAdmin?:boolean;
+  bio?: string;
+  phone?: string;
+  email?: string;
+  isAdmin?: boolean;
+  fullName?: string;
+  username?: string;
+  lastName?: string;
+  firstName?: string;
+  description?: string;
+  coverImageUrl?: string;
+  profilePhotoUrl?: string;
 }
 
 export interface ISignInPayload {

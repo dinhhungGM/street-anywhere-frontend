@@ -48,12 +48,24 @@ const AppLineChart = ({
   }, []);
   const chartData = useMemo(() => {
     const color = randomColor({ format: 'rgb' });
+    const config = _.reduce(
+      data,
+      (acc, item) => {
+        const value = item[valueField];
+        if (value) {
+          acc.labels.push(item[labelField]);
+          acc.data.push(value);
+        }
+        return acc;
+      },
+      { labels: [], data: [] },
+    );
     return {
-      labels: _.map(data, labelField),
+      labels: config.labels,
       datasets: [
         {
           label: 'Number of uses',
-          data: _.map(data, valueField),
+          data: config.data,
           borderColor: color,
           backgroundColor: color,
         },

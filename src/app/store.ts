@@ -7,7 +7,7 @@ import { categoriesReducer } from '../features/categories/store';
 import { commentsReducer } from '../features/comments/store';
 import { landingPageReducer } from '../features/landing-page/store';
 import { postReducer } from '../features/posts/store';
-import { profileReducer } from '../features/profile/store/index';
+import { profileReducer } from '../features/profile-dashboard';
 import { reactionsReducer } from '../features/reactions/store';
 import { shortsReducer } from '../features/shorts';
 import { tagsReducer } from '../features/tags/store';
@@ -28,7 +28,7 @@ const rootReducer = combineReducers({
   tags: tagsReducer,
   comments: commentsReducer,
   admin: adminReducer,
-  shorts: shortsReducer
+  shorts: shortsReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

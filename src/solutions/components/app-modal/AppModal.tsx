@@ -6,11 +6,13 @@ import { AppIcon } from '../app-icon';
 import { Close } from '@mui/icons-material';
 
 interface IAppModalProps {
-  isOpen: boolean;
   children?: any;
+  title?: string;
+  isOpen: boolean;
   classes?: string;
   width?: number | string;
-  title?: string;
+  isDisplayOkButton?: boolean;
+  isDisplayCancelButton?: boolean;
   onClose?: () => void;
   onOk?: () => void;
   okText?: string;
@@ -28,6 +30,8 @@ const AppModal = ({
   okText,
   onCancel,
   cancelText,
+  isDisplayOkButton = true,
+  isDisplayCancelButton = true,
   ...restProps
 }: IAppModalProps) => {
   return (
@@ -37,15 +41,16 @@ const AppModal = ({
         onClose={onClose}
         aria-labelledby='modal-modal-title'
         aria-describedby='modal-modal-description'
-        {...restProps}
-      >
+        sx={{
+          outline: 'none',
+        }}
+        {...restProps}>
         <Box
           className={cx(styles.modal, classes)}
           sx={{
             width: width || '800px',
-          }}
-        >
-          <Box className={styles.modal__header}>
+          }}>
+          <Box className={styles.modal__header} paddingBottom={1}>
             <Stack direction='row' alignItems='center' justifyContent='space-between'>
               <Typography variant='h5' fontWeight={700}>
                 {title || 'Modal title'}
@@ -58,12 +63,16 @@ const AppModal = ({
           <Box className={styles.modal__body}>{children}</Box>
           <Box className={styles.modal__footer}>
             <Stack direction='row' alignItems='center' justifyContent='flex-end' spacing={2}>
-              <Button variant='contained' color='error' onClick={onCancel}>
-                {cancelText || 'Cancel'}
-              </Button>
-              <Button variant='contained' color='success' onClick={onOk}>
-                {okText || 'Ok'}
-              </Button>
+              {isDisplayCancelButton && (
+                <Button variant='contained' color='error' onClick={onCancel}>
+                  {cancelText || 'Cancel'}
+                </Button>
+              )}
+              {isDisplayOkButton && (
+                <Button variant='contained' color='success' onClick={onOk}>
+                  {okText || 'Ok'}
+                </Button>
+              )}
             </Stack>
           </Box>
         </Box>
@@ -72,4 +81,4 @@ const AppModal = ({
   );
 };
 
-export default AppModal;
+export default React.memo(AppModal);

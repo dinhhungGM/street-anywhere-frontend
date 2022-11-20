@@ -3,7 +3,7 @@ import { lazy, ReactNode } from 'react';
 const LazyLandingPage = lazy(() => import('../../features/landing-page').then((m) => ({ default: m.LandingPage })));
 const LazySignUp = lazy(() => import('../../features/auth/sign-up').then((m) => ({ default: m.SignUp })));
 const LazyCreateNewPost = lazy(() =>
-  import('./../../features/posts/create-new-post').then((m) => ({ default: m.CreateNewPost })),
+  import('./../../features/posts/create-new-post-v2').then((m) => ({ default: m.CreateNewPostV2 })),
 );
 const LazyPostDetail = lazy(() =>
   import('./../../features/posts/post-detail').then((m) => ({ default: m.PostDetail })),
@@ -12,7 +12,6 @@ const LazySignIn = lazy(() => import('./../../features/auth/sign-in').then((m) =
 const LazyPageNotFound = lazy(() =>
   import('./../../solutions/components/app-page-not-found').then((m) => ({ default: m.AppPageNotFound })),
 );
-const LazyProfile = lazy(() => import('./../../features/profile').then((m) => ({ default: m.Profile })));
 const LazyShorts = lazy(() => import('./../../features/shorts').then((m) => ({ default: m.Shorts })));
 const LazyReactions = lazy(() => import('./../../features/reactions').then((m) => ({ default: m.Reactions })));
 const LazyHots = lazy(() => import('./../../features/hots').then((m) => ({ default: m.Hots })));
@@ -45,6 +44,9 @@ const LazyRoleManagement = lazy(() =>
   import('./../../features/admin-dashboard/components/role-management').then((m) => ({
     default: m.RoleManagement,
   })),
+);
+const LazyProfileDashBoard = lazy(() =>
+  import('../../features/profile-dashboard').then((m) => ({ default: m.ProfileDashboard })),
 );
 
 type Route = {
@@ -83,7 +85,7 @@ const routes: Route[] = [
   {
     id: 'profile',
     path: '/profile',
-    element: <LazyProfile />,
+    element: <LazyProfileDashBoard />,
   },
   {
     id: 'shorts',

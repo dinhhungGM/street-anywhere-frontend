@@ -12,10 +12,17 @@
     border-bottom: 1px solid #ccc;
   }
   &__body {
-    padding: 24px 0;
+    padding: 16px 0;
+    height: fit-content;
   }
   &__footer {
     border-top: 1px solid #ccc;
     padding-top: 8px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .modal {
+    width: 80vw !important;
   }
 }

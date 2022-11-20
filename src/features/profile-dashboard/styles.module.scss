@@ -1,0 +1,41 @@
+.dashboard {
+  padding: 20px;
+  &-add-cover-image {
+    position: absolute !important;
+    bottom: 16px !important;
+    right: 16px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-transform: initial !important;
+  }
+  &-user {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    &-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    &-avatar {
+      width: 120px !important;
+      height: 120px !important;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    }
+    &-upload {
+      position: absolute !important;
+      bottom: 0;
+      right: 4px;
+      background-color: #5837d0 !important;
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .dashboard-user {
+    flex-direction: column;
+  }
+}

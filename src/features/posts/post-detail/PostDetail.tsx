@@ -6,7 +6,7 @@ import ReactPlayer from 'react-player';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppIcon } from '../../../solutions/components/app-icon';
-import { AppMap } from '../../../solutions/components/app-map';
+import { AppMapBox } from '../../../solutions/components/app-mapbox';
 import { LoadingSpinner } from '../../../solutions/components/loading-spinner';
 import { authSelectors } from '../../auth/store';
 import { postActions, postSelectors } from '../store';
@@ -25,12 +25,14 @@ const PostDetail = () => {
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const navigate = useNavigate();
   const [isOpenComment, setIsOpenComment] = useState(false);
+  const [currentCoord, setCurrentCoord] = useState(null);
 
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      setCurrentCoord({ long: position.coords.longitude, lat: position.coords.latitude });
+    });
     const { postId } = params;
-    if (currentUser && selectedPost?.userId !== currentUser?.id) {
-      dispatch(postActions.incrementViewAsync(+postId));
-    }
+    dispatch(postActions.incrementViewAsync(+postId));
     dispatch(postActions.getPostByIdAsync(+postId));
   }, []);
 
@@ -72,8 +74,7 @@ const PostDetail = () => {
                 size='large'
                 variant='contained'
                 startIcon={<AppIcon icon={Comment} color='#fff' />}
-                onClick={() => setIsOpenComment(!isOpenComment)}
-              >
+                onClick={() => setIsOpenComment(!isOpenComment)}>
                 Comment
               </Button>
             </Grid>
@@ -88,17 +89,15 @@ const PostDetail = () => {
           longitude={selectedPost?.longitude}
           latitude={selectedPost?.latitude}
         />
-        {utils.isExistLatAndLong(selectedPost) ? (
-          <Box className={styles['post-detail__map']}>
-            <AppMap
-              latitude={selectedPost?.latitude}
-              longitude={selectedPost?.longitude}
-              marker={{
-                latitude: selectedPost?.latitude,
-                longitude: selectedPost?.longitude,
-              }}
-              zoom={15}
-              isReadonly={true}
+        {utils.isExistLatAndLong(selectedPost) && currentCoord ? (
+          <Box className={styles['post-detail__map']} width='100%'>
+            <AppMapBox
+              isTracing
+              isDisplayGeoDirection
+              mapHeight='600px'
+              address={selectedPost?.location}
+              desPoint={{ long: selectedPost?.longitude, lat: selectedPost?.latitude }}
+              sourcePoint={{ long: currentCoord?.long, lat: currentCoord?.lat }}
             />
           </Box>
         ) : (
