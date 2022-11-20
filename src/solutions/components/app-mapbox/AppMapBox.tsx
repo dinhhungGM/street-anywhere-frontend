@@ -3,7 +3,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import { Box } from '@mui/material';
 import mapboxgl, { Marker, Popup } from 'mapbox-gl';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 // The following is required to stop "npm build" from transpiling mapbox code.
 // notice the exclamation point in the import.
@@ -42,6 +42,7 @@ const AppMapBox = ({
   onSearchOnMap = (e) => {},
 }: IAppMapBox) => {
   const mapRef = useRef();
+
   useEffect(() => {
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
     const map = new mapboxgl.Map({
@@ -56,7 +57,10 @@ const AppMapBox = ({
     const mapboxDirections = new MapboxDirections({
       accessToken: mapboxgl.accessToken,
       unit: 'metric',
-      profile: 'mapbox/cycling',
+      profile: isTracing ? 'mapbox/driving-traffic' : 'mapbox/cycling',
+      controls: {
+        inputs: false,
+      },
     });
     const mapboxGeocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
@@ -70,12 +74,9 @@ const AppMapBox = ({
 
     // Init event
     map.on('load', function () {
-      let sourceMarker = new Marker();
-      let desMarker = new Marker();
+      let desMarker = new Marker({ color: '#e60023' });
+      const sourceMarker = new Marker();
       const desPopup = new Popup({ offset: 25 });
-      if (sourcePoint) {
-        sourceMarker.setLngLat([sourcePoint.long, sourcePoint.lat]).addTo(this);
-      }
       if (desPoint) {
         if (address) {
           desPopup.setText(address);
@@ -83,6 +84,11 @@ const AppMapBox = ({
         }
         desMarker.setLngLat([desPoint.long, desPoint.lat]);
         desMarker.addTo(this);
+      }
+      if (sourcePoint && isTracing) {
+        sourceMarker.setLngLat([sourcePoint.long, sourcePoint.lat]).addTo(this);
+        mapboxDirections.setOrigin([sourcePoint.long, sourcePoint.lat]);
+        mapboxDirections.setDestination([desPoint.long, desPoint.lat]);
       }
     });
     map.on('click', onClickOnMap);
@@ -98,7 +104,7 @@ const AppMapBox = ({
 
   return (
     <>
-      <Box paddingY={2}>
+      <Box paddingY={2} width='100%'>
         <div
           ref={mapRef}
           style={{
