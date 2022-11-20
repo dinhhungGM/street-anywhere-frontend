@@ -1,10 +1,23 @@
-import { AddAPhoto, AddReaction, Bookmark, Comment, Diversity1, Search, Upload } from '@mui/icons-material';
+import {
+  AccountCircle,
+  AddAPhoto,
+  AddReaction,
+  Bookmark,
+  Comment,
+  Diversity1,
+  Email,
+  Info,
+  InsertLink,
+  Password,
+  Phone,
+  Search,
+  Upload,
+} from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
 import {
   Avatar,
   Box,
   Button,
-  Divider,
   Grid,
   IconButton,
   InputAdornment,
@@ -20,8 +33,10 @@ import SweetAlert from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { AppIcon } from '../../solutions/components/app-icon';
 import { AppInfoWidget } from '../../solutions/components/app-info-widget';
+import { AppProfileInfo } from '../../solutions/components/AppProfileInfo';
 import { authSelectors } from '../auth/store';
 import { MyPost } from './my-post';
+import { ProfileItem } from './profile-item';
 import * as profileAsyncActions from './profileDashboardAsyncActions';
 import { IMyPost } from './profileDashBoardModels';
 import * as profileSelectors from './profileDashBoardSelectors';
@@ -199,28 +214,25 @@ const ProfileDashBoard = () => {
         <Box paddingY={2}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={4}>
-              <Box component={Paper} elevation={2} padding={2}>
-                <Typography textAlign='center' marginBottom={2} variant='h6' fontWeight={700}>
-                  Account
-                </Typography>
-                <Divider />
-              </Box>
+              <ProfileItem label='Account'>
+                <Stack paddingX={10}>
+                  <AppProfileInfo icon={AccountCircle} label='Username' value={profileDetail?.username} />
+                  <AppProfileInfo icon={Password} label='Password' value='*******' isEdit />
+                </Stack>
+              </ProfileItem>
             </Grid>
             <Grid item xs={12} sm={12} md={4}>
-              <Box component={Paper} elevation={2} padding={2}>
-                <Typography textAlign='center' marginBottom={2} variant='h6' fontWeight={700}>
-                  Personal Information
-                </Typography>
-                <Divider />
-              </Box>
+              <ProfileItem label='Personal Information'>
+                <AppProfileInfo icon={Info} label='First name' value={profileDetail?.firstName} isEdit />
+                <AppProfileInfo icon={Info} label='Last name' value={profileDetail?.lastName} isEdit />
+                <AppProfileInfo icon={Email} label='Email' value={profileDetail?.email} isEdit />
+                <AppProfileInfo icon={Phone} label='Phone' value={profileDetail?.phone} isEdit />
+              </ProfileItem>
             </Grid>
             <Grid item xs={12} sm={12} md={4}>
-              <Box component={Paper} elevation={2} padding={2}>
-                <Typography textAlign='center' marginBottom={2} variant='h6' fontWeight={700}>
-                  Additional Information
-                </Typography>
-                <Divider />
-              </Box>
+              <ProfileItem label='Additional Information'>
+                <AppProfileInfo icon={InsertLink} label='Bio' value={profileDetail?.bio} isEdit isLink />
+              </ProfileItem>
             </Grid>
           </Grid>
         </Box>
@@ -251,7 +263,6 @@ const ProfileDashBoard = () => {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </Box>
-
               {displayPosts.length ? (
                 <Masonry columns={{ sm: 1, md: 1, lg: 2, xl: 2 }} spacing={2}>
                   {displayPosts?.map((post) => (
@@ -280,9 +291,14 @@ const ProfileDashBoard = () => {
                 </Masonry>
               ) : (
                 <>
-                  <Typography textAlign='center' variant='h5'>
-                    No posts found
-                  </Typography>
+                  <Stack alignItems='center' justifyContent='center' spacing={2}>
+                    <Typography textAlign='center' variant='h5' textTransform='uppercase' fontWeight={600}>
+                      No posts found
+                    </Typography>
+                    <Button variant='contained' onClick={() => navigate('/create-new-post')}>
+                      Create new post
+                    </Button>
+                  </Stack>
                 </>
               )}
             </Grid>

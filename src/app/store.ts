@@ -16,18 +16,6 @@ import { wrapperReducer } from '../features/wrapper/store';
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: [
-    'wrapper',
-    'post',
-    'landingPage',
-    'profile',
-    'reactions',
-    'categories',
-    'tags',
-    'comments',
-    'admin',
-    'shorts',
-  ],
 };
 const rootReducer = combineReducers({
   wrapper: wrapperReducer,
