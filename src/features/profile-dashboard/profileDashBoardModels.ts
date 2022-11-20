@@ -19,6 +19,33 @@ export interface IMyPost {
   reactionCount?: number;
   bookmarkCount?: number;
 }
+
+interface IProfilePostComment {
+  id?: number;
+  content?: string;
+  postId?: number;
+  userId?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+interface IProfilePost {
+  id?: number;
+  title?: string;
+  location?: string;
+  longitude?: number;
+  latitude?: number;
+  userId?: number;
+  type?: string;
+  size?: number;
+  mediaSource?: string;
+  shortTitle?: string;
+  description?: string;
+  videoYtbUrl?: string;
+  views?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  comments?: IProfilePostComment[];
+}
 export interface IProfileDetail {
   id?: number;
   bio?: string;
@@ -34,4 +61,6 @@ export interface IProfileDetail {
   description?: string;
   commentCount?: number;
   bookmarkCount?: number;
+  profilePhotoUrl?: string;
+  coverImageUrl?: string;
 }

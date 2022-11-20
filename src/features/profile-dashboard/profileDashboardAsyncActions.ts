@@ -58,3 +58,35 @@ export const getProfileOfUser = createAsyncThunk('profile/getProfileOfUser', asy
     dispatch(wrapperActions.hideLoading());
   }
 });
+
+export const updateUser = createAsyncThunk(
+  'profile/updateUser',
+  async (params: { userId: number; payload: any; isFormData: boolean; }, { dispatch }) => {
+    try {
+      await axios.patch(`/users/${ params.userId }`, params.payload, {
+        headers: {
+          'Content-Type': params.isFormData ? 'multipart/form-data' : 'application/json',
+        },
+      });
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'success',
+          message: 'Update successfully',
+        }),
+      );
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);

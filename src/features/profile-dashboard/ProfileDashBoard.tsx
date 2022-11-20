@@ -11,10 +11,10 @@ import {
   Paper,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import _ from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -29,8 +29,16 @@ import styles from './styles.module.scss';
 
 const showSuccess = (message: string): void => {
   SweetAlert.fire({
-    title: 'Succees',
+    title: 'Success',
     icon: 'success',
+    text: message,
+  });
+};
+
+const showError = (message: string): void => {
+  SweetAlert.fire({
+    title: 'Error',
+    icon: 'error',
     text: message,
   });
 };
@@ -38,10 +46,26 @@ const showSuccess = (message: string): void => {
 const ProfileDashBoard = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const inputFileRef = useRef<HTMLInputElement>();
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const posts = useAppSelector(profileSelectors.selectPostsOfCurrentUser);
   const profileDetail = useAppSelector(profileSelectors.selectProfileDetail);
   const [search, setSearch] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [field, setField] = useState<string | null>(null);
+
+  // File change
+  const onFileChange = (event) => {
+    const file = event.target.files[0] as File;
+    if (!_.isNil(file)) {
+      const isValidExt = ['image/gif', 'image/jpeg', 'image/png'].includes(file.type);
+      if (isValidExt) {
+        setFile(file);
+      } else {
+        showError('Invalid file type. It should be a image file');
+      }
+    }
+  };
 
   // Delete post
   const deletePost = async (postId: number) => {
@@ -70,6 +94,10 @@ const ProfileDashBoard = () => {
       });
   };
   // Update post
+  const uploadImage = (field): void => {
+    inputFileRef.current.click();
+    setField(field);
+  };
 
   // Filter post
   const displayPosts = useMemo(() => {
@@ -94,20 +122,41 @@ const ProfileDashBoard = () => {
     }
   }, []);
 
+  // Update user
+  useEffect(() => {
+    if (file && field) {
+      const formData = new FormData();
+      formData.append(field, field);
+      formData.append('file', file);
+      dispatch(
+        profileAsyncActions.updateUser({
+          userId: currentUser.id,
+          payload: formData,
+          isFormData: true,
+        }),
+      );
+    }
+  }, [file]);
+
   return (
     <>
       <Box className={styles['dashboard']}>
+        <input type='file' accept='image/*' hidden ref={inputFileRef} onChange={onFileChange} />
         <Box
           sx={{
             height: '400px',
-            background: '#ccc',
+            background: currentUser?.coverImageUrl ? `url(${ currentUser?.coverImageUrl })` : '#ccc',
             borderRadius: 4,
             position: 'relative',
-          }}>
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+          }}
+          component={Paper}>
           <Button
             startIcon={<AppIcon icon={AddAPhoto} color='#fff' />}
             variant='contained'
-            className={styles['dashboard-add-cover-image']}>
+            className={styles['dashboard-add-cover-image']}
+            onClick={() => uploadImage('coverImage')}>
             Add cover image
           </Button>
         </Box>
@@ -117,8 +166,12 @@ const ProfileDashBoard = () => {
               sx={{
                 position: 'relative',
               }}>
-              <Avatar className={styles['dashboard-user-avatar']} />
-              <IconButton size='medium' className={styles['dashboard-user-upload']} color='error'>
+              <Avatar src={profileDetail?.profilePhotoUrl} className={styles['dashboard-user-avatar']} />
+              <IconButton
+                size='medium'
+                className={styles['dashboard-user-upload']}
+                color='error'
+                onClick={() => uploadImage('avatar')}>
                 <AppIcon icon={Upload} color='#fff' />
               </IconButton>
             </Box>
@@ -147,24 +200,24 @@ const ProfileDashBoard = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={4}>
               <Box component={Paper} elevation={2} padding={2}>
-                <Typography textAlign='center' marginBottom={2}>
-                  Description
+                <Typography textAlign='center' marginBottom={2} variant='h6' fontWeight={700}>
+                  Account
                 </Typography>
                 <Divider />
               </Box>
             </Grid>
             <Grid item xs={12} sm={12} md={4}>
               <Box component={Paper} elevation={2} padding={2}>
-                <Typography textAlign='center' marginBottom={2}>
-                  Description
+                <Typography textAlign='center' marginBottom={2} variant='h6' fontWeight={700}>
+                  Personal Information
                 </Typography>
                 <Divider />
               </Box>
             </Grid>
             <Grid item xs={12} sm={12} md={4}>
               <Box component={Paper} elevation={2} padding={2}>
-                <Typography textAlign='center' marginBottom={2}>
-                  Description
+                <Typography textAlign='center' marginBottom={2} variant='h6' fontWeight={700}>
+                  Additional Information
                 </Typography>
                 <Divider />
               </Box>
@@ -186,7 +239,7 @@ const ProfileDashBoard = () => {
                 marginBottom={2}>
                 <TextField
                   fullWidth
-                  placeholder='Search post...'
+                  placeholder='Search by title...'
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position='end'>
