@@ -286,6 +286,7 @@ const ProfileDashBoard = () => {
                       reactionCount={post.reactionCount}
                       mediaUrl={post.type.includes('image') ? post.imageUrl : post.videoYtbUrl}
                       onDeletePost={() => deletePost(post.id)}
+                      avatarUrl={currentUser?.profilePhotoUrl}
                     />
                   ))}
                 </Masonry>

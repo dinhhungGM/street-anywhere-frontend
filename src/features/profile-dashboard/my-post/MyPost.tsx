@@ -11,7 +11,7 @@ import {
   Paper,
   Stack,
   Tooltip,
-  Typography
+  Typography,
 } from '@mui/material';
 import _ from 'lodash';
 import React, { useState } from 'react';
@@ -46,6 +46,7 @@ interface IMyPostProps {
   commentCount?: number;
   reactionCount?: number;
   bookmarkCount?: number;
+  avatarUrl?: string;
   onDeletePost?: () => any;
   onUpdatePost?: () => any;
 }
@@ -67,6 +68,7 @@ const MyPost = ({
   commentCount,
   reactionCount,
   bookmarkCount,
+  avatarUrl,
   onDeletePost = () => null,
   onUpdatePost = () => null,
 }: IMyPostProps) => {
@@ -116,7 +118,7 @@ const MyPost = ({
         component={Paper}>
         <Stack direction='row' alignItems='center' justifyContent='space-between'>
           <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={2}>
-            <Avatar />
+            <Avatar src={avatarUrl} />
             <Box>
               <Typography variant='h6' fontWeight={700}>
                 {fullName}

@@ -13,11 +13,11 @@ const ProfileItem = ({ label, children }: ProfileItemProps) => {
         sx={{
           background: randomColor({
             format: 'rgb',
-            luminosity: 'light',
+            luminosity: 'dark',
           }),
         }}
         paddingY={1}>
-        <Typography textAlign='center' variant='h6' fontWeight={700}>
+        <Typography textAlign='center' variant='h6' fontWeight={700} color='#fff'>
           {label}
         </Typography>
       </Box>
