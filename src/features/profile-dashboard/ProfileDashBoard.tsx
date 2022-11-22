@@ -41,6 +41,8 @@ import * as profileAsyncActions from './profileDashboardAsyncActions';
 import { IMyPost } from './profileDashBoardModels';
 import * as profileSelectors from './profileDashBoardSelectors';
 import styles from './styles.module.scss';
+import NoDataFoundImage from './../../solutions/assets/images/no-data-found.png';
+import { Add } from '@mui/icons-material';
 
 const showSuccess = (message: string): void => {
   SweetAlert.fire({
@@ -211,31 +213,6 @@ const ProfileDashBoard = () => {
             <AppInfoWidget icon={Bookmark} title='Bookmarks' iconColor='#0288d1' value={5} />
           </Stack>
         </Box>
-        <Box paddingY={2}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={12} md={4}>
-              <ProfileItem label='Account'>
-                <Stack paddingX={10}>
-                  <AppProfileInfo icon={AccountCircle} label='Username' value={profileDetail?.username} />
-                  <AppProfileInfo icon={Password} label='Password' value='*******' isEdit />
-                </Stack>
-              </ProfileItem>
-            </Grid>
-            <Grid item xs={12} sm={12} md={4}>
-              <ProfileItem label='Personal Information'>
-                <AppProfileInfo icon={Info} label='First name' value={profileDetail?.firstName} isEdit />
-                <AppProfileInfo icon={Info} label='Last name' value={profileDetail?.lastName} isEdit />
-                <AppProfileInfo icon={Email} label='Email' value={profileDetail?.email} isEdit />
-                <AppProfileInfo icon={Phone} label='Phone' value={profileDetail?.phone} isEdit />
-              </ProfileItem>
-            </Grid>
-            <Grid item xs={12} sm={12} md={4}>
-              <ProfileItem label='Additional Information'>
-                <AppProfileInfo icon={InsertLink} label='Bio' value={profileDetail?.bio} isEdit isLink />
-              </ProfileItem>
-            </Grid>
-          </Grid>
-        </Box>
         <Box
           sx={{
             backgroundColor: '#f2f5f8',
@@ -243,10 +220,33 @@ const ProfileDashBoard = () => {
             borderRadius: '8px',
           }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={12} md={12} flexWrap='wrap'>
+            <Grid item xs={12} sm={12} md={4}>
+              <Box marginBottom={2}>
+                <ProfileItem label='Account'>
+                  <Stack>
+                    <AppProfileInfo icon={AccountCircle} label='Username' value={profileDetail?.username} />
+                    <AppProfileInfo icon={Password} label='Password' value='*******' isEdit />
+                  </Stack>
+                </ProfileItem>
+              </Box>
+              <Box marginBottom={2}>
+                <ProfileItem label='Personal Information'>
+                  <AppProfileInfo icon={Info} label='First name' value={profileDetail?.firstName} isEdit />
+                  <AppProfileInfo icon={Info} label='Last name' value={profileDetail?.lastName} isEdit />
+                  <AppProfileInfo icon={Email} label='Email' value={profileDetail?.email} isEdit />
+                  <AppProfileInfo icon={Phone} label='Phone' value={profileDetail?.phone} isEdit />
+                </ProfileItem>
+              </Box>
+              <ProfileItem label='Additional Information'>
+                <AppProfileInfo icon={InsertLink} label='Bio' value={profileDetail?.bio} isEdit isLink />
+              </ProfileItem>
+            </Grid>
+            <Grid item xs={12} sm={12} md={8} flexWrap='wrap' position='relative'>
               <Box
                 sx={{
                   backgroundColor: '#fff',
+                  position: 'sticky',
+                  top: 0,
                 }}
                 marginBottom={2}>
                 <TextField
@@ -264,7 +264,11 @@ const ProfileDashBoard = () => {
                 />
               </Box>
               {displayPosts.length ? (
-                <Masonry columns={{ sm: 1, md: 1, lg: 2, xl: 2 }} spacing={2}>
+                <Box
+                  sx={{
+                    maxHeight: '100%',
+                    overflowY: 'scroll',
+                  }}>
                   {displayPosts?.map((post) => (
                     <MyPost
                       key={post.id}
@@ -289,14 +293,17 @@ const ProfileDashBoard = () => {
                       avatarUrl={currentUser?.profilePhotoUrl}
                     />
                   ))}
-                </Masonry>
+                </Box>
               ) : (
                 <>
                   <Stack alignItems='center' justifyContent='center' spacing={2}>
-                    <Typography textAlign='center' variant='h5' textTransform='uppercase' fontWeight={600}>
-                      No posts found
-                    </Typography>
-                    <Button variant='contained' onClick={() => navigate('/create-new-post')}>
+                    <Stack alignItems='center' justifyContent='center' height='400px' width='100%'>
+                      <img src={NoDataFoundImage} alt='No data found' />
+                    </Stack>
+                    <Button
+                      variant='contained'
+                      onClick={() => navigate('/create-new-post')}
+                      startIcon={<AppIcon icon={Add} color='#fff' />}>
                       Create new post
                     </Button>
                   </Stack>

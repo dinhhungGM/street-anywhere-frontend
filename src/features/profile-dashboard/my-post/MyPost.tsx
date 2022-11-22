@@ -111,7 +111,7 @@ const MyPost = ({
       <Box
         sx={{
           padding: '12px',
-          minWidth: '500px',
+          width: '100%',
           marginBottom: '12px',
           position: 'relative',
         }}

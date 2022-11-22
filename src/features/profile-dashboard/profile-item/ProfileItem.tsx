@@ -8,7 +8,7 @@ interface ProfileItemProps {
 }
 const ProfileItem = ({ label, children }: ProfileItemProps) => {
   return (
-    <Box component={Paper} elevation={2} height='100%'>
+    <Box component={Paper} elevation={2}>
       <Box
         sx={{
           background: randomColor({
