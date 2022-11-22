@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useFormik } from 'formik';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
@@ -20,7 +21,13 @@ const SignUp = () => {
       firstName: '',
       lastName: '',
     },
-    onSubmit: (values) => {},
+    onSubmit: async (values) => {
+      delete values.confirmPassword;
+      const response = await dispatch(signUpActionAsync(values));
+      if (response.meta.requestStatus === 'fulfilled') {
+        navigate('/');
+      }
+    },
     validationSchema: yup.object({
       username: yup
         .string()
@@ -44,48 +51,48 @@ const SignUp = () => {
     }),
   });
 
-  const handleSignUp = async () => {
-    const response = await dispatch(signUpActionAsync(form.values));
-    if (response.meta.requestStatus === 'fulfilled') {
-      navigate('/');
+  useEffect(() => {
+    if (currentUser) {
+      navigate(-1);
     }
-  };
+  }, []);
 
   return (
     <>
       <Box className={styles.wrapper} boxShadow={1}>
-        <Box className={styles.form}>
-          <Typography variant='h3' textAlign='center' color='#9391fd' marginBottom={4} fontWeight='500'>
-            Sign Up
-          </Typography>
-          <Box className={styles['form-group']}>
-            <AppFormInput label='Username' form={form} formControlName='username' />
+        <form onSubmit={form.handleSubmit}>
+          <Box className={styles.form}>
+            <Typography variant='h3' textAlign='center' color='#9391fd' marginBottom={4} fontWeight='500'>
+              Sign Up
+            </Typography>
+            <Box className={styles['form-group']}>
+              <AppFormInput label='Username' form={form} formControlName='username' />
+            </Box>
+            <Box className={styles['form-group']}>
+              <AppFormInput type='password' label='Password' form={form} formControlName='password' />
+            </Box>
+            <Box className={styles['form-group']}>
+              <AppFormInput type='password' label='Confirm password' form={form} formControlName='confirmPassword' />
+            </Box>
+            <Box className={styles['form-group']}>
+              <AppFormInput label='First name' form={form} formControlName='firstName' />
+            </Box>
+            <Box className={styles['form-group']}>
+              <AppFormInput label='Last name' form={form} formControlName='lastName' />
+            </Box>
+            <Box className={styles['form-group']}>
+              <Button
+                fullWidth
+                variant='contained'
+                color='secondary'
+                className={styles.btn}
+                disabled={!form.isValid}
+                type='submit'>
+                Submit
+              </Button>
+            </Box>
           </Box>
-          <Box className={styles['form-group']}>
-            <AppFormInput type='password' label='Password' form={form} formControlName='password' />
-          </Box>
-          <Box className={styles['form-group']}>
-            <AppFormInput type='password' label='Confirm password' form={form} formControlName='confirmPassword' />
-          </Box>
-          <Box className={styles['form-group']}>
-            <AppFormInput label='First name' form={form} formControlName='firstName' />
-          </Box>
-          <Box className={styles['form-group']}>
-            <AppFormInput label='Last name' form={form} formControlName='lastName' />
-          </Box>
-          <Box className={styles['form-group']}>
-            <Button
-              fullWidth
-              variant='contained'
-              color='secondary'
-              className={styles.btn}
-              disabled={!form.isValid}
-              onClick={handleSignUp}
-            >
-              Submit
-            </Button>
-          </Box>
-        </Box>
+        </form>
       </Box>
     </>
   );
