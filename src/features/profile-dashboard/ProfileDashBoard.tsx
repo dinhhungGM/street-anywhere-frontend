@@ -1,5 +1,6 @@
 import {
   AccountCircle,
+  Add,
   AddAPhoto,
   AddReaction,
   Bookmark,
@@ -13,7 +14,6 @@ import {
   Search,
   Upload,
 } from '@mui/icons-material';
-import { Masonry } from '@mui/lab';
 import {
   Avatar,
   Box,
@@ -35,14 +35,14 @@ import { AppIcon } from '../../solutions/components/app-icon';
 import { AppInfoWidget } from '../../solutions/components/app-info-widget';
 import { AppProfileInfo } from '../../solutions/components/AppProfileInfo';
 import { authSelectors } from '../auth/store';
+import NoDataFoundImage from './../../solutions/assets/images/no-data-found.png';
 import { MyPost } from './my-post';
 import { ProfileItem } from './profile-item';
 import * as profileAsyncActions from './profileDashboardAsyncActions';
 import { IMyPost } from './profileDashBoardModels';
 import * as profileSelectors from './profileDashBoardSelectors';
 import styles from './styles.module.scss';
-import NoDataFoundImage from './../../solutions/assets/images/no-data-found.png';
-import { Add } from '@mui/icons-material';
+import { ProfilePropertiesEnum } from './profileDashBoardModels';
 
 const showSuccess = (message: string): void => {
   SweetAlert.fire({
@@ -69,7 +69,7 @@ const ProfileDashBoard = () => {
   const profileDetail = useAppSelector(profileSelectors.selectProfileDetail);
   const [search, setSearch] = useState('');
   const [file, setFile] = useState<File | null>(null);
-  const [field, setField] = useState<string | null>(null);
+  const [field, setField] = useState<ProfilePropertiesEnum | null>(null);
 
   // File change
   const onFileChange = (event) => {
@@ -141,19 +141,52 @@ const ProfileDashBoard = () => {
 
   // Update user
   useEffect(() => {
-    if (file && field) {
+    const fileFields = [ProfilePropertiesEnum.Avatar, ProfilePropertiesEnum.CoverImage];
+    const textFields = [
+      ProfilePropertiesEnum.FirstName,
+      ProfilePropertiesEnum.LastName,
+      ProfilePropertiesEnum.Email,
+      ProfilePropertiesEnum.Phone,
+      ProfilePropertiesEnum.Bio,
+    ];
+
+    const reset = (): void => {
+      setField(null);
+      setFile(null);
+    };
+
+    const updateAvatarOrCoverImage = async () => {
       const formData = new FormData();
       formData.append(field, field);
       formData.append('file', file);
-      dispatch(
+      const response = await dispatch(
         profileAsyncActions.updateUser({
           userId: currentUser.id,
           payload: formData,
           isFormData: true,
         }),
       );
+      if (response.meta.requestStatus === 'fulfilled') {
+        reset();
+      }
+    };
+
+    const updateTextInfo = async () => {
+      const payload = {
+        userId: currentUser?.id,
+        payload: {},
+      };
+    };
+
+    if (file && field) {
+      if (fileFields.includes(field)) {
+        updateAvatarOrCoverImage();
+      }
+      if (textFields.includes(field)) {
+        updateTextInfo();
+      }
     }
-  }, [file]);
+  }, [file, field]);
 
   return (
     <>
@@ -162,7 +195,7 @@ const ProfileDashBoard = () => {
         <Box
           sx={{
             height: '400px',
-            background: currentUser?.coverImageUrl ? `url(${ currentUser?.coverImageUrl })` : '#ccc',
+            background: profileDetail?.coverImageUrl ? `url(${ profileDetail?.coverImageUrl })` : '#ccc',
             borderRadius: 4,
             position: 'relative',
             backgroundSize: 'cover',
@@ -173,7 +206,7 @@ const ProfileDashBoard = () => {
             startIcon={<AppIcon icon={AddAPhoto} color='#fff' />}
             variant='contained'
             className={styles['dashboard-add-cover-image']}
-            onClick={() => uploadImage('coverImage')}>
+            onClick={() => uploadImage(ProfilePropertiesEnum.CoverImage)}>
             Add cover image
           </Button>
         </Box>
@@ -188,7 +221,7 @@ const ProfileDashBoard = () => {
                 size='medium'
                 className={styles['dashboard-user-upload']}
                 color='error'
-                onClick={() => uploadImage('avatar')}>
+                onClick={() => uploadImage(ProfilePropertiesEnum.Avatar)}>
                 <AppIcon icon={Upload} color='#fff' />
               </IconButton>
             </Box>
@@ -266,9 +299,10 @@ const ProfileDashBoard = () => {
               {displayPosts.length ? (
                 <Box
                   sx={{
-                    maxHeight: '100%',
+                    maxHeight: '600px',
                     overflowY: 'scroll',
-                  }}>
+                  }}
+                  paddingX={2}>
                   {displayPosts?.map((post) => (
                     <MyPost
                       key={post.id}

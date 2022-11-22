@@ -39,7 +39,7 @@ const PostDetail = () => {
   return (
     <>
       <Container className={styles['post-detail']}>
-        <Button startIcon={<AppIcon icon={ArrowBack} />} onClick={() => navigate('/')}>
+        <Button startIcon={<AppIcon icon={ArrowBack} color='#fff' />} onClick={() => navigate('/')} variant='contained'>
           Home
         </Button>
         <PostOwnerProfile

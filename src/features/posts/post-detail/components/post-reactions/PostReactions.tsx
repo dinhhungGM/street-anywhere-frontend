@@ -136,7 +136,9 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
 
   useEffect(() => {
     dispatch(reactionsActions.getReactionList());
-    dispatch(postActions.getReactionDetailsByPostIdAsync(postId));
+    if (postId) {
+      dispatch(postActions.getReactionDetailsByPostIdAsync(postId));
+    }
   }, [selectedIndex]);
 
   useEffect(() => {
@@ -150,8 +152,7 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
           <Button
             sx={{
               width: '30%',
-            }}
-          >
+            }}>
             <Typography marginRight={1}>({postReactionDetails?.reactionCountAll})</Typography>
             <AppIcon icon={AddReaction} color='#1976d2' />
           </Button>
@@ -172,8 +173,7 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
               onClick={handleToggle}
               sx={{
                 width: '20%',
-              }}
-            >
+              }}>
               <AppIcon icon={ArrowDropDown} color='#1976d2' />
             </Button>
           )}
@@ -186,16 +186,14 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
           anchorEl={anchorRef.current}
           role={undefined}
           transition
-          disablePortal
-        >
+          disablePortal>
           {({ TransitionProps, placement }) => (
             <Grow
               {...TransitionProps}
               style={{
                 transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
                 width: '100%',
-              }}
-            >
+              }}>
               <Paper>
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList id='split-button-menu' autoFocusItem>
@@ -203,8 +201,7 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
                       <MenuItem
                         key={reactionItem.id}
                         selected={idx === selectedIndex}
-                        onClick={(event) => handleMenuItemClick(event, idx)}
-                      >
+                        onClick={(event) => handleMenuItemClick(event, idx)}>
                         <ReactionItem reaction={reactionItem} />
                         <ReactionItemCount
                           reactionDetails={postReactionDetails?.reactionDetails[reactionItem.reactionType]}

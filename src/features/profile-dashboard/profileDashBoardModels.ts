@@ -64,3 +64,14 @@ export interface IProfileDetail {
   profilePhotoUrl?: string;
   coverImageUrl?: string;
 }
+
+export enum ProfilePropertiesEnum {
+  Password = 'password',
+  FirstName = 'firstName',
+  LastName = 'lastName',
+  Email = 'email',
+  Phone = 'phone',
+  Bio = 'bio',
+  Avatar = 'avatar',
+  CoverImage = 'coverImage',
+}
