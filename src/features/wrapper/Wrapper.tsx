@@ -14,7 +14,7 @@ const Wrapper = ({ children }: WrapperProps) => {
     <>
       <Header />
       {children}
-      {/* <Footer /> */}
+      <Footer />
       <LoadingSpinner />
       <AppMoveToTop />
       <AppNotification />
