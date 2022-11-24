@@ -1,23 +1,20 @@
 import {
   Add,
   AdminPanelSettings,
-  Login,
-  Person,
+  Login, Notifications, Person,
   PersonAdd,
   PowerSettingsNew,
-  Search,
-  Notifications,
+  Search
 } from '@mui/icons-material';
 import { Badge, Drawer, IconButton, Stack, Tooltip } from '@mui/material';
+import _ from 'lodash';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '../../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppIcon } from '../../../../solutions/components/app-icon';
+import { AppIconButton } from '../../../../solutions/components/app-icon-button';
 import { authActions, authSelectors } from '../../../auth/store';
 import { SearchBox } from '../search-box';
-import { FeatureMenu } from './../feature-menu';
-import _ from 'lodash';
-import { AppIconButton } from '../../../../solutions/components/app-icon-button';
 
 const RightMenu = () => {
   const [isOpenSearchBox, setIsOpenSearchBox] = useState<boolean>(false);

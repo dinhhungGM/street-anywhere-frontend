@@ -23,40 +23,54 @@ const Gallery = () => {
   return (
     <>
       {displayPosts?.length ? (
-        <Masonry columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} spacing={2}>
-          {displayPosts &&
-            displayPosts.map((post) => (
-              <Box
-                sx={{
-                  margin: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                key={post?.id}
-              >
-                <AppCard
-                  key={post?.id}
-                  imgSrc={post?.imageUrl}
-                  alt={post?.shortTitle}
-                  author={post?.user.fullName}
-                  avatarUrl={post?.user.profilePhotoUrl}
-                  tags={post?.tags}
-                  categories={post?.categories}
-                  shortTitle={post?.shortTitle}
-                  location={post?.location}
-                  postId={post?.id}
-                  type={post?.type}
-                  videoYtbUrl={post?.videoYtbUrl}
-                  views={post?.views}
-                  reactionCount={post?.reactionCount}
-                  bookmarkCount={post?.bookmarkCount}
-                  commentCount={post?.commentCount}
-                  createdAt={post?.createdAt}
-                />
-              </Box>
-            ))}
-        </Masonry>
+        <Box
+          sx={{
+            height: 'fit-content',
+            maxHeight: '1800px',
+            overflowX: 'hidden',
+            overflowY: 'scroll',
+            padding: '12px',
+            width: '100%',
+          }}>
+          <Masonry
+            columns={{ sm: 1, md: 2, lg: 4, xl: 5 }}
+            spacing={2}
+            sx={{
+              width: '100%',
+            }}>
+            {displayPosts &&
+              displayPosts.map((post) => (
+                <Box
+                  sx={{
+                    margin: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  key={post?.id}>
+                  <AppCard
+                    key={post?.id}
+                    imgSrc={post?.imageUrl}
+                    alt={post?.shortTitle}
+                    author={post?.user.fullName}
+                    avatarUrl={post?.user.profilePhotoUrl}
+                    tags={post?.tags}
+                    categories={post?.categories}
+                    shortTitle={post?.shortTitle}
+                    location={post?.location}
+                    postId={post?.id}
+                    type={post?.type}
+                    videoYtbUrl={post?.videoYtbUrl}
+                    views={post?.views}
+                    reactionCount={post?.reactionCount}
+                    bookmarkCount={post?.bookmarkCount}
+                    commentCount={post?.commentCount}
+                    createdAt={post?.createdAt}
+                  />
+                </Box>
+              ))}
+          </Masonry>
+        </Box>
       ) : (
         <Box
           sx={{
@@ -66,8 +80,7 @@ const Gallery = () => {
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
-          }}
-        >
+          }}>
           <AppIcon icon={Search} fontSize={120} />
           <Typography variant='h6' marginY={4}>
             No data found

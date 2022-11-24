@@ -43,6 +43,7 @@ import { IMyPost } from './profileDashBoardModels';
 import * as profileSelectors from './profileDashBoardSelectors';
 import styles from './styles.module.scss';
 import { ProfilePropertiesEnum } from './profileDashBoardModels';
+import UpdateProfileModal from './update-profile-modal/UpdateProfileModal';
 
 const showSuccess = (message: string): void => {
   SweetAlert.fire({
@@ -70,6 +71,8 @@ const ProfileDashBoard = () => {
   const [search, setSearch] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [field, setField] = useState<ProfilePropertiesEnum | null>(null);
+  const [isOpenUpdateModal, setIsOpenUpdateModal] = useState<boolean>(false);
+  const [fieldName, setFieldName] = useState<string | null>(null);
 
   // File change
   const onFileChange = (event) => {
@@ -128,6 +131,19 @@ const ProfileDashBoard = () => {
     });
     return filterPosts as IMyPost[];
   }, [posts, search]);
+
+  // Update text field
+  const showUpdateModal = (field: ProfilePropertiesEnum, fieldName: string): void => {
+    setIsOpenUpdateModal(true);
+    setField(field);
+    setFieldName(fieldName);
+  };
+
+  const hideUpdateModal = (): void => {
+    setIsOpenUpdateModal(false);
+    setField(null);
+    setFieldName(null);
+  };
 
   // Load post and user information
   useEffect(() => {
@@ -258,20 +274,57 @@ const ProfileDashBoard = () => {
                 <ProfileItem label='Account'>
                   <Stack>
                     <AppProfileInfo icon={AccountCircle} label='Username' value={profileDetail?.username} />
-                    <AppProfileInfo icon={Password} label='Password' value='*******' isEdit />
+                    <AppProfileInfo
+                      icon={Password}
+                      label='Password'
+                      value='*******'
+                      isEdit
+                      onEdit={() => showUpdateModal(ProfilePropertiesEnum.Password, 'Password')}
+                    />
                   </Stack>
                 </ProfileItem>
               </Box>
               <Box marginBottom={2}>
                 <ProfileItem label='Personal Information'>
-                  <AppProfileInfo icon={Info} label='First name' value={profileDetail?.firstName} isEdit />
-                  <AppProfileInfo icon={Info} label='Last name' value={profileDetail?.lastName} isEdit />
-                  <AppProfileInfo icon={Email} label='Email' value={profileDetail?.email} isEdit />
-                  <AppProfileInfo icon={Phone} label='Phone' value={profileDetail?.phone} isEdit />
+                  <AppProfileInfo
+                    icon={Info}
+                    label='First name'
+                    value={profileDetail?.firstName}
+                    isEdit
+                    onEdit={() => showUpdateModal(ProfilePropertiesEnum.FirstName, 'First Name')}
+                  />
+                  <AppProfileInfo
+                    icon={Info}
+                    label='Last name'
+                    value={profileDetail?.lastName}
+                    isEdit
+                    onEdit={() => showUpdateModal(ProfilePropertiesEnum.LastName, 'Last Name')}
+                  />
+                  <AppProfileInfo
+                    icon={Email}
+                    label='Email'
+                    value={profileDetail?.email}
+                    isEdit
+                    onEdit={() => showUpdateModal(ProfilePropertiesEnum.Email, 'Email')}
+                  />
+                  <AppProfileInfo
+                    icon={Phone}
+                    label='Phone'
+                    value={profileDetail?.phone}
+                    isEdit
+                    onEdit={() => showUpdateModal(ProfilePropertiesEnum.Phone, 'Phone')}
+                  />
                 </ProfileItem>
               </Box>
               <ProfileItem label='Additional Information'>
-                <AppProfileInfo icon={InsertLink} label='Bio' value={profileDetail?.bio} isEdit isLink />
+                <AppProfileInfo
+                  icon={InsertLink}
+                  label='Bio'
+                  value={profileDetail?.bio}
+                  isEdit
+                  isLink
+                  onEdit={() => showUpdateModal(ProfilePropertiesEnum.Bio, 'Bio Link')}
+                />
               </ProfileItem>
             </Grid>
             <Grid item xs={12} sm={12} md={8} flexWrap='wrap' position='relative'>
@@ -347,6 +400,7 @@ const ProfileDashBoard = () => {
           </Grid>
         </Box>
       </Box>
+      <UpdateProfileModal isOpen={isOpenUpdateModal} field={field} fieldName={fieldName} onCancel={hideUpdateModal} />
     </>
   );
 };

@@ -63,6 +63,7 @@ export interface IProfileDetail {
   bookmarkCount?: number;
   profilePhotoUrl?: string;
   coverImageUrl?: string;
+  posts?: IProfilePost[];
 }
 
 export enum ProfilePropertiesEnum {

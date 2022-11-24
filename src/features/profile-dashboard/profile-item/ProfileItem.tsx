@@ -21,7 +21,7 @@ const ProfileItem = ({ label, children }: ProfileItemProps) => {
           {label}
         </Typography>
       </Box>
-      {children}
+      <Box paddingX={1}>{children}</Box>
     </Box>
   );
 };
