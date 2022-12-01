@@ -10,9 +10,11 @@ export interface IPostNotification {
   fullName?: string;
   profilePhotoUrl?: string;
   shortTitle?: string;
+  type?: string;
 }
 
 export interface IPostNotificationState {
   count?: number;
+  unSeenCount?: number;
   details?: IPostNotification[];
 }

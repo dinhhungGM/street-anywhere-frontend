@@ -48,6 +48,13 @@ const wrapperSlice = createSlice({
     builder.addCase(wrapperAsyncActions.getNotifications.fulfilled, (state, { payload }) => {
       state.postNotifications = payload;
     });
+    builder.addCase(wrapperAsyncActions.changeNotificationStatus.fulfilled, (state) => {
+      state.postNotifications = {
+        ...state.postNotifications,
+        unSeenCount: 0,
+        details: state.postNotifications.details.map((notification) => ({ ...notification, isSeen: true })),
+      };
+    });
   },
 });
 

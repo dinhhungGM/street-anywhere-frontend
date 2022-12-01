@@ -59,3 +59,26 @@ export const getNotifications = createAsyncThunk('wrapper/getNotifications', asy
     dispatch(wrapperSyncActions.hideLoading());
   }
 });
+
+export const changeNotificationStatus = createAsyncThunk(
+  'wrapper/changeNotificationStatus',
+  async (notificationIds: number[], { dispatch }) => {
+    try {
+      dispatch(wrapperSyncActions.showLoading());
+      for (const id of notificationIds) {
+        await axios.patch(`/notifications/${ id }`);
+      }
+      return true;
+    } catch (error) {
+      dispatch(
+        wrapperSyncActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperSyncActions.hideLoading());
+    }
+  },
+);
