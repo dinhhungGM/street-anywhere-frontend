@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import * as wrapperAsyncActions from './wrapperAsyncActions';
+import { IPostNotificationState } from './wrapperModels';
 
 interface INotification {
   typeOfNotification: 'info' | 'success' | 'error' | 'warning' | 'confirm' | null;
@@ -8,6 +10,7 @@ interface IWrapperState {
   isLoading: boolean;
   isShowNotification: boolean;
   notificationInfo: INotification;
+  postNotifications: IPostNotificationState;
 }
 
 interface IShowOrHideNotificationAction {
@@ -19,6 +22,7 @@ const initialState: IWrapperState = {
   isLoading: false,
   isShowNotification: false,
   notificationInfo: null,
+  postNotifications: null,
 };
 
 const wrapperSlice = createSlice({
@@ -40,6 +44,12 @@ const wrapperSlice = createSlice({
       state.notificationInfo = null;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(wrapperAsyncActions.getNotifications.fulfilled, (state, { payload }) => {
+      state.postNotifications = payload;
+    });
+  },
 });
 
+export const wrapperSyncActions = wrapperSlice.actions;
 export default wrapperSlice;
