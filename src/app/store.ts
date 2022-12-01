@@ -17,7 +17,7 @@ const persistConfig = {
   key: 'root',
   storage: sessionStorage,
 };
-const rootReducer = combineReducers({
+const combineReducer = combineReducers({
   wrapper: wrapperReducer,
   auth: authReducer,
   post: postReducer,
@@ -31,6 +31,13 @@ const rootReducer = combineReducers({
   shorts: shortsReducer,
 });
 
+const rootReducer = (state, action) => {
+  if (action.type === 'auth/signOut') {
+    state = undefined;
+  }
+  return combineReducer(state, action);
+};
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
@@ -38,9 +45,10 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
+      immutableCheck: false,
     }),
 });
 export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof combineReducer>;
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;
 export const persistor = persistStore(store);

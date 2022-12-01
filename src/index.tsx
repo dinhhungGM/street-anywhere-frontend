@@ -1,3 +1,5 @@
+// eslint-disable-next-line
+import Symbol_observable from 'symbol-observable';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
