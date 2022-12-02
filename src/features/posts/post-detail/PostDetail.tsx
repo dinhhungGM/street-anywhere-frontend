@@ -34,6 +34,10 @@ const PostDetail = () => {
     const { postId } = params;
     dispatch(postActions.incrementViewAsync(+postId));
     dispatch(postActions.getPostByIdAsync(+postId));
+
+    return () => {
+      dispatch(postActions.resetPostDetail());
+    };
   }, []);
 
   return (
@@ -66,7 +70,7 @@ const PostDetail = () => {
         <Box paddingY={2}>
           <Grid container spacing={2}>
             <Grid item sm={12} md={3}>
-              <PostReactions currentUserId={currentUser?.id} postId={selectedPost?.id} />
+              <PostReactions currentUserId={currentUser?.id} postId={selectedPost?.id} ownerId={selectedPost?.userId} />
             </Grid>
             <Grid item sm={12} md={6}>
               <Button
@@ -79,11 +83,11 @@ const PostDetail = () => {
               </Button>
             </Grid>
             <Grid item sm={12} md={3}>
-              <PostBookmark currentUserId={currentUser?.id} postId={selectedPost?.id} />
+              <PostBookmark currentUserId={currentUser?.id} postId={selectedPost?.id} ownerId={selectedPost?.userId} />
             </Grid>
           </Grid>
         </Box>
-        {isOpenComment && <PostComments postId={selectedPost?.id} currentUserId={currentUser?.id} />}
+        {isOpenComment && <PostComments postId={selectedPost?.id} currentUserId={currentUser?.id} ownerId={selectedPost?.userId} />}
         <PostDetailTable
           location={selectedPost?.location}
           longitude={selectedPost?.longitude}

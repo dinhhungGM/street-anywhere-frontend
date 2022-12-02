@@ -8,13 +8,15 @@ import { IBookmarkDetail } from '../../../../../solutions/models/postModels';
 import { postActions, postSelectors } from '../../../store';
 import SweetAlert from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { wrapperActions } from '../../../../wrapper/store';
 
 interface IPostBookmarkProps {
   currentUserId?: number;
   postId?: number;
+  ownerId?: number;
 }
 
-const PostBookmark = ({ currentUserId, postId }: IPostBookmarkProps) => {
+const PostBookmark = ({ currentUserId, postId, ownerId }: IPostBookmarkProps) => {
   const dispatch = useAppDispatch();
   const [currentBookmark, setCurrentBookmark] = useState<IBookmarkDetail | null>(null);
   const [isReload, setIsReload] = useState(false);
@@ -45,6 +47,16 @@ const PostBookmark = ({ currentUserId, postId }: IPostBookmarkProps) => {
             userId: currentUserId,
           }),
         );
+        if (res.meta.requestStatus === 'fulfilled' && ownerId !== currentUserId) {
+          dispatch(
+            wrapperActions.createNewNotification({
+              type: 'bookmarked',
+              postId,
+              userId: currentUserId,
+              reactionType: null,
+            }),
+          );
+        }
       }
       if (res.meta.requestStatus === 'fulfilled') {
         setIsReload(!isReload);
@@ -52,13 +64,16 @@ const PostBookmark = ({ currentUserId, postId }: IPostBookmarkProps) => {
     }
   };
 
+  // Get Bookmark details
   useEffect(() => {
-    dispatch(postActions.getBookmarkDetailsByPostId(postId));
-  }, [isReload]);
+    if (postId) {
+      dispatch(postActions.getBookmarkDetailsByPostId(postId));
+    }
+  }, [postId]);
 
+  // Set current bookmark
   useEffect(() => {
     const bookmark = _.find(bookmarkDetails?.bookmarkDetails, (detail) => detail?.userId === currentUserId);
-    console.log('Bookmark', bookmark);
     setCurrentBookmark(bookmark);
   }, [bookmarkDetails]);
 
@@ -71,8 +86,7 @@ const PostBookmark = ({ currentUserId, postId }: IPostBookmarkProps) => {
           size='large'
           variant={!!currentBookmark ? 'contained' : 'outlined'}
           color='secondary'
-          onClick={savePostToBookmark}
-        >
+          onClick={savePostToBookmark}>
           Bookmark
         </Button>
       </Box>

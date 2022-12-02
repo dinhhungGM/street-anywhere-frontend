@@ -19,6 +19,7 @@ export const createNewNotification = createAsyncThunk(
           type: params.type,
           userId: +params.userId,
           reactionType: params.reactionType || null,
+          postId: +params.postId
         },
         {
           headers: {

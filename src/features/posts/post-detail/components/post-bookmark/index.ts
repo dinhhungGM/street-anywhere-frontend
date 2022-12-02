@@ -1,1 +1,1 @@
-export {default as PostBookmark} from './PostBookmark'
+export { default as PostBookmark } from './PostBookmark';

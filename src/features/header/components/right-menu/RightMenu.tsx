@@ -88,9 +88,9 @@ const RightMenu = () => {
         ) : (
           <>
             <Tooltip title='Notification'>
-              <IconButton size='large' onClick={openPostNotifications}>
+              <IconButton size='large' onClick={openPostNotifications} color='primary'>
                 <Badge color='error' badgeContent={postNotifications?.unSeenCount || null}>
-                  <AppIcon icon={Notifications} color='#84849d' />
+                  <AppIcon icon={Notifications} color='#fbe44b' />
                 </Badge>
               </IconButton>
             </Tooltip>

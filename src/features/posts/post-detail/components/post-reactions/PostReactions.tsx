@@ -21,6 +21,7 @@ import { postActions, postSelectors } from '../../../store';
 import { default as reactionIconConfigs } from './reactionIconConfigs';
 import SweetAlert from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { wrapperActions } from '../../../../wrapper/store';
 interface IReactionItemProps {
   reaction?: IReaction;
 }
@@ -43,8 +44,9 @@ const ReactionItemCount = ({ reactionDetails }: IReactionItemCountProps) => {
 interface IPostReactionsProps {
   currentUserId?: number;
   postId?: number;
+  ownerId?: number;
 }
-const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
+const PostReactions = ({ currentUserId, postId, ownerId }: IPostReactionsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [currentUserReaction, setCurrentUserReaction] = useState<IUserReaction | null>(null);
@@ -88,6 +90,16 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
           );
         }
         if (response.meta.requestStatus === 'fulfilled') {
+          if (currentUserId !== ownerId) {
+            dispatch(
+              wrapperActions.createNewNotification({
+                type: 'reacted',
+                postId,
+                userId: currentUserId,
+                reactionType: reactions[index].reactionType,
+              }),
+            );
+          }
           setSelectedIndex(index);
         }
       }
@@ -113,9 +125,9 @@ const PostReactions = ({ currentUserId, postId }: IPostReactionsProps) => {
     for (const reactionType in postReactionDetails?.reactionDetails) {
       const reactionDetails = postReactionDetails?.reactionDetails[reactionType] as IReactionDetails;
       const userReaction = _.find(reactionDetails?.users, (user) => user.userId === currentUserId);
-      if (userReaction) {
+      if (userReaction && reactions) {
         setCurrentUserReaction(userReaction);
-        const idxOfReaction = _.findIndex(reactions, (reactionItem) => reactionItem.reactionType === reactionType);
+        const idxOfReaction = _.findIndex(reactions, (reactionItem) => reactionItem?.reactionType === reactionType);
         setSelectedIndex(idxOfReaction);
         return;
       }

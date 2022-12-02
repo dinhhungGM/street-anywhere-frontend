@@ -22,13 +22,15 @@ import { commentsActions, commentsSelectors } from '../../../../comments/store';
 import styles from './styles.module.scss';
 import _ from 'lodash';
 import { useNavigate } from 'react-router-dom';
+import { wrapperActions } from '../../../../wrapper/store';
 
 interface PostCommentsProps {
   postId?: number;
   currentUserId?: number;
+  ownerId?: number;
 }
 
-const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
+const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const commentList = useAppSelector(commentsSelectors.selectCommentList);
@@ -38,7 +40,7 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
     initialValues: {
       content: '',
     },
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: async (values, { resetForm }) => {
       if (_.isNil(currentUserId)) {
         SweetAlert.fire({
           icon: 'warning',
@@ -59,7 +61,7 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
             text: 'The content of comment can not be more than 300 characters',
           });
         } else {
-          dispatch(
+          const response = await dispatch(
             commentsActions.addComment({
               postId,
               userId: currentUserId,
@@ -67,6 +69,16 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
               currentPage: pageNumber,
             }),
           );
+          if (response.meta.requestStatus === 'fulfilled' && currentUserId !== ownerId) {
+            dispatch(
+              wrapperActions.createNewNotification({
+                postId,
+                userId: currentUserId,
+                type: 'commented',
+                reactionType: null,
+              }),
+            );
+          }
           resetForm();
         }
       }
@@ -159,8 +171,7 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
                 rows={8}
                 placeholder='Enter your comment'
                 className={styles.control}
-                {...form.getFieldProps('content')}
-              ></textarea>
+                {...form.getFieldProps('content')}></textarea>
             </FormControl>
             <Stack justifyContent='flex-end' alignItems='center' paddingTop={2}>
               <Button type='submit' variant='contained' className={styles.btn} disabled={!(form.isValid && form.dirty)}>
@@ -170,7 +181,7 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
           </form>
         </Box>
         <Box>
-          <Typography variant='h4'>Comments {commentCount ? `(${commentCount})` : null}</Typography>
+          <Typography variant='h4'>Comments {commentCount ? `(${ commentCount })` : null}</Typography>
           <Divider></Divider>
           {commentCount ? (
             <>
@@ -191,8 +202,7 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
                                   <IconButton
                                     color='info'
                                     size='small'
-                                    onClick={() => updateCommentByCommentId(comment?.id, comment?.content)}
-                                  >
+                                    onClick={() => updateCommentByCommentId(comment?.id, comment?.content)}>
                                     <AppIcon icon={Edit} color='#0288d1' />
                                   </IconButton>
                                   <IconButton color='error' size='small' onClick={() => deleteComment(comment?.id)}>
@@ -203,7 +213,7 @@ const PostComments = ({ postId, currentUserId }: PostCommentsProps) => {
                             </Stack>
                             <Typography fontSize={12} className={styles.date} fontStyle='italic'>
                               {comment?.isUpdated
-                                ? `(Modified) ${new Date(comment?.updatedAt).toLocaleString()}`
+                                ? `(Modified) ${ new Date(comment?.updatedAt).toLocaleString() }`
                                 : new Date(comment?.createdAt).toLocaleString()}
                             </Typography>
                           </Stack>
