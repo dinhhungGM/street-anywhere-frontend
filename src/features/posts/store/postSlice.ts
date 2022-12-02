@@ -4,9 +4,9 @@ import { postActionsAsync } from './postActionsAsync';
 
 export interface PostState {
   selectedPost: IPost;
-  bookmark: { bookmarkCount?: number; posts: IPost[] };
+  bookmark: { bookmarkCount?: number; posts: IPost[]; };
   postReactionDetails: IPostReactionDetails;
-  bookmarkDetails: { bookmarkCount?: number; bookmarkDetails?: IBookmarkDetail[] };
+  bookmarkDetails: { bookmarkCount?: number; bookmarkDetails?: IBookmarkDetail[]; };
 }
 
 const initialState: PostState = {
@@ -19,7 +19,13 @@ const initialState: PostState = {
 const postSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    resetPostDetail: (state) => {
+      state.selectedPost = null;
+      state.bookmarkDetails = null;
+      state.bookmarkDetails = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(postActionsAsync.getPostByIdAsync.fulfilled, (state, action) => {
       state.selectedPost = action.payload;

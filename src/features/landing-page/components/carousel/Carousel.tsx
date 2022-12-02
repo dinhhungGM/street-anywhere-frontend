@@ -3,7 +3,7 @@ import { AppCarousel } from '../../../../solutions/components/app-carousel';
 const Carousel = () => {
   return (
     <>
-      <AppCarousel />
+      <AppCarousel height='800px' />
     </>
   );
 };

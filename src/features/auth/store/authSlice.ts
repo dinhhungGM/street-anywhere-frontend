@@ -47,7 +47,6 @@ const authSlice = createSlice({
   reducers: {
     signOut: (state) => {
       state.currentUser = null;
-      localStorage.removeItem('currentUser');
     },
   },
   extraReducers: (builder) => {

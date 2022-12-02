@@ -352,7 +352,7 @@ const ProfileDashBoard = () => {
               {displayPosts.length ? (
                 <Box
                   sx={{
-                    maxHeight: '600px',
+                    maxHeight: '1200px',
                     overflowY: 'scroll',
                   }}
                   paddingX={2}>

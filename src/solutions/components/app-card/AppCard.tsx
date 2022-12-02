@@ -53,7 +53,7 @@ const AppCard = ({
   const navigate = useNavigate();
 
   const navigateToPostDetail = (): void => {
-    navigate(`/posts/${postId}`);
+    navigate(`/posts/${ postId }`);
   };
 
   return (
@@ -67,7 +67,7 @@ const AppCard = ({
       >
         <Box className={styles['card__image']} borderRadius={4}>
           {type === 'video' ? (
-            <ReactPlayer height='500px' width='100%' url={videoYtbUrl} className={styles['video']} light />
+            <ReactPlayer height='500px' width='100%' url={videoYtbUrl} className={styles['video']} light controls={false} />
           ) : (
             <LazyLoadImage alt={alt} src={imgSrc} effect='black-and-white' />
           )}
