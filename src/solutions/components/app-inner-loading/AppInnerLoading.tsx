@@ -3,7 +3,7 @@ import { memo } from 'react';
 
 interface IAppInnerLoadingProps {
   height?: string;
-  isShowLoading: boolean;
+  isShowLoading?: boolean;
 }
 const AppInnerLoading = ({ height = '100%', isShowLoading }: IAppInnerLoadingProps) => {
   return (
