@@ -35,3 +35,7 @@
 .slick-next:before {
   color: #000 !important;
 }
+
+.MuiTooltip-popper {
+  z-index: 999999 !important;
+}
