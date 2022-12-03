@@ -5,21 +5,24 @@ interface IAppIconButtonProps {
   icon?: any;
   tooltip?: string;
   tooltipPlacement?:
-    | 'bottom-end'
-    | 'bottom-start'
-    | 'bottom'
-    | 'left-end'
-    | 'left-start'
-    | 'left'
-    | 'right-end'
-    | 'right-start'
-    | 'right'
-    | 'top-end'
-    | 'top-start'
-    | 'top';
+  | 'bottom-end'
+  | 'bottom-start'
+  | 'bottom'
+  | 'left-end'
+  | 'left-start'
+  | 'left'
+  | 'right-end'
+  | 'right-start'
+  | 'right'
+  | 'top-end'
+  | 'top-start'
+  | 'top';
   buttonSize?: 'small' | 'medium' | 'large';
   buttonColor?: 'inherit' | 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
+  customBackgroundColor?: string | null;
   onClick?: (e) => any;
+  onMouseOver?: (e) => any;
+  onMouseLeave?: (e) => any;
 }
 const AppIconButton = ({
   icon = null,
@@ -27,12 +30,26 @@ const AppIconButton = ({
   buttonSize = 'medium',
   buttonColor = 'primary',
   tooltipPlacement = 'bottom',
+  customBackgroundColor = null,
   onClick = (e) => {},
+  onMouseOver = (e) => {},
+  onMouseLeave = (e) => {}
 }: IAppIconButtonProps) => {
   return (
     <>
       <Tooltip title={tooltip} placement={tooltipPlacement}>
-        <IconButton size={buttonSize} color={buttonColor} onClick={onClick}>
+        <IconButton
+          size={buttonSize}
+          color={buttonColor}
+          onClick={onClick}
+          onMouseOver={onMouseOver}
+          onMouseLeave={onMouseLeave}
+          sx={{
+            backgroundColor: customBackgroundColor || 'initial',
+            '&:hover': {
+              backgroundColor: customBackgroundColor || 'initial',
+            },
+          }}>
           {icon}
         </IconButton>
       </Tooltip>
