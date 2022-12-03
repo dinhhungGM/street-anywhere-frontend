@@ -50,9 +50,14 @@
       height: 100%;
     }
     &__user {
-      background: #232526;
       width: 100%;
       color: #fff;
+      background: linear-gradient(
+        to right,
+        #0f0c29,
+        #302b63,
+        #24243e
+      ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     }
   }
 }
