@@ -1,12 +1,13 @@
-import { Search } from '@mui/icons-material';
-import { Masonry } from '@mui/lab';
-import { Box, Typography } from '@mui/material';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import { Box, Button, Container, Grid, Paper, Stack } from '@mui/material';
+import cx from 'classnames';
 import React, { useEffect } from 'react';
+import ReactPlayer from 'react-player';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { AppCard } from '../../solutions/components/app-card';
 import { AppIcon } from '../../solutions/components/app-icon';
 import * as shortAsyncActions from './store/shortsAsyncActions';
 import * as shortsSelectors from './store/shortsSelectors';
+import styles from './styles.module.scss';
 
 const Shorts = () => {
   const dispatch = useAppDispatch();
@@ -18,59 +19,40 @@ const Shorts = () => {
 
   return (
     <>
-      <Box padding={4}>
-        {shorts?.length ? (
-          <Masonry columns={{ sm: 1, md: 3, lg: 4, xl: 5 }} spacing={2}>
-            {shorts &&
-              shorts.map((post) => (
-                <Box
-                  sx={{
-                    margin: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  key={post?.id}
-                >
-                  <AppCard
-                    key={post?.id}
-                    imgSrc={post?.imageUrl}
-                    alt={post?.shortTitle}
-                    author={post?.user.fullName}
-                    avatarUrl={post?.user.profilePhotoUrl}
-                    tags={post?.tags}
-                    categories={post?.categories}
-                    shortTitle={post?.shortTitle}
-                    location={post?.location}
-                    postId={post?.id}
-                    type={post?.type}
-                    videoYtbUrl={post?.videoYtbUrl}
-                    views={post?.views}
-                    reactionCount={post?.reactionCount}
-                    bookmarkCount={post?.bookmarkCount}
-                    commentCount={post?.commentCount}
-                    createdAt={post?.createdAt}
+      <Box className={styles['shorts']}>
+        <Container className={styles['shorts-container']}>
+          <Box component={Paper} elevation={3} height='100%' padding={0}>
+            <Grid container spacing={1} height='100%' padding={0}>
+              <Grid item md={7} className={styles['shorts-col']}>
+                <Box className={styles['shorts-video']}>
+                  <ReactPlayer
+                    playing
+                    controls
+                    width='100%'
+                    height='80%'
+                    url='https://www.youtube.com/watch?v=i4z7PIlvJkg&t=527s'
                   />
                 </Box>
-              ))}
-          </Masonry>
-        ) : (
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
-            }}
-          >
-            <AppIcon icon={Search} fontSize={120} />
-            <Typography variant='h6' marginY={4}>
-              No data found
-            </Typography>
+              </Grid>
+              <Grid item md={4} className={styles['shorts-col']}></Grid>
+              <Grid item md={1} className={styles['shorts-col']}>
+                <Stack
+                  borderLeft='1px solid #ccc'
+                  spacing={2}
+                  height='100%'
+                  alignItems='center'
+                  justifyContent='center'>
+                  <Button color='warning' variant='contained' className={styles['btn']}>
+                    <AppIcon icon={KeyboardArrowUp} fontSize={60} color='#fff' />
+                  </Button>
+                  <Button color='success' variant='contained' className={styles['btn']}>
+                    <AppIcon icon={KeyboardArrowDown} fontSize={60} color='#fff' />
+                  </Button>
+                </Stack>
+              </Grid>
+            </Grid>
           </Box>
-        )}
+        </Container>
       </Box>
     </>
   );
