@@ -6,16 +6,29 @@ interface INotification {
   typeOfNotification: 'info' | 'success' | 'error' | 'warning' | 'confirm' | null;
   message: string;
 }
+interface IShowOrHideNotificationAction {
+  type: string;
+  payload: INotification;
+}
+
+interface IToastAction {
+  type: string;
+  payload: {
+    toastSeverity: 'error' | 'warning' | 'info' | 'success' | null;
+    toastMessage: string;
+  };
+}
+
 interface IWrapperState {
   isLoading: boolean;
   isShowNotification: boolean;
   notificationInfo: INotification;
   postNotifications: IPostNotificationState;
-}
-
-interface IShowOrHideNotificationAction {
-  type: string;
-  payload: INotification;
+  toastConfig: {
+    isShowToast: boolean;
+    toastSeverity: 'error' | 'warning' | 'info' | 'success' | null;
+    toastMessage: string;
+  } | null;
 }
 
 const initialState: IWrapperState = {
@@ -23,6 +36,7 @@ const initialState: IWrapperState = {
   isShowNotification: false,
   notificationInfo: null,
   postNotifications: null,
+  toastConfig: null
 };
 
 const wrapperSlice = createSlice({
@@ -42,6 +56,16 @@ const wrapperSlice = createSlice({
     hideNotification: (state) => {
       state.isShowNotification = false;
       state.notificationInfo = null;
+    },
+    showToast: (state, action: IToastAction) => {
+      state.toastConfig = {
+        isShowToast: true,
+        toastSeverity: action.payload.toastSeverity,
+        toastMessage: action.payload.toastMessage
+      };
+    },
+    hideToast: (state) => {
+      state.toastConfig = null;
     },
   },
   extraReducers: (builder) => {
