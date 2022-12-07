@@ -36,6 +36,8 @@
   color: #000 !important;
 }
 
-.MuiTooltip-popper {
+.MuiTooltip-popper,
+.MuiModal-root,
+.MuiPopover-root {
   z-index: 999999 !important;
 }
