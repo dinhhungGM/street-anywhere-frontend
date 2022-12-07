@@ -20,6 +20,7 @@ interface IAppIconButtonProps {
   buttonSize?: 'small' | 'medium' | 'large';
   buttonColor?: 'inherit' | 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
   customBackgroundColor?: string | null;
+  ariaLabel?: string;
   onClick?: (e) => any;
   onMouseOver?: (e) => any;
   onMouseLeave?: (e) => any;
@@ -31,9 +32,10 @@ const AppIconButton = ({
   buttonColor = 'primary',
   tooltipPlacement = 'bottom',
   customBackgroundColor = null,
+  ariaLabel = null,
   onClick = (e) => {},
   onMouseOver = (e) => {},
-  onMouseLeave = (e) => {}
+  onMouseLeave = (e) => {},
 }: IAppIconButtonProps) => {
   return (
     <>
@@ -44,6 +46,7 @@ const AppIconButton = ({
           onClick={onClick}
           onMouseOver={onMouseOver}
           onMouseLeave={onMouseLeave}
+          aria-label={ariaLabel}
           sx={{
             backgroundColor: customBackgroundColor || 'initial',
             '&:hover': {

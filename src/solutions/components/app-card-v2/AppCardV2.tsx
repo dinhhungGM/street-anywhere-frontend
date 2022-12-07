@@ -11,12 +11,19 @@ import styles from './styles.module.scss';
 
 interface IAppCardV2Props {
   post?: IPost;
+  onReact?: (e) => any;
+  onBookmark?: (e) => any;
 }
-const AppCardV2 = ({ post }: IAppCardV2Props) => {
+const AppCardV2 = ({ post, onReact = (e) => null, onBookmark = (e) => null }: IAppCardV2Props) => {
   const navigate = useNavigate();
 
   const navigateToPostDetail = (postId: number): void => {
     navigate(`/posts/${ postId }`);
+  };
+
+  const handleOnClickAddReaction = (e): void => {
+    e.stopPropagation();
+    onReact(post);
   };
 
   return (
@@ -30,30 +37,34 @@ const AppCardV2 = ({ post }: IAppCardV2Props) => {
           )}
         </Box>
         <Box className={styles.card__overlay} onClick={() => navigateToPostDetail(post?.id)}>
-          <Stack
-            sx={{
-              height: '100%',
-            }}
-            alignItems='flex-start'
-            justifyContent='space-between'>
-            <Stack
-              spacing={1}
-              sx={{
-                alignSelf: 'flex-end',
-                padding: '8px',
-              }}
-              className={styles.card__overlay__actions}>
+          <Stack alignItems='center' height='100%' position='relative'>
+            <Typography
+              color='#fff'
+              alignSelf='flex-start'
+              variant='h5'
+              padding={2}
+              textOverflow='ellipsis'
+              width='100%'
+              whiteSpace='nowrap'
+              overflow='hidden'
+              fontWeight={700}>
+              {post?.shortTitle}
+            </Typography>
+            <Stack direction='row' spacing={1} className={styles.card__overlay__actions}>
               <AppIconButton
                 tooltip='Bookmark'
                 icon={<AppIcon icon={Bookmark} color='#0288d1' />}
                 buttonColor='info'
                 customBackgroundColor='#fff'
+                buttonSize='large'
               />
               <AppIconButton
                 tooltip='Add Reactions'
                 icon={<AppIcon icon={AddReaction} color='#fbe44b' />}
-                buttonColor='info'
+                buttonColor='warning'
                 customBackgroundColor='#fff'
+                buttonSize='large'
+                onClick={handleOnClickAddReaction}
               />
             </Stack>
             <Box padding={2} className={styles.card__overlay__user}>

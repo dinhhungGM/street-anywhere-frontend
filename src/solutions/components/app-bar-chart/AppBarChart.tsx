@@ -61,7 +61,7 @@ const AppBarChart = ({
       ],
     };
   }, [data]);
-  console.log('chartData', chartData);
+
   return (
     <>
       <Box component={Paper} padding={2} elevation={3}>

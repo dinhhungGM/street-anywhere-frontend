@@ -49,6 +49,11 @@ const LazyProfileDashBoard = lazy(() =>
   import('../../features/profile-dashboard').then((m) => ({ default: m.ProfileDashboard })),
 );
 
+const LazyWelcomeDashboard = lazy(() =>
+  import('../../features/welcome-dashboard').then((m) => ({ default: m.WelcomeDashboard })),
+);
+
+
 type Route = {
   id: string;
   path: string;
