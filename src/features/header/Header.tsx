@@ -1,4 +1,4 @@
-import { Box, Stack } from '@mui/material';
+import { Box, Paper, Stack } from '@mui/material';
 import { LeftMenu } from './components/left-menu';
 import { MiddleMenu } from './components/middle-menu';
 import { RightMenu } from './components/right-menu';
@@ -7,15 +7,12 @@ const Header = () => {
   return (
     <>
       <Box
-        boxShadow={1}
         paddingX={2}
         sx={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 9,
           background: '#fff',
         }}
-      >
+        component={Paper}
+        elevation={2}>
         <Stack direction='row' alignItems='center' justifyContent='space-between'>
           <LeftMenu />
           <MiddleMenu />

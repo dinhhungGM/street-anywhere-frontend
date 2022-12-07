@@ -1,25 +1,32 @@
 import { Search } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
-import { Box, Typography, TextField, Grid, Button, Paper } from '@mui/material';
-import { useEffect, memo, useCallback } from 'react';
+import { Box, Button, Grid, Stack, TextField, Typography } from '@mui/material';
+import _ from 'lodash';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
-import { AppCard } from '../../../../solutions/components/app-card';
+import { AppCardV2 } from '../../../../solutions/components/app-card-v2';
 import { AppIcon } from '../../../../solutions/components/app-icon';
+import { AppModal } from '../../../../solutions/components/app-modal';
+import { AppReactions } from '../../../../solutions/components/app-reactions';
 import { AppSelect } from '../../../../solutions/components/app-select';
 import { categoriesActions, categoriesSelectors } from '../../../categories/store';
-import { tagsActions, tagSelectors } from '../../../tags/store';
-import { landingPageActions, landingPageSelectors } from '../../store';
 import { ICategory } from '../../../categories/store/categoriesModels';
+import { reactionsActions, reactionsSelectors } from '../../../reactions/store';
+import { tagsActions, tagSelectors } from '../../../tags/store';
 import { ITag } from '../../../tags/store/tagModels';
-import _ from 'lodash';
+import { landingPageActions, landingPageSelectors } from '../../store';
+import { IPost } from '../../../../solutions/models/postModels';
 
 const Gallery = () => {
   const displayPosts = useAppSelector(landingPageSelectors.selectPosts);
   const categories = useAppSelector(categoriesSelectors.selectCategoryList);
   const hashtags = useAppSelector(tagSelectors.selectTagList);
+  const reactions = useAppSelector(reactionsSelectors.selectReactionList);
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isAddReaction, setIsAddReaction] = useState<boolean>(false);
+  const [clickedPost, setClickedPost] = useState<IPost | null>(null);
 
   const onCategoryDropDownChange = useCallback((e, values: ICategory[]): void => {
     if (values.length) {
@@ -46,6 +53,21 @@ const Gallery = () => {
     setSearchParams(searchParams);
   }, []);
 
+  const showAddReactionModal = useCallback((clickedPost: IPost) => {
+    setIsAddReaction(true);
+    setClickedPost(clickedPost);
+  }, []);
+
+  const hideAddReactionModal = (): void => {
+    setIsAddReaction(false);
+  };
+
+  const addReaction = useCallback((reactionType) => {
+    if (clickedPost) {
+    }
+    hideAddReactionModal();
+  }, []);
+
   useEffect(() => {
     dispatch(
       landingPageActions.getPostsAsync({
@@ -59,6 +81,7 @@ const Gallery = () => {
   useEffect(() => {
     dispatch(categoriesActions.getCategoryList());
     dispatch(tagsActions.getTagList());
+    dispatch(reactionsActions.getReactionList());
   }, []);
 
   return (
@@ -118,7 +141,7 @@ const Gallery = () => {
             </Grid>
           </Box>
           <Masonry
-            columns={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
+            columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
             spacing={2}
             sx={{
               width: '100%',
@@ -133,28 +156,21 @@ const Gallery = () => {
                     justifyContent: 'center',
                   }}
                   key={post?.id}>
-                  <AppCard
-                    key={post?.id}
-                    imgSrc={post?.imageUrl}
-                    alt={post?.shortTitle}
-                    author={post?.user.fullName}
-                    avatarUrl={post?.user.profilePhotoUrl}
-                    tags={post?.tags}
-                    categories={post?.categories}
-                    shortTitle={post?.shortTitle}
-                    location={post?.location}
-                    postId={post?.id}
-                    type={post?.type}
-                    videoYtbUrl={post?.videoYtbUrl}
-                    views={post?.views}
-                    reactionCount={post?.reactionCount}
-                    bookmarkCount={post?.bookmarkCount}
-                    commentCount={post?.commentCount}
-                    createdAt={post?.createdAt}
-                  />
+                  <AppCardV2 post={post} onReact={showAddReactionModal} />
                 </Box>
               ))}
           </Masonry>
+          <AppModal
+            title='Add reaction'
+            isOpen={isAddReaction}
+            onClose={hideAddReactionModal}
+            onCancel={hideAddReactionModal}
+            isDisplayCancelButton
+            isDisplayOkButton={false}>
+            <Stack alignItems='center' justifyContent='center'>
+              <AppReactions onClickReactionIcon={addReaction} />
+            </Stack>
+          </AppModal>
         </Box>
       ) : (
         <Box
