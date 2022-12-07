@@ -1,5 +1,7 @@
 import { Alert, AlertTitle, Snackbar } from '@mui/material';
 import { memo } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { wrapperActions, wrapperSelectors } from '../../../features/wrapper/store';
 
 const configTitle = {
   info: 'Info',
@@ -7,25 +9,27 @@ const configTitle = {
   warning: 'Warning',
   success: 'Success',
 };
-interface IAppToastProps {
-  isOpen: boolean;
-  message: string;
-  severity: 'error' | 'warning' | 'info' | 'success';
-  onClose: (e) => any;
-}
-const AppToast = ({ isOpen, severity, message, onClose }: IAppToastProps) => {
+const AppToast = () => {
+  const toastConfig = useAppSelector(wrapperSelectors.selectToastConfig);
+  const dispatch = useAppDispatch();
+
+  const hideToast = (): void => {
+    dispatch(wrapperActions.hideToast());
+  };
   return (
     <>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={isOpen}
-        autoHideDuration={3000}
-        onClose={onClose}>
-        <Alert severity={severity} onClose={onClose} sx={{ width: '100%' }}>
-          <AlertTitle>{configTitle[severity]}</AlertTitle>
-          {message}
-        </Alert>
-      </Snackbar>
+      {toastConfig && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={toastConfig.isShowToast}
+          autoHideDuration={3000}
+          onClose={hideToast}>
+          <Alert severity={toastConfig.toastSeverity} onClose={hideToast} variant='filled' sx={{ maxWidth: '500%' }}>
+            <AlertTitle>{configTitle[toastConfig.toastSeverity]}</AlertTitle>
+            {toastConfig.toastMessage}
+          </Alert>
+        </Snackbar>
+      )}
     </>
   );
 };
