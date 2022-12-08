@@ -13,8 +13,25 @@ interface IAppCardV2Props {
   post?: IPost;
   onReact?: (e) => any;
   onBookmark?: (e) => any;
+  onFollow?: (e) => any;
+  onViewProfile?: (e) => any;
 }
-const AppCardV2 = ({ post, onReact = (e) => null, onBookmark = (e) => null }: IAppCardV2Props) => {
+const AppCardV2 = ({
+  post,
+  onReact = (e) => {
+    e.stopPropagation();
+    return null;
+  },
+  onBookmark = (post = null) => {
+    return null;
+  },
+  onFollow = (post = null) => {
+    return null;
+  },
+  onViewProfile = (e) => {
+    return null;
+  },
+}: IAppCardV2Props) => {
   const navigate = useNavigate();
 
   const navigateToPostDetail = (postId: number): void => {
@@ -24,6 +41,11 @@ const AppCardV2 = ({ post, onReact = (e) => null, onBookmark = (e) => null }: IA
   const handleOnClickAddReaction = (e): void => {
     e.stopPropagation();
     onReact(post);
+  };
+
+  const handleOnClickBookmark = (e): void => {
+    e.stopPropagation();
+    onBookmark(post);
   };
 
   return (
@@ -38,18 +60,6 @@ const AppCardV2 = ({ post, onReact = (e) => null, onBookmark = (e) => null }: IA
         </Box>
         <Box className={styles.card__overlay} onClick={() => navigateToPostDetail(post?.id)}>
           <Stack alignItems='center' height='100%' position='relative'>
-            <Typography
-              color='#fff'
-              alignSelf='flex-start'
-              variant='h5'
-              padding={2}
-              textOverflow='ellipsis'
-              width='100%'
-              whiteSpace='nowrap'
-              overflow='hidden'
-              fontWeight={700}>
-              {post?.shortTitle}
-            </Typography>
             <Stack direction='row' spacing={1} className={styles.card__overlay__actions}>
               <AppIconButton
                 tooltip='Bookmark'
@@ -57,6 +67,7 @@ const AppCardV2 = ({ post, onReact = (e) => null, onBookmark = (e) => null }: IA
                 buttonColor='info'
                 customBackgroundColor='#fff'
                 buttonSize='large'
+                onClick={handleOnClickBookmark}
               />
               <AppIconButton
                 tooltip='Add Reactions'
@@ -81,7 +92,8 @@ const AppCardV2 = ({ post, onReact = (e) => null, onBookmark = (e) => null }: IA
                     variant='contained'
                     sx={{
                       borderRadius: '100rem',
-                    }}>
+                    }}
+                    onClick={onFollow}>
                     Follow
                   </Button>
                 </Box>
