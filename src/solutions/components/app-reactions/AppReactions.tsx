@@ -13,9 +13,14 @@ import styles from './styles.module.scss';
 interface IAppReactionsProps {
   isVerticalAlign?: boolean;
   onClickReactionIcon?: (e) => any;
+  boxShadowSize?: number;
 }
 
-const AppReactions = ({ isVerticalAlign = false, onClickReactionIcon = (e) => null }: IAppReactionsProps) => {
+const AppReactions = ({
+  isVerticalAlign = false,
+  onClickReactionIcon = (e) => null,
+  boxShadowSize = 0,
+}: IAppReactionsProps) => {
   const handleClickReactionItem = (reactionType: string) => {
     onClickReactionIcon(reactionType);
   };
@@ -89,7 +94,7 @@ const AppReactions = ({ isVerticalAlign = false, onClickReactionIcon = (e) => nu
         paddingX={4}
         component={Paper}
         className={styles['reaction-container']}
-        elevation={2}>
+        elevation={boxShadowSize}>
         {reactionItems.map((item) => (
           <Tooltip key={item.id} title={item.tooltip}>
             <Avatar
