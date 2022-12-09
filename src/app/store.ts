@@ -3,6 +3,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import sessionStorage from 'redux-persist/lib/storage/session';
 import { adminReducer } from '../features/admin-dashboard/store';
 import { authReducer } from '../features/auth/store';
+import { bookmarkReducer } from '../features/bookmark';
 import { categoriesReducer } from '../features/categories/store';
 import { commentsReducer } from '../features/comments/store';
 import { landingPageReducer } from '../features/landing-page/store';
@@ -29,6 +30,7 @@ const combineReducer = combineReducers({
   comments: commentsReducer,
   admin: adminReducer,
   shorts: shortsReducer,
+  bookmark: bookmarkReducer
 });
 
 const rootReducer = (state, action) => {

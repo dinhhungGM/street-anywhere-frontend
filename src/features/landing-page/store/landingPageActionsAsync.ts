@@ -8,7 +8,7 @@ import { default as axios } from './../../../solutions/services/axios';
 export const landingPageActionsAsync = {
   getPostsAsync: createAsyncThunk(
     'landingPage/getPostsAsync',
-    async (searchParams: { page: string; category: string; tag: string }, { dispatch }) => {
+    async (searchParams: { page: string; search: string; category: string; tag: string; }, { dispatch }) => {
       try {
         dispatch(wrapperActions.showLoading());
         const { data } = await postService.getPosts(searchParams);

@@ -1,5 +1,4 @@
 import { Box, Grid } from '@mui/material';
-import { Carousel } from './components/carousel';
 import { Gallery } from './components/gallery';
 
 const LandingPage = () => {
@@ -8,13 +7,9 @@ const LandingPage = () => {
       <Box
         sx={{
           backgroundColor: '#F5F5F7',
-          paddingY: '20px',
         }}>
-        <Box paddingX={6} paddingBottom={4}>
-          <Carousel />
-        </Box>
         <Grid container>
-          <Grid item xs={12} paddingX={2}>
+          <Grid item xs={12}>
             <Gallery />
           </Grid>
         </Grid>

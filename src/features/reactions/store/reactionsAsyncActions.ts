@@ -28,13 +28,25 @@ export const addReaction = createAsyncThunk(
   'reactions/addReaction',
   async (payload: IAddReactionPayload, { dispatch }) => {
     try {
-      await axios.post(`/reactions/post/${payload.postId}`, payload, {
+      await axios.post(`/reactions/post/${ payload.postId }`, payload, {
         headers: {
           'content-type': 'application/json',
         },
       });
-      dispatch(getReactionList());
-    } catch (error) {}
+      dispatch(
+        wrapperActions.showToast({
+          toastSeverity: 'success',
+          toastMessage: 'Add reaction successfully',
+        }),
+      );
+    } catch (error) {
+      wrapperActions.showNotification({
+        typeOfNotification: 'error',
+        message: error.toString(),
+      });
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
   },
 );
 

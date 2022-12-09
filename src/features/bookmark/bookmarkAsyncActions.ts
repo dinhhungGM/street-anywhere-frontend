@@ -16,6 +16,12 @@ export const createBookmark = createAsyncThunk(
           },
         },
       );
+      dispatch(
+        wrapperActions.showToast({
+          toastSeverity: 'success',
+          toastMessage: 'Save to bookmark successfully',
+        }),
+      );
       return data.value;
     } catch (error) {
       dispatch(
