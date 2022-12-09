@@ -13,16 +13,16 @@ import {
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
+import _ from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
 import * as yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
 import { AppIcon } from '../../../../../solutions/components/app-icon';
 import { commentsActions, commentsSelectors } from '../../../../comments/store';
-import styles from './styles.module.scss';
-import _ from 'lodash';
-import { useNavigate } from 'react-router-dom';
 import { wrapperActions } from '../../../../wrapper/store';
+import styles from './styles.module.scss';
 
 interface PostCommentsProps {
   postId?: number;
@@ -106,6 +106,7 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
       }
     });
   };
+
   const updateCommentByCommentId = async (commentId: number, content: string) => {
     const { value: newContent } = await SweetAlert.fire({
       input: 'textarea',
@@ -136,13 +137,11 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
       );
     }
   };
+
   const handleChangePage = (_, page): void => {
     setPageNumber(page);
   };
 
-  const scrollToCommentBox = (): void => {
-    commentRef && commentRef.current.scrollIntoView();
-  };
   const pageCount = useMemo(() => {
     const PAGE_SIZE = 6;
     return Math.ceil(commentCount / PAGE_SIZE);
@@ -155,16 +154,18 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
   }, [commentList.length]);
 
   useEffect(() => {
-    dispatch(commentsActions.getCommentListByPostId({ postId, page: pageNumber }));
-    setTimeout(() => {
-      scrollToCommentBox();
-    }, 100);
+    if (postId) {
+      dispatch(commentsActions.getCommentListByPostId({ postId, page: pageNumber }));
+    }
   }, [pageNumber]);
 
   return (
     <>
       <Box ref={commentRef}>
-        <Box>
+        <Typography variant='h4' fontWeight={700}>
+          Comments {commentCount ? `(${ commentCount })` : `(0)`}
+        </Typography>
+        <Box padding={1}>
           <form onSubmit={form.handleSubmit}>
             <FormControl fullWidth>
               <textarea
@@ -181,7 +182,6 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
           </form>
         </Box>
         <Box>
-          <Typography variant='h4'>Comments {commentCount ? `(${ commentCount })` : null}</Typography>
           <Divider></Divider>
           {commentCount ? (
             <>
@@ -224,7 +224,13 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
                   ))}
               </List>
             </>
-          ) : null}
+          ) : (
+            <>
+              <Stack alignItems='center' justifyContent='center'>
+                <Typography marginTop={2}>No comments</Typography>
+              </Stack>
+            </>
+          )}
           {pageCount > 1 ? (
             <Stack justifyContent='center' alignItems='center'>
               <Pagination count={pageCount} color='primary' page={pageNumber} onChange={handleChangePage} />

@@ -1,40 +1,33 @@
-import { ArrowBack, Comment } from '@mui/icons-material';
-import { Box, Button, Container, Grid, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { Bookmark, Map } from '@mui/icons-material';
+import { Avatar, Box, Button, Grid, Paper, Stack, Typography, IconButton } from '@mui/material';
+import { useEffect, memo } from 'react';
 import ReactPlayer from 'react-player';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppIcon } from '../../../solutions/components/app-icon';
-import { AppMapBox } from '../../../solutions/components/app-mapbox';
-import { LoadingSpinner } from '../../../solutions/components/loading-spinner';
+import { AppIconButton } from '../../../solutions/components/app-icon-button';
+import { AppReactions } from '../../../solutions/components/app-reactions';
 import { authSelectors } from '../../auth/store';
 import { postActions, postSelectors } from '../store';
-import { PostBookmark } from './components/post-bookmark';
 import { PostComments } from './components/post-comments';
-import { PostDetailTable } from './components/post-detail-table';
-import { PostOwnerProfile } from './components/post-owner-profile';
-import { PostReactions } from './components/post-reactions';
 import styles from './styles.module.scss';
-import * as utils from './utils';
 
 const PostDetail = () => {
-  const params = useParams();
+  const { postId } = useParams();
   const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(postSelectors.selectSelectedPost);
+  const post = useAppSelector(postSelectors.selectSelectedPost);
+  const relevantPost = useAppSelector(postSelectors.selectRelevantPost);
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
-  const navigate = useNavigate();
-  const [isOpenComment, setIsOpenComment] = useState(false);
-  const [currentCoord, setCurrentCoord] = useState(null);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      setCurrentCoord({ long: position.coords.longitude, lat: position.coords.latitude });
-    });
-    const { postId } = params;
-    dispatch(postActions.incrementViewAsync(+postId));
     dispatch(postActions.getPostByIdAsync(+postId));
-
+    dispatch(
+      postActions.getPostRelevantToCurrentPost({
+        categories: post?.categories,
+        hashtags: post?.tags,
+        postId: post?.id,
+      }),
+    );
     return () => {
       dispatch(postActions.resetPostDetail());
     };
@@ -42,78 +35,68 @@ const PostDetail = () => {
 
   return (
     <>
-      <Container className={styles['post-detail']}>
-        <Button startIcon={<AppIcon icon={ArrowBack} color='#fff' />} onClick={() => navigate('/')} variant='contained'>
-          Home
-        </Button>
-        <PostOwnerProfile
-          userId={selectedPost?.userId}
-          avatarUrl={selectedPost?.user?.profilePhotoUrl}
-          fullName={selectedPost?.user?.fullName}
-        />
-        <Typography variant='h2' textAlign='center'>
-          {selectedPost?.title}
+      <Box className={styles.post__details}>
+        <Typography variant='h2' textAlign='center' fontWeight={700}>
+          {post?.title}
         </Typography>
-        <Box className={styles['post-detail__image']}>
-          {selectedPost?.type === 'video' ? (
-            <ReactPlayer
-              url={selectedPost?.videoYtbUrl}
-              width='100%'
-              height='100%'
-              controls={true}
-              fallback={<LoadingSpinner />}
-            />
-          ) : (
-            <LazyLoadImage alt={selectedPost?.shortTitle} src={selectedPost?.imageUrl} />
-          )}
-        </Box>
-        <Box paddingY={2}>
-          <Grid container spacing={2}>
-            <Grid item sm={12} md={3}>
-              <PostReactions currentUserId={currentUser?.id} postId={selectedPost?.id} ownerId={selectedPost?.userId} />
-            </Grid>
-            <Grid item sm={12} md={6}>
-              <Button
-                fullWidth
-                size='large'
-                variant='contained'
-                startIcon={<AppIcon icon={Comment} color='#fff' />}
-                onClick={() => setIsOpenComment(!isOpenComment)}>
-                Comment
-              </Button>
-            </Grid>
-            <Grid item sm={12} md={3}>
-              <PostBookmark currentUserId={currentUser?.id} postId={selectedPost?.id} ownerId={selectedPost?.userId} />
-            </Grid>
-          </Grid>
-        </Box>
-        {isOpenComment && <PostComments postId={selectedPost?.id} currentUserId={currentUser?.id} ownerId={selectedPost?.userId} />}
-        <PostDetailTable
-          location={selectedPost?.location}
-          longitude={selectedPost?.longitude}
-          latitude={selectedPost?.latitude}
-        />
-        {utils.isExistLatAndLong(selectedPost) && currentCoord ? (
-          <Box className={styles['post-detail__map']} width='100%'>
-            <AppMapBox
-              isTracing
-              isDisplayGeoDirection
-              mapHeight='600px'
-              address={selectedPost?.location}
-              desPoint={{ long: selectedPost?.longitude, lat: selectedPost?.latitude }}
-              sourcePoint={{ long: currentCoord?.long, lat: currentCoord?.lat }}
-            />
-          </Box>
-        ) : (
-          <>
-            <Box className={styles['post-detail__error-map']} boxShadow={1}>
-              <img src='/gg-map-error.jpg' alt='Error Map' />
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={12} md={6}>
+            <Box className={styles.post__details__media}>
+              <Stack width='100%' spacing={2}>
+                <Box className={styles.post__details__media__content} component={Paper} elevation={3}>
+                  {post?.type === 'video' ? (
+                    <ReactPlayer url={post?.videoYtbUrl} width='100%' height='100%' />
+                  ) : (
+                    <img src={post?.imageUrl} alt={post?.title} />
+                  )}
+                </Box>
+                <Box className={styles.post__details__reactions}>
+                  <AppReactions boxShadowSize={2} />
+                  <Button className={styles.post__details__reactions__btn} color='primary' variant='outlined'>
+                    <AppIcon icon={Bookmark} />
+                    <Typography marginLeft={1}>Save</Typography>
+                  </Button>
+                  <Button className={styles.post__details__reactions__btn} color='success' variant='contained'>
+                    <AppIcon icon={Map} color='#fff' />
+                    <Typography marginLeft={1}>View on map</Typography>
+                  </Button>
+                </Box>
+              </Stack>
             </Box>
-          </>
-        )}
-      </Container>
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} padding={4}>
+            <Box className={styles.post__details__user}>
+              <Stack direction='row' alignItems='center' justifyContent='space-between' padding={4}>
+                <Stack direction='row' alignItems='center' spacing={3}>
+                  <Avatar src={post?.profilePhotoUrl} />
+                  <Box>
+                    <Typography fontWeight={600}>{post?.fullName}</Typography>
+                    <Typography>{new Date(post?.createdAt).toLocaleString()}</Typography>
+                  </Box>
+                </Stack>
+                {currentUser?.id !== post?.userId && <Button variant='contained'>Follow</Button>}
+              </Stack>
+              <Typography marginBottom={4} textAlign='justify' className={styles.post__details__user__description}>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae necessitatibus distinctio deleniti,
+                quasi numquam quibusdam tempora et voluptates, nam labore quis nemo reprehenderit fugit nulla, ducimus
+                laudantium ullam beatae fugiat. Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae
+                necessitatibus distinctio deleniti, quasi numquam quibusdam tempora et voluptates, nam labore quis nemo
+                reprehenderit fugit nulla, ducimus laudantium ullam beatae fugiat. Lorem ipsum dolor sit amet
+                consectetur adipisicing elit. Molestiae necessitatibus distinctio deleniti, quasi numquam quibusdam
+                tempora et voluptates, nam labore quis nemo reprehenderit fugit nulla, ducimus laudantium ullam beatae
+                fugiat. Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae necessitatibus distinctio
+                deleniti, quasi numquam quibusdam tempora et voluptates, nam labore quis nemo reprehenderit fugit nulla,
+                ducimus laudantium ullam beatae fugiat.
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+        <Box className={styles.post__details__comment}>
+          <PostComments currentUserId={currentUser?.id} ownerId={post?.userId} postId={post?.id} key={post?.id} />
+        </Box>
+      </Box>
     </>
   );
 };
 
-export default PostDetail;
+export default memo(PostDetail);

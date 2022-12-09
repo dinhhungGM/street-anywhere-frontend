@@ -1,32 +1,39 @@
-@import './../../../solutions/assets/scss/variables';
-
-.post-detail {
-  padding-top: 24px;
-  margin-top: 24px;
-
-  &__image,
-  &__error-map {
+.post__details {
+  padding: 20px;
+  &__media {
+    padding: 12px;
     width: 100%;
-    height: 800px;
-    padding: 32px 16px 32px 16px;
+    &__content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+      height: 600px;
 
-    img {
-      display: block;
-      width: 100%;
-      max-height: 100%;
-      object-fit: contain;
+      iframe {
+        border-radius: inherit;
+      }
     }
   }
-
-  &__location {
-    font-style: italic;
-  }
-
-  &__map {
+  &__reactions {
+    margin-top: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px;
-    width: 100%;
+    gap: 12px;
+    &__btn {
+      height: 48px;
+      min-width: 120px;
+      border-radius: 100rem;
+    }
+  }
+  &__comment {
+    padding-top: 20px;
+  }
+  &__user {
+    &__description {
+      max-height: 300px;
+      overflow-y: scroll;
+    }
   }
 }
