@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import postService from '../../../solutions/services/postService';
 import AlertUtil from '../../../solutions/utils/alertUtil';
 import { wrapperActions } from '../../wrapper/store';
+import { default as axios } from './../../../solutions/services/axios';
 
 export const postActionsAsync = {
   createPostActionAsync: createAsyncThunk('posts/createNewPost', async (payload: any, { dispatch }) => {
@@ -57,4 +58,24 @@ export const postActionsAsync = {
       dispatch(wrapperActions.hideLoading());
     }
   }),
+  getPostRelevantToCurrentPost: createAsyncThunk(
+    'post/getPostRelevantToCurrentPost',
+    async (payload: { categories: string[]; hashtags: string[]; postId: number; }, { dispatch }) => {
+      try {
+        dispatch(wrapperActions.showLoading());
+        const { data } = await axios.post('/posts/relevant', payload, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        return data.value;
+      } catch (error) {
+        dispatch(wrapperActions.hideLoading());
+        AlertUtil.showError(error);
+        return Promise.reject();
+      } finally {
+        dispatch(wrapperActions.hideLoading());
+      }
+    },
+  ),
 };
