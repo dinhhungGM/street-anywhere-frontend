@@ -9,6 +9,7 @@
       justify-content: center;
       margin-top: 20px;
       height: 600px;
+      padding: 12px;
 
       iframe {
         border-radius: inherit;
@@ -32,8 +33,19 @@
   }
   &__user {
     &__description {
-      max-height: 300px;
+      max-height: 330px;
       overflow-y: scroll;
     }
+    &__background {
+      color: #fff;
+      border-radius: 100rem;
+      margin-bottom: 12px;
+      margin-top: 46px;
+      padding: 24px;
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+    }
+  }
+  &__relevant {
+    margin-top: 16px;
   }
 }
