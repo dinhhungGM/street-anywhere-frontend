@@ -41,3 +41,11 @@
 .MuiPopover-root {
   z-index: 999999 !important;
 }
+
+.react-player__preview {
+  border-radius: inherit !important;
+}
+
+.slick-slide {
+  padding: 12px !important;
+}
