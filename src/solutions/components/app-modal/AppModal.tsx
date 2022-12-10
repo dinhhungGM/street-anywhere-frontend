@@ -11,6 +11,7 @@ interface IAppModalProps {
   isOpen: boolean;
   classes?: string;
   width?: number | string;
+  height?: number | string;
   isDisplayOkButton?: boolean;
   isDisplayCancelButton?: boolean;
   onClose?: () => void;
@@ -24,6 +25,7 @@ const AppModal = ({
   children,
   classes,
   width,
+  height,
   title,
   onClose,
   onOk,
@@ -60,7 +62,9 @@ const AppModal = ({
               </IconButton>
             </Stack>
           </Box>
-          <Box className={styles.modal__body}>{children}</Box>
+          <Box className={styles.modal__body} height={height || '600px'}>
+            {children}
+          </Box>
           <Box className={styles.modal__footer}>
             <Stack direction='row' alignItems='center' justifyContent='flex-end' spacing={2}>
               {isDisplayCancelButton && (

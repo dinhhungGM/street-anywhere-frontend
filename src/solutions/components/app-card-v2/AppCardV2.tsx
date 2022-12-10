@@ -1,5 +1,6 @@
-import { AddReaction, Bookmark } from '@mui/icons-material';
+import { Bookmark } from '@mui/icons-material';
 import { Avatar, Box, Button, Paper, Stack, Tooltip, Typography } from '@mui/material';
+import cx from 'classnames';
 import { memo } from 'react';
 import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
@@ -8,13 +9,11 @@ import { AppIcon } from '../app-icon';
 import { AppIconButton } from '../app-icon-button';
 import { AppInnerLoading } from '../app-inner-loading';
 import styles from './styles.module.scss';
-import cx from 'classnames';
 
 interface IAppCardV2Props {
   post?: IPost;
   currentUserId?: number;
   isFixedSize?: boolean;
-  onReact?: (e) => any;
   onBookmark?: (e) => any;
   onFollow?: (e) => any;
   onViewProfile?: (e) => any;
@@ -23,10 +22,6 @@ const AppCardV2 = ({
   post,
   currentUserId,
   isFixedSize = false,
-  onReact = (e) => {
-    e.stopPropagation();
-    return null;
-  },
   onBookmark = (post = null) => {
     return null;
   },
@@ -41,11 +36,6 @@ const AppCardV2 = ({
 
   const navigateToPostDetail = (postId: number): void => {
     navigate(`/posts/${ postId }`);
-  };
-
-  const handleOnClickAddReaction = (e): void => {
-    e.stopPropagation();
-    onReact(post);
   };
 
   const handleOnClickBookmark = (e): void => {
@@ -75,7 +65,7 @@ const AppCardV2 = ({
         </Box>
         <Box className={styles.card__overlay} onClick={() => navigateToPostDetail(post?.id)}>
           <Stack alignItems='center' height='100%' position='relative'>
-            <Stack direction='row' spacing={1} className={styles.card__overlay__actions}>
+            <Stack direction='row' spacing={1} className={styles.card__overlay__actions} alignItems='center'>
               <AppIconButton
                 tooltip='Bookmark'
                 icon={<AppIcon icon={Bookmark} color={post.isBookmarked ? '#fff' : '#0288d1'} />}
@@ -84,15 +74,8 @@ const AppCardV2 = ({
                 buttonSize='large'
                 onClick={handleOnClickBookmark}
               />
-              <AppIconButton
-                tooltip='Add Reactions'
-                icon={<AppIcon icon={AddReaction} color='#fbe44b' />}
-                buttonColor='warning'
-                customBackgroundColor='#fff'
-                buttonSize='large'
-                onClick={handleOnClickAddReaction}
-              />
             </Stack>
+            <Typography className={styles.card__overlay__title}>{post?.shortTitle}</Typography>
             <Box padding={2} className={styles.card__overlay__user}>
               <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={2}>
                 <Stack direction='row' alignItems='center' spacing={2}>

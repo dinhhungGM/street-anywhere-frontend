@@ -6,6 +6,7 @@
   transition: all 0.6s ease !important;
   &:hover .card__overlay {
     display: block;
+    transition: all 0.3s ease;
   }
   &__media {
     display: flex;
@@ -49,7 +50,17 @@
     &__actions {
       padding: 8px;
       position: absolute;
+      right: 0;
+    }
+    &__title {
+      position: absolute;
       top: 50%;
+      width: 100%;
+      text-overflow: ellipsis;
+      text-align: center;
+      overflow: hidden;
+      font-size: 24px;
+      color: #fff;
       transform: translateY(-50%);
     }
     &__user {
