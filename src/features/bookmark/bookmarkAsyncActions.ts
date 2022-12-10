@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { wrapperActions } from '../wrapper/store';
 import { default as axios } from '../../solutions/services/axios';
+import { userActions } from '../user';
 
 export const createBookmark = createAsyncThunk(
   'bookmark/createBookmark',
@@ -16,6 +17,7 @@ export const createBookmark = createAsyncThunk(
           },
         },
       );
+      dispatch(userActions.addNewBookmarkedPost(data.value));
       dispatch(
         wrapperActions.showToast({
           toastSeverity: 'success',
@@ -42,6 +44,7 @@ export const unBookmark = createAsyncThunk(
     try {
       dispatch(wrapperActions.hideLoading());
       const { data } = await axios.delete(`/bookmarks/${ params.bookmarkId }`);
+      dispatch(userActions.removeBookmarkedPost(params));
       return data.value;
     } catch (error) {
       dispatch(

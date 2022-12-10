@@ -12,6 +12,7 @@ import { profileReducer } from '../features/profile-dashboard';
 import { reactionsReducer } from '../features/reactions/store';
 import { shortsReducer } from '../features/shorts';
 import { tagsReducer } from '../features/tags/store';
+import { userReducer } from '../features/user';
 import { wrapperReducer } from '../features/wrapper/store';
 
 const persistConfig = {
@@ -30,7 +31,8 @@ const combineReducer = combineReducers({
   comments: commentsReducer,
   admin: adminReducer,
   shorts: shortsReducer,
-  bookmark: bookmarkReducer
+  bookmark: bookmarkReducer,
+  user: userReducer
 });
 
 const rootReducer = (state, action) => {

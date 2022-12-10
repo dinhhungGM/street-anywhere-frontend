@@ -2,7 +2,7 @@ import { Search } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
 import { Box, Grid, InputAdornment, Stack, TextField } from '@mui/material';
 import _ from 'lodash';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
@@ -20,12 +20,17 @@ import { ICategory } from '../../../categories/store/categoriesModels';
 import { reactionsActions, reactionsSelectors } from '../../../reactions/store';
 import { tagsActions, tagSelectors } from '../../../tags/store';
 import { ITag } from '../../../tags/store/tagModels';
+import { userActions, userSelectors } from '../../../user';
+import { wrapperActions } from '../../../wrapper/store';
 import { landingPageActions, landingPageSelectors } from '../../store';
 import styles from './styles.module.scss';
 
 const Gallery = () => {
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
-  const displayPosts = useAppSelector(landingPageSelectors.selectPosts);
+  const posts = useAppSelector(landingPageSelectors.selectPosts);
+  const followingUsers = useAppSelector(userSelectors.selectedFollowingUsers);
+  const reactedPosts = useAppSelector(userSelectors.selectReactedPosts);
+  const bookmarkedPosts = useAppSelector(userSelectors.selectBookmarkedPosts);
   const categories = useAppSelector(categoriesSelectors.selectCategoryList);
   const hashtags = useAppSelector(tagSelectors.selectTagList);
   const reactions = useAppSelector(reactionsSelectors.selectReactionList);
@@ -33,7 +38,6 @@ const Gallery = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isAddReaction, setIsAddReaction] = useState<boolean>(false);
   const [clickedPost, setClickedPost] = useState<IPost | null>(null);
-
   const [search, setSearch] = useState('');
 
   const onCategoryDropDownChange = useCallback((e, values: ICategory[]): void => {
@@ -85,8 +89,8 @@ const Gallery = () => {
     setIsAddReaction(false);
   }, []);
 
-  const addReaction = useCallback(
-    (reactionType) => {
+  const handleReactPost = useCallback(
+    (reactionType: string) => {
       if (_.isNil(currentUser)) {
         SweetAlert.fire({
           title: 'Notification',
@@ -95,21 +99,24 @@ const Gallery = () => {
         });
       } else {
         if (clickedPost) {
-          const reactionIcon = _.find(reactions, (item) => _.isEqual(item.reactionType, reactionType));
-          if (reactionIcon) {
-            dispatch(
-              reactionsActions.addReaction({
-                postId: clickedPost?.id,
-                reactionId: reactionIcon?.id,
-                userId: currentUser?.id,
-              }),
-            );
+          if (reactionType === 'Remove') {
           } else {
-            SweetAlert.fire({
-              title: 'Notification',
-              icon: 'error',
-              text: 'Something are wrong. Please contact administrator to support',
-            });
+            const reactionIcon = _.find(reactions, (item) => _.isEqual(item.reactionType, reactionType));
+            if (reactionIcon) {
+              dispatch(
+                reactionsActions.addReaction({
+                  postId: clickedPost?.id,
+                  reactionId: reactionIcon?.id,
+                  userId: currentUser?.id,
+                }),
+              );
+            } else {
+              SweetAlert.fire({
+                title: 'Notification',
+                icon: 'error',
+                text: 'Something are wrong. Please contact administrator to support',
+              });
+            }
           }
         }
       }
@@ -118,7 +125,7 @@ const Gallery = () => {
     [clickedPost],
   );
 
-  const toggleBookmark = useCallback((post) => {
+  const toggleBookmark = useCallback((post: IPost) => {
     if (_.isNil(currentUser)) {
       SweetAlert.fire({
         title: 'Notification',
@@ -126,12 +133,36 @@ const Gallery = () => {
         text: 'You are not sign in',
       });
     } else {
-      dispatch(
-        bookmarkActions.createBookmark({
-          postId: post?.id,
-          userId: currentUser?.id,
-        }),
-      );
+      if (post.isBookmarked) {
+        dispatch(bookmarkActions.unBookmark({ bookmarkId: post?.bookmarkedDetail.bookmarkId }));
+      } else {
+        dispatch(
+          bookmarkActions.createBookmark({
+            postId: post?.id,
+            userId: currentUser?.id,
+          }),
+        );
+        dispatch(
+          wrapperActions.createNewNotification({
+            postId: post?.id,
+            type: 'bookmarked',
+            reactionType: null,
+            userId: currentUser?.id,
+          }),
+        );
+      }
+    }
+  }, []);
+
+  const toggleFollow = useCallback((post) => {
+    if (_.isNil(currentUser)) {
+      SweetAlert.fire({
+        title: 'Notification',
+        icon: 'warning',
+        text: 'You are not sign in',
+      });
+    } else {
+      dispatch(userActions.followUser({ userId: currentUser?.id, followerId: post?.userId }));
     }
   }, []);
 
@@ -150,7 +181,33 @@ const Gallery = () => {
     dispatch(categoriesActions.getCategoryList());
     dispatch(tagsActions.getTagList());
     dispatch(reactionsActions.getReactionList());
+    if (currentUser) {
+      dispatch(userActions.getFollowingUsers(currentUser?.id));
+      dispatch(userActions.getBookmarkedPost(currentUser?.id));
+      dispatch(userActions.getReactedPost(currentUser?.id));
+    }
   }, []);
+
+  const displayPosts = useMemo(() => {
+    if (_.isNil(currentUser)) {
+      return posts;
+    } else {
+      return _.map(posts, (post) => {
+        const reactedDetail = _.find(reactedPosts, (reactedPost) => reactedPost.postId === post.id);
+        const bookmarkedDetail = _.find(bookmarkedPosts, (bookmarkedPost) => bookmarkedPost.postId === post.id);
+        const followingDetail = _.find(followingUsers, (followingUser) => followingUser.followerId === post.userId);
+        return {
+          ...post,
+          reactedDetail,
+          isReacted: !!reactedDetail,
+          bookmarkedDetail,
+          isBookmarked: !!bookmarkedDetail,
+          followingDetail,
+          isFollowingUser: !!followingDetail,
+        };
+      });
+    }
+  }, [currentUser, posts, followingUsers, reactedPosts, bookmarkedPosts]);
 
   return (
     <>
@@ -224,7 +281,13 @@ const Gallery = () => {
                   justifyContent: 'center',
                 }}
                 key={post?.id}>
-                <AppCardV2 post={post} onReact={showAddReactionModal} onBookmark={toggleBookmark} />
+                <AppCardV2
+                  post={post}
+                  currentUserId={currentUser?.id}
+                  onReact={showAddReactionModal}
+                  onBookmark={toggleBookmark}
+                  onFollow={toggleFollow}
+                />
               </Box>
             ))}
         </Masonry>
@@ -236,7 +299,7 @@ const Gallery = () => {
           isDisplayOkButton={false}
           width='fit-content'>
           <Stack alignItems='center' justifyContent='center'>
-            <AppReactions onClickReactionIcon={addReaction} />
+            <AppReactions onClickReactionIcon={handleReactPost} />
           </Stack>
         </AppModal>
       </Box>

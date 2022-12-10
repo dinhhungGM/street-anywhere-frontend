@@ -78,9 +78,9 @@ const AppCardV2 = ({
             <Stack direction='row' spacing={1} className={styles.card__overlay__actions}>
               <AppIconButton
                 tooltip='Bookmark'
-                icon={<AppIcon icon={Bookmark} color='#0288d1' />}
+                icon={<AppIcon icon={Bookmark} color={post.isBookmarked ? '#fff' : '#0288d1'} />}
                 buttonColor='info'
-                customBackgroundColor='#fff'
+                customBackgroundColor={post.isBookmarked ? '#0288d1' : '#fff'}
                 buttonSize='large'
                 onClick={handleOnClickBookmark}
               />

@@ -17,7 +17,16 @@ const initialState: IUserState = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    addNewBookmarkedPost: (state, action) => {
+      state.bookmarkedPosts.push(action.payload);
+    },
+    removeBookmarkedPost: (state, action) => {
+      state.bookmarkedPosts = state.bookmarkedPosts.filter(
+        (bookmarkedPost) => bookmarkedPost.bookmarkId !== action.payload.bookmarkId,
+      );
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(userAsyncActions.getFollowingUsers.fulfilled, (state, action) => {
       state.followingUsers = action.payload;
