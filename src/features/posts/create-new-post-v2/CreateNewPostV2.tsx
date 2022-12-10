@@ -478,10 +478,11 @@ const CreateNewPostV2 = () => {
         title='Map'
         onClose={closeMap}
         onCancel={closeMap}
-        width='1200px'
+        width='60vw'
+        height='60vh'
         okText='Select'
         onOk={handleOnSelectPoint}>
-        <AppMapBox mapHeight='600px' onClickOnMap={handleClickOnMap} onSearchOnMap={handleOnSearchOnMap} />
+        <AppMapBox onClickOnMap={handleClickOnMap} onSearchOnMap={handleOnSearchOnMap} />
       </AppModal>
     </>
   );

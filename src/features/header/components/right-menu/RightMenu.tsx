@@ -6,7 +6,7 @@ import {
   Person,
   PersonAdd,
   PowerSettingsNew,
-  Search,
+  Search
 } from '@mui/icons-material';
 import { Badge, Drawer, IconButton, Stack, Tooltip } from '@mui/material';
 import _ from 'lodash';
@@ -52,9 +52,9 @@ const RightMenu = () => {
     setAnchorEl(null);
   }, [anchorEl]);
 
+
   useEffect(() => {
     if (currentUser?.id) {
-      console.log('run');
       dispatch(wrapperActions.getNotifications(currentUser?.id));
     }
   }, [currentUser?.id]);
@@ -89,7 +89,7 @@ const RightMenu = () => {
           <>
             <Tooltip title='Notification'>
               <IconButton size='large' onClick={openPostNotifications} color='primary'>
-                <Badge color='error' badgeContent={postNotifications?.unSeenCount || null}>
+                <Badge color='error' badgeContent={postNotifications?.unSeenCount || null} max={99}>
                   <AppIcon icon={Notifications} color='#fbe44b' />
                 </Badge>
               </IconButton>

@@ -1,11 +1,12 @@
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import MailIcon from '@mui/icons-material/Mail';
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import styles from './styles.module.scss';
+import { memo } from 'react';
 
-const WelcomeDashboard = () => {
+interface IWelcomeDashboardProps {
+  onChangeToFeedsPage?: (e) => any;
+}
+const WelcomeDashboard = ({ onChangeToFeedsPage }: IWelcomeDashboardProps) => {
   return (
     <>
       <Box style={{ height: '800px', position: 'relative' }}>
@@ -18,38 +19,38 @@ const WelcomeDashboard = () => {
         </Box>
         <Box className={styles.ca_list_img}>
           <Box className={styles.ca_img}>
-            <img src='https://picsum.photos/220/400' alt='#' />
-            <img src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img src='https://picsum.photos/220/400' alt='#' />
-            <img src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img src='https://picsum.photos/220/400' alt='#' />
-            <img src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img src='https://picsum.photos/220/400' alt='#' />
-            <img src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
           </Box>
         </Box>
         <Box className={styles.ca_blur}></Box>
       </Box>
       <Box className={styles.page1}>
         <Box className={styles.image}>
-          <img src='https://picsum.photos/400/700' alt='#' />
+          <img className='lazy' src='https://picsum.photos/400/700' alt='#' />
           <Box className={styles.search}>
-            <SearchIcon style={{ fontSize: '35px', color: 'black' }} /> Bữa tối với món gà
+            <SearchIcon style={{ fontSize: '35px', color: 'black' }} /> Having dinner with chicken
           </Box>
         </Box>
         <Box className={styles.content}>
@@ -59,7 +60,7 @@ const WelcomeDashboard = () => {
               What do you want to try next? Think about your favorite idea. Like an evening with chickens and pigs
             </Box>
             <Box>
-              <button>Discover</button>
+              <button onClick={onChangeToFeedsPage}>Discover</button>
             </Box>
           </Box>
         </Box>
@@ -70,34 +71,40 @@ const WelcomeDashboard = () => {
             <Box className={styles.title}>Save ideas you like</Box>
             <Box className={styles.text}>Earning content you like so you can watch it later</Box>
             <Box>
-              <button>Discover</button>
+              <button onClick={onChangeToFeedsPage}>Discover</button>
             </Box>
           </Box>
         </Box>
         <Box className={styles.image}>
           <Box className={styles.left}>
             <Box>
-              <img src='https://picsum.photos/400/400' alt='#' />
+              <img className='lazy' src='https://picsum.photos/400/400' alt='#' />
             </Box>
             <Box>
-              <img src='https://picsum.photos/250/250' alt='#' />
+              <img className='lazy' src='https://picsum.photos/250/250' alt='#' />
             </Box>
           </Box>
           <Box className={styles.right}>
             <Box>
-              <img src='https://picsum.photos/220/220' alt='#' />
+              <img className='lazy' src='https://picsum.photos/220/220' alt='#' />
             </Box>
             <Box>
-              <img src='https://picsum.photos/160/160' alt='#' />
+              <img className='lazy' src='https://picsum.photos/160/160' alt='#' />
             </Box>
             <Box>
-              <img src='https://picsum.photos/240/240' alt='#' />
+              <img className='lazy' src='https://picsum.photos/240/240' alt='#' />
             </Box>
           </Box>
         </Box>
       </Box>
       <Box className={styles.page3}>
-        <Box className={styles.image}></Box>
+        <Box className={styles.image}>
+          <img
+            className='lazy'
+            src='https://images.unsplash.com/photo-1441239372925-ac0b51c4c250?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=732&q=80'
+            alt='Landing page'
+          />
+        </Box>
         <Box className={styles.content}>
           <Box style={{ maxWidth: '500px' }}>
             <Box className={styles.title}>Watch, do, try, do</Box>
@@ -105,7 +112,7 @@ const WelcomeDashboard = () => {
               The best thing about Street Anywhere is discovering new content and ideas from people around the world.
             </Box>
             <Box>
-              <button>Discover</button>
+              <button onClick={onChangeToFeedsPage}>Discover</button>
             </Box>
           </Box>
         </Box>
@@ -162,9 +169,8 @@ const WelcomeDashboard = () => {
           </Box>
         </Box>
       </Box> */}
-      <Box className={styles.footerFinal}>2016 - 2022 Happy new years 2023 ^^_^^</Box>
     </>
   );
 };
 
-export default WelcomeDashboard;
+export default memo(WelcomeDashboard);

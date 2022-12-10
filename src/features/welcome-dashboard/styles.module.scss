@@ -63,9 +63,11 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    padding: 20px;
 
     img {
       border-radius: 20px;
+      width: 50%;
     }
 
     .search {
@@ -228,9 +230,11 @@
 
   .image {
     width: 50%;
-    background: url('https://picsum.photos/500/500');
-    background-size: cover;
-    background-position: center;
+    padding: 20px;
+    img {
+      height: 100%;
+      width: 100%;
+    }
   }
 }
 

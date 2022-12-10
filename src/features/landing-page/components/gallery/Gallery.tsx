@@ -1,23 +1,21 @@
 import { Search } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
-import { Box, Grid, InputAdornment, Stack, TextField } from '@mui/material';
+import { Box, Grid, InputAdornment, TextField } from '@mui/material';
 import _ from 'lodash';
-import { memo, useCallback, useEffect, useState, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppCardV2 } from '../../../../solutions/components/app-card-v2';
 import { AppIcon } from '../../../../solutions/components/app-icon';
 import { AppIconButton } from '../../../../solutions/components/app-icon-button';
-import { AppModal } from '../../../../solutions/components/app-modal';
-import { AppReactions } from '../../../../solutions/components/app-reactions';
 import { AppSelect } from '../../../../solutions/components/app-select';
 import { IPost } from '../../../../solutions/models/postModels';
 import { authSelectors } from '../../../auth/store';
 import { bookmarkActions } from '../../../bookmark';
 import { categoriesActions, categoriesSelectors } from '../../../categories/store';
 import { ICategory } from '../../../categories/store/categoriesModels';
-import { reactionsActions, reactionsSelectors } from '../../../reactions/store';
+import { reactionsActions } from '../../../reactions/store';
 import { tagsActions, tagSelectors } from '../../../tags/store';
 import { ITag } from '../../../tags/store/tagModels';
 import { userActions, userSelectors } from '../../../user';
@@ -33,12 +31,11 @@ const Gallery = () => {
   const bookmarkedPosts = useAppSelector(userSelectors.selectBookmarkedPosts);
   const categories = useAppSelector(categoriesSelectors.selectCategoryList);
   const hashtags = useAppSelector(tagSelectors.selectTagList);
-  const reactions = useAppSelector(reactionsSelectors.selectReactionList);
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isAddReaction, setIsAddReaction] = useState<boolean>(false);
-  const [clickedPost, setClickedPost] = useState<IPost | null>(null);
   const [search, setSearch] = useState('');
+
+  //#region Handling search
 
   const onCategoryDropDownChange = useCallback((e, values: ICategory[]): void => {
     if (values.length) {
@@ -80,50 +77,9 @@ const Gallery = () => {
     }
   };
 
-  const showAddReactionModal = useCallback((clickedPost: IPost) => {
-    setIsAddReaction(true);
-    setClickedPost(clickedPost);
-  }, []);
+  //#endregion
 
-  const hideAddReactionModal = useCallback((): void => {
-    setIsAddReaction(false);
-  }, []);
-
-  const handleReactPost = useCallback(
-    (reactionType: string) => {
-      if (_.isNil(currentUser)) {
-        SweetAlert.fire({
-          title: 'Notification',
-          icon: 'warning',
-          text: 'You are not sign in',
-        });
-      } else {
-        if (clickedPost) {
-          if (reactionType === 'Remove') {
-          } else {
-            const reactionIcon = _.find(reactions, (item) => _.isEqual(item.reactionType, reactionType));
-            if (reactionIcon) {
-              dispatch(
-                reactionsActions.addReaction({
-                  postId: clickedPost?.id,
-                  reactionId: reactionIcon?.id,
-                  userId: currentUser?.id,
-                }),
-              );
-            } else {
-              SweetAlert.fire({
-                title: 'Notification',
-                icon: 'error',
-                text: 'Something are wrong. Please contact administrator to support',
-              });
-            }
-          }
-        }
-      }
-      hideAddReactionModal();
-    },
-    [clickedPost],
-  );
+  //#region Handing bookmark
 
   const toggleBookmark = useCallback((post: IPost) => {
     if (_.isNil(currentUser)) {
@@ -154,7 +110,11 @@ const Gallery = () => {
     }
   }, []);
 
-  const toggleFollow = useCallback((post) => {
+  //#endregion
+
+  //#region Handling follow
+
+  const toggleFollow = useCallback((post: IPost) => {
     if (_.isNil(currentUser)) {
       SweetAlert.fire({
         title: 'Notification',
@@ -162,9 +122,30 @@ const Gallery = () => {
         text: 'You are not sign in',
       });
     } else {
-      dispatch(userActions.followUser({ userId: currentUser?.id, followerId: post?.userId }));
+      if (post.isFollowingUser) {
+        dispatch(
+          userActions.unfollowUser({
+            userId: post?.followingDetail?.userId,
+            followerId: post?.followingDetail?.followerId,
+          }),
+        );
+      } else {
+        dispatch(userActions.followUser({ userId: currentUser?.id, followerId: post?.userId }));
+        dispatch(
+          wrapperActions.createNewNotification({
+            postId: post?.id,
+            userId: currentUser?.id,
+            type: 'followed',
+            reactionType: null,
+          }),
+        );
+      }
     }
   }, []);
+
+  //#endregion
+
+  //#region Calling API
 
   useEffect(() => {
     dispatch(
@@ -186,7 +167,14 @@ const Gallery = () => {
       dispatch(userActions.getBookmarkedPost(currentUser?.id));
       dispatch(userActions.getReactedPost(currentUser?.id));
     }
+    return () => {
+      dispatch(userActions.resetAllData());
+    };
   }, []);
+
+  //#endregion
+
+  //#region Handing build display posts
 
   const displayPosts = useMemo(() => {
     if (_.isNil(currentUser)) {
@@ -208,6 +196,8 @@ const Gallery = () => {
       });
     }
   }, [currentUser, posts, followingUsers, reactedPosts, bookmarkedPosts]);
+
+  //#endregion
 
   return (
     <>
@@ -284,24 +274,12 @@ const Gallery = () => {
                 <AppCardV2
                   post={post}
                   currentUserId={currentUser?.id}
-                  onReact={showAddReactionModal}
                   onBookmark={toggleBookmark}
                   onFollow={toggleFollow}
                 />
               </Box>
             ))}
         </Masonry>
-        <AppModal
-          title='Add reaction'
-          isOpen={isAddReaction}
-          onClose={hideAddReactionModal}
-          isDisplayCancelButton={false}
-          isDisplayOkButton={false}
-          width='fit-content'>
-          <Stack alignItems='center' justifyContent='center'>
-            <AppReactions onClickReactionIcon={handleReactPost} />
-          </Stack>
-        </AppModal>
       </Box>
     </>
   );

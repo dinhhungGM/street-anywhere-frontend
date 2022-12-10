@@ -1,12 +1,15 @@
-import { Avatar, Box, Menu, MenuItem, Paper, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import _ from 'lodash';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { wrapperModels } from '../../../wrapper/store';
+import { useAppDispatch } from '../../../../app/hooks';
+import { wrapperActions, wrapperModels } from '../../../wrapper/store';
 
 const COLOR_SCHEMA = {
   reacted: '#eab171',
   commented: '#44ff00',
   bookmarked: '#0288d1',
+  followed: '#10A19D'
 };
 interface IPostNotificationsProps {
   anchorElement: HTMLElement;
@@ -15,7 +18,19 @@ interface IPostNotificationsProps {
 }
 const PostNotifications = ({ anchorElement, details = [], onClose }: IPostNotificationsProps) => {
   const isOpen = Boolean(anchorElement);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const navigateToPostDetail = (notification): void => {
+    const unSeenIds = _.map(
+      _.filter(details, (notification) => !notification.isSeen),
+      'id',
+    );
+    if (unSeenIds.length) {
+      dispatch(wrapperActions.changeNotificationStatus(unSeenIds));
+    }
+    navigate(`/posts/${ notification?.postId }`);
+  };
 
   return (
     <>
@@ -49,7 +64,7 @@ const PostNotifications = ({ anchorElement, details = [], onClose }: IPostNotifi
                 paddingY: '12px',
                 backgroundColor: notification?.isSeen ? 'initial' : 'rgba(0, 90, 0, 0.1)',
               }}
-              onClick={() => navigate(`/posts/${ notification?.postId }`)}>
+              onClick={() => navigateToPostDetail(notification)}>
               <Stack direction='row' spacing={2} alignItems='center' justifyContent='flex-start'>
                 <Avatar src={notification?.profilePhotoUrl} alt='Avatar' />
                 <Box>
