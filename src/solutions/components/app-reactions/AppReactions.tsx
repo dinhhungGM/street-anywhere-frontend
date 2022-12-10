@@ -1,89 +1,36 @@
-import { Avatar, Paper, Stack, Tooltip } from '@mui/material';
-import { memo, useMemo } from 'react';
-import AngrySrc from './../../assets/images/reactions/angry.png';
-import CareSrc from './../../assets/images/reactions/care.png';
-import HahaSrc from './../../assets/images/reactions/haha.png';
-import LikeSrc from './../../assets/images/reactions/like.png';
-import LoveSrc from './../../assets/images/reactions/love.png';
-import SadSrc from './../../assets/images/reactions/sad.png';
-import WowSrc from './../../assets/images/reactions/wow.png';
-import UnReact from './../../assets/images/reactions/close.png';
+import { Box, Paper, Stack } from '@mui/material';
+import { memo, useCallback, useMemo } from 'react';
+import { IReactedPost } from '../../../features/user/userModels';
+import { AppReactButton } from '../app-react-button';
 import styles from './styles.module.scss';
 
 interface IAppReactionsProps {
   isVerticalAlign?: boolean;
   onClickReactionIcon?: (e) => any;
   boxShadowSize?: number;
+  isReacted?: boolean;
+  reactedDetail?: IReactedPost;
 }
 
 const AppReactions = ({
   isVerticalAlign = false,
   onClickReactionIcon = (e) => null,
   boxShadowSize = 0,
+  isReacted,
+  reactedDetail,
 }: IAppReactionsProps) => {
-  const handleClickReactionItem = (reactionType: string) => {
+  const handleClickReactionItem = useCallback((reactionType: string) => {
     onClickReactionIcon(reactionType);
-  };
-  const reactionItems = useMemo(() => {
-    return [
-      {
-        id: 'angry-icon',
-        iconSrc: AngrySrc,
-        tooltip: 'Angry',
-        alt: 'Angry Icon',
-        type: 'Angry',
-      },
-      {
-        id: 'care-icon',
-        iconSrc: CareSrc,
-        tooltip: 'Care',
-        alt: 'Care Icon',
-        type: 'Care',
-      },
-      {
-        id: 'haha-icon',
-        iconSrc: HahaSrc,
-        tooltip: 'Haha',
-        alt: 'Haha Icon',
-        type: 'Ha Ha',
-      },
-      {
-        id: 'like-icon',
-        iconSrc: LikeSrc,
-        tooltip: 'Like',
-        alt: 'Like Icon',
-        type: 'Like',
-      },
-      {
-        id: 'love-icon',
-        iconSrc: LoveSrc,
-        tooltip: 'Love',
-        alt: 'Love Icon',
-        type: 'Love',
-      },
-      {
-        id: 'sad-icon',
-        iconSrc: SadSrc,
-        tooltip: 'Sad',
-        alt: 'Sad Icon',
-        type: 'Sad',
-      },
-      {
-        id: 'wow-icon',
-        iconSrc: WowSrc,
-        tooltip: 'Wow',
-        alt: 'Wow Icon',
-        type: 'Wow',
-      },
-      {
-        id: 'remove-icon',
-        iconSrc: UnReact,
-        tooltip: 'Remove',
-        alt: 'Remove Icon',
-        type: 'Remove',
-      },
-    ];
   }, []);
+
+  const reactionItems = useMemo(() => {
+    return ['Angry', 'Care', 'Ha Ha', 'Like', 'Love', 'Sad', 'Wow', 'Remove'];
+  }, []);
+
+  const isReactedItem = (type): boolean => {
+    return isReacted && type === reactedDetail.reactionType;
+  };
+
   return (
     <>
       <Stack
@@ -95,18 +42,17 @@ const AppReactions = ({
         component={Paper}
         className={styles['reaction-container']}
         elevation={boxShadowSize}>
-        {reactionItems.map((item) => (
-          <Tooltip key={item.id} title={item.tooltip}>
-            <Avatar
-              src={item.iconSrc}
-              alt={item.alt}
-              component={Paper}
-              elevation={2}
-              className={styles['reaction-item']}
-              onClick={() => handleClickReactionItem(item.type)}
-            />
-          </Tooltip>
-        ))}
+        {reactionItems.map((item, idx) => {
+          if (isReactedItem(item)) {
+            return (
+              <Box className={styles.active} key={idx}>
+                <AppReactButton type={item} onClickReaction={handleClickReactionItem} />
+              </Box>
+            );
+          } else {
+            return <AppReactButton key={idx} type={item} onClickReaction={handleClickReactionItem} />;
+          }
+        })}
       </Stack>
     </>
   );
