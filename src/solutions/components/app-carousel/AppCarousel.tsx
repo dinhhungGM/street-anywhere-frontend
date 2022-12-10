@@ -1,29 +1,62 @@
-import { Box, Paper } from '@mui/material';
+import { Box } from '@mui/material';
 import { memo } from 'react';
 import Slider from 'react-slick';
-import Carouse1 from './../../assets/images/carousels/carousel1.jpg';
-import Carouse2 from './../../assets/images/carousels/carousel2.jpg';
-import Carouse3 from './../../assets/images/carousels/carousel3.jpg';
-import Carouse4 from './../../assets/images/carousels/carousel4.jpg';
-import Carouse5 from './../../assets/images/carousels/carousel5.jpg';
-import Carouse6 from './../../assets/images/carousels/carousel6.jpg';
 
 interface IAppCarouselProps {
   settings?: any;
   height?: string;
   width?: string;
+  children?: any;
+  customSettings?: any;
 }
 const AppCarousel = ({
   settings = {
     dots: true,
     speed: 300,
-    infinite: true,
     autoplay: true,
-    slidesToShow: 1,
+    slidesToShow: 4,
+    rows: 1,
     slidesToScroll: 1,
+    className: 'center',
+    centerMode: true,
+    centerPadding: '60px',
+    responsive: [
+      {
+        breakpoint: 2560,
+        settings: {
+          slidesToShow: 5,
+        },
+      },
+      {
+        breakpoint: 1920,
+        settings: {
+          slidesToShow: 4,
+        },
+      },
+      {
+        breakpoint: 1440,
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
   },
   height,
   width,
+  children,
+  customSettings = {},
 }: IAppCarouselProps) => {
   return (
     <>
@@ -31,25 +64,9 @@ const AppCarousel = ({
         sx={{
           height: height || '600px',
           width: width || '100%',
-        }}
-        component={Paper}>
-        <Slider {...settings}>
-          {[Carouse1, Carouse2, Carouse3, Carouse4, Carouse5, Carouse6].map((src, idx) => (
-            <Box
-              key={idx}
-              sx={{
-                height: height || '600px',
-                '& img': {
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: 'initial',
-                  objectFit: 'cover',
-                  verticalAlign: 'center',
-                },
-              }}>
-              <img src={src} alt='Carouse1' className='lazy' />
-            </Box>
-          ))}
+        }}>
+        <Slider {...settings} {...customSettings}>
+          {children}
         </Slider>
       </Box>
     </>
