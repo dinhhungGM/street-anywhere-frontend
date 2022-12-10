@@ -32,7 +32,7 @@ const AppListUserReact = ({ postId }: AppListUserReactProps) => {
     if (_.isNil(data)) {
       return [];
     }
-    return ['all', ...Object.keys(data.reactionDetails)];
+    return ['All', ...Object.keys(data.reactionDetails)];
   }, [data]);
 
   const allReactions = useMemo(() => {

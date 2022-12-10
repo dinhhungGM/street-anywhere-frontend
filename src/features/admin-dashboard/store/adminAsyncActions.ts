@@ -7,7 +7,7 @@ export const getAllUsersForManagement = createAsyncThunk(
   async (userId: number, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      const { data } = await axios.get(`/admin/users?adminUserId=${userId}`);
+      const { data } = await axios.get(`/admin/users?adminUserId=${ userId }`);
       return data.value;
     } catch (error) {
       dispatch(
@@ -29,7 +29,7 @@ interface IDeleteUserPayload {
 export const deleteUser = createAsyncThunk('admin/deleteUser', async (payload: IDeleteUserPayload, { dispatch }) => {
   try {
     dispatch(wrapperActions.showLoading());
-    await axios.delete(`/admin/users/${payload.userId}?adminUserId=${payload.adminUserId}`);
+    await axios.delete(`/admin/users/${ payload.userId }?adminUserId=${ payload.adminUserId }`);
     dispatch(getAllUsersForManagement(payload.adminUserId));
   } catch (error) {
     dispatch(
@@ -59,7 +59,7 @@ export const createNewUser = createAsyncThunk(
     try {
       const { adminUserId, payload } = params;
       dispatch(wrapperActions.showLoading());
-      await axios.post(`/admin/users?adminUserId=${adminUserId}`, payload, {
+      await axios.post(`/admin/users?adminUserId=${ adminUserId }`, payload, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -83,7 +83,7 @@ export const getAllRolesForManagement = createAsyncThunk(
   async (adminUserId: number, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      const { data } = await axios.get(`/admin/roles?adminUserId=${adminUserId}`);
+      const { data } = await axios.get(`/admin/roles?adminUserId=${ adminUserId }`);
       return data.value;
     } catch (error) {
       dispatch(
@@ -103,7 +103,7 @@ export const getAllReactionsForManagement = createAsyncThunk(
   async (adminUserId: number, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      const { data } = await axios.get(`/admin/reactions?adminUserId=${adminUserId}`);
+      const { data } = await axios.get(`/admin/reactions?adminUserId=${ adminUserId }`);
       return data.value;
     } catch (error) {
       dispatch(
@@ -123,7 +123,7 @@ export const getAllCategoriesForManagement = createAsyncThunk(
   async (adminUserId: number, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      const { data } = await axios.get(`/admin/categories?adminUserId=${adminUserId}`);
+      const { data } = await axios.get(`/admin/categories?adminUserId=${ adminUserId }`);
       return data.value;
     } catch (error) {
       dispatch(
@@ -143,7 +143,7 @@ export const getAllHashTagsForManagement = createAsyncThunk(
   async (adminUserId: number, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      const { data } = await axios.get(`/admin/tags?adminUserId=${adminUserId}`);
+      const { data } = await axios.get(`/admin/tags?adminUserId=${ adminUserId }`);
       return data.value;
     } catch (error) {
       dispatch(
@@ -169,7 +169,7 @@ export const createNewHashTag = createAsyncThunk(
   async (params: ICreateNewHashTagParams, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      await axios.post(`/admin/tags?adminUserId=${params.adminUserId}`, params.payload, {
+      await axios.post(`/admin/tags?adminUserId=${ params.adminUserId }`, params.payload, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -201,7 +201,7 @@ interface IDeleteTagParams {
 export const deleteTag = createAsyncThunk('admin/deleteTag', async (params: IDeleteTagParams, { dispatch }) => {
   try {
     dispatch(wrapperActions.showLoading());
-    await axios.delete(`/admin/tags/${params.tagId}?adminUserId=${params.adminUserId}`);
+    await axios.delete(`/admin/tags/${ params.tagId }?adminUserId=${ params.adminUserId }`);
     dispatch(
       wrapperActions.showNotification({
         typeOfNotification: 'success',
@@ -209,6 +209,42 @@ export const deleteTag = createAsyncThunk('admin/deleteTag', async (params: IDel
       }),
     );
     dispatch(getAllHashTagsForManagement(params.adminUserId));
+  } catch (error) {
+    dispatch(
+      wrapperActions.showNotification({
+        typeOfNotification: 'error',
+        message: error.response.data.message,
+      }),
+    );
+    return Promise.reject();
+  } finally {
+    dispatch(wrapperActions.hideLoading());
+  }
+});
+
+export const getStatsOfUserByYear = createAsyncThunk('admin/getStatsOfUserByYear', async (_, { dispatch }) => {
+  try {
+    dispatch(wrapperActions.showLoading());
+    const { data } = await axios.get('/stats/total-users');
+    return data.value;
+  } catch (error) {
+    dispatch(
+      wrapperActions.showNotification({
+        typeOfNotification: 'error',
+        message: error.response.data.message,
+      }),
+    );
+    return Promise.reject();
+  } finally {
+    dispatch(wrapperActions.hideLoading());
+  }
+});
+
+export const getStatsOfPostsByYear = createAsyncThunk('admin/getStatsOfPostsByYear', async (_, { dispatch }) => {
+  try {
+    dispatch(wrapperActions.showLoading());
+    const { data } = await axios.get('/stats/total-posts');
+    return data.value;
   } catch (error) {
     dispatch(
       wrapperActions.showNotification({

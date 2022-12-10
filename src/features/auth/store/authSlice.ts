@@ -34,8 +34,7 @@ export const signUpActionAsync = createAsyncThunk('auth/signUp', async (payload:
     return data.value;
   } catch (error: any) {
     dispatch(wrapperActions.hideLoading());
-    const message = error.response.data.message ?? error.message;
-    AlertUtil.showError(message);
+    AlertUtil.showError(error.response.data.message);
     return Promise.reject();
   } finally {
     dispatch(wrapperActions.hideLoading());
@@ -48,7 +47,6 @@ const authSlice = createSlice({
   reducers: {
     signOut: (state) => {
       state.currentUser = null;
-      localStorage.removeItem('currentUser');
     },
   },
   extraReducers: (builder) => {

@@ -1,7 +1,13 @@
+import { IBookmarkedPost, IReactedPost, IFollowingUser } from '../../features/user/userModels';
 export interface IReaction {
-  id?: number;
   reactionType?: string;
-  icon?: string;
+  total?: number;
+  reactedUsers?: { postReactionId?: number; userId?: number; }[];
+}
+
+export interface IBookmark {
+  bookmarkId?: number;
+  userId?: number;
 }
 
 export interface IPost {
@@ -18,17 +24,22 @@ export interface IPost {
   updatedAt: string;
   categories: string[];
   tags: string[];
-  user: {
-    id: number;
-    fullName: string;
-    profilePhotoUrl: string;
-  };
   videoYtbUrl?: string;
-  userId?: number;
   views?: number;
-  reactionCount?: number;
-  bookmarkCount?: number;
-  commentCount?: number;
+  userId?: number;
+  fullName?: string;
+  profilePhotoUrl?: string;
+  isHasLocation?: boolean;
+  reactions?: IReaction[];
+  totalReactions?: number;
+  bookmarks?: IBookmark[];
+  totalBookmark?: number;
+  reactedDetail?: IReactedPost | null | undefined;
+  isReacted?: boolean;
+  bookmarkedDetail?: IBookmarkedPost | null | undefined;
+  isBookmarked?: boolean;
+  followingDetail?: IFollowingUser | null | undefined;
+  isFollowingUser?: boolean;
 }
 
 export interface ITag {

@@ -1,0 +1,1 @@
+export { default as AppCardV2 } from './AppCardV2';

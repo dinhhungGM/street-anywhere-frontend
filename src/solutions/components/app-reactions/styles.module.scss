@@ -1,0 +1,21 @@
+.reaction-container {
+  width: fit-content;
+  border-radius: 100rem !important;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.reaction-item {
+  cursor: pointer;
+  transition: all 0.3s ease !important;
+  object-fit: cover;
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
+.active {
+  padding: 8px;
+  border-radius: 100rem;
+  background-color: #c7f8ff;
+}

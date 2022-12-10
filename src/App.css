@@ -20,3 +20,32 @@
 .mapboxgl-ctrl-geocoder--input {
   width: 300px !important;
 }
+
+.mapboxgl-ctrl-geocoder--icon-search {
+  left: 85% !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+.swal2-container {
+  z-index: 20000 !important;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: #000 !important;
+}
+
+.MuiTooltip-popper,
+.MuiModal-root,
+.MuiPopover-root {
+  z-index: 999999 !important;
+}
+
+.react-player__preview {
+  border-radius: inherit !important;
+}
+
+.slick-slide {
+  padding: 12px !important;
+}

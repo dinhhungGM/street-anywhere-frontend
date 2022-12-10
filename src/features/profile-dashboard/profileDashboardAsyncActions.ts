@@ -63,6 +63,7 @@ export const updateUser = createAsyncThunk(
   'profile/updateUser',
   async (params: { userId: number; payload: any; isFormData: boolean; }, { dispatch }) => {
     try {
+      dispatch(wrapperActions.showLoading());
       await axios.patch(`/users/${ params.userId }`, params.payload, {
         headers: {
           'Content-Type': params.isFormData ? 'multipart/form-data' : 'application/json',
@@ -74,9 +75,7 @@ export const updateUser = createAsyncThunk(
           message: 'Update successfully',
         }),
       );
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      dispatch(getProfileOfUser(params.userId));
     } catch (error) {
       dispatch(
         wrapperActions.showNotification({

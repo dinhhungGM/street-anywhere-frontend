@@ -2,28 +2,31 @@ import {
   Add,
   AdminPanelSettings,
   Login,
+  Notifications,
   Person,
   PersonAdd,
   PowerSettingsNew,
-  Search,
-  Notifications,
+  Search
 } from '@mui/icons-material';
 import { Badge, Drawer, IconButton, Stack, Tooltip } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '../../../../app/hooks';
-import { AppIcon } from '../../../../solutions/components/app-icon';
-import { authActions, authSelectors } from '../../../auth/store';
-import { SearchBox } from '../search-box';
-import { FeatureMenu } from './../feature-menu';
 import _ from 'lodash';
+import { MouseEvent, useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import { AppIcon } from '../../../../solutions/components/app-icon';
 import { AppIconButton } from '../../../../solutions/components/app-icon-button';
+import { authActions, authSelectors } from '../../../auth/store';
+import { wrapperActions, wrapperSelectors } from '../../../wrapper/store';
+import { PostNotifications } from '../post-notifications';
+import { SearchBox } from '../search-box';
 
 const RightMenu = () => {
   const [isOpenSearchBox, setIsOpenSearchBox] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
+  const postNotifications = useAppSelector(wrapperSelectors.selectPostNotifications);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleSignOut = (): void => {
     dispatch(authActions.signOut());
@@ -33,6 +36,28 @@ const RightMenu = () => {
   const navigateToCreateNewPostPage = (): void => {
     navigate('/create-new-post');
   };
+
+  const openPostNotifications = (event: MouseEvent<HTMLButtonElement>): void => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const closePostNotifications = useCallback(() => {
+    const unSeenIds = _.map(
+      _.filter(postNotifications.details, (notification) => !notification.isSeen),
+      'id',
+    );
+    if (unSeenIds.length) {
+      dispatch(wrapperActions.changeNotificationStatus(unSeenIds));
+    }
+    setAnchorEl(null);
+  }, [anchorEl]);
+
+
+  useEffect(() => {
+    if (currentUser?.id) {
+      dispatch(wrapperActions.getNotifications(currentUser?.id));
+    }
+  }, [currentUser?.id]);
 
   return (
     <>
@@ -62,16 +87,16 @@ const RightMenu = () => {
           </>
         ) : (
           <>
+            <Tooltip title='Notification'>
+              <IconButton size='large' onClick={openPostNotifications} color='primary'>
+                <Badge color='error' badgeContent={postNotifications?.unSeenCount || null} max={99}>
+                  <AppIcon icon={Notifications} color='#fbe44b' />
+                </Badge>
+              </IconButton>
+            </Tooltip>
             <Tooltip title='Profile'>
               <IconButton size='large' onClick={() => navigate('/profile')}>
                 <AppIcon icon={Person} color='#0288d1' />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title='Notification'>
-              <IconButton size='large'>
-                <Badge color='error' badgeContent={10}>
-                  <AppIcon icon={Notifications} color='#84849d' />
-                </Badge>
               </IconButton>
             </Tooltip>
             {currentUser?.isAdmin ? (
@@ -90,6 +115,11 @@ const RightMenu = () => {
           <SearchBox />
         </Drawer>
       </Stack>
+      <PostNotifications
+        anchorElement={anchorEl}
+        details={postNotifications?.details}
+        onClose={closePostNotifications}
+      />
     </>
   );
 };

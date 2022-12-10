@@ -2,6 +2,8 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
 import './App.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import { ThemeProvider } from '@emotion/react';
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router';

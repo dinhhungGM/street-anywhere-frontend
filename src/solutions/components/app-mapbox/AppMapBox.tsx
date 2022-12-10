@@ -33,7 +33,7 @@ const AppMapBox = ({
   desPoint = null,
   mapWidth = '100%',
   isTracing = false,
-  mapHeight = '600px',
+  mapHeight = '100%',
   sourcePoint = null,
   baseLat = 14.058324,
   baseLong = 108.277199,
@@ -104,7 +104,7 @@ const AppMapBox = ({
 
   return (
     <>
-      <Box paddingY={2} width='100%'>
+      <Box width='100%' height='100%'>
         <div
           ref={mapRef}
           style={{

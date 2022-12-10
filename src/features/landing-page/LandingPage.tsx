@@ -1,33 +1,31 @@
 import { Box, Grid } from '@mui/material';
-import { Carousel } from './components/carousel';
-import { Categories } from './components/categories';
 import { Gallery } from './components/gallery';
-import { TagClouds } from './components/tag-clouds';
-import { TopVideos } from './components/top-videos';
+import { useState, useCallback } from 'react';
+import { WelcomeDashboard } from '../welcome-dashboard';
 
 const LandingPage = () => {
+  const [isWelcomePage, setIsWelcomePage] = useState<boolean>(true);
+
+  const navigateToFeedsPage = useCallback(() => {
+    setIsWelcomePage(false);
+  }, []);
+
   return (
     <>
-      <Box
-        sx={{
-          backgroundColor: '#F5F5F7',
-          paddingY: '20px',
-        }}
-      >
-        {/* <Carousel /> */}
-        <Grid container>
-          <Grid item xs={8} paddingX={2}>
-            <Gallery />
+      {isWelcomePage ? (
+        <WelcomeDashboard onChangeToFeedsPage={navigateToFeedsPage} />
+      ) : (
+        <Box
+          sx={{
+            backgroundColor: '#F5F5F7',
+          }}>
+          <Grid container>
+            <Grid item xs={12}>
+              <Gallery />
+            </Grid>
           </Grid>
-          <Grid item xs={4} paddingX={4}>
-            <TagClouds />
-            <br />
-            <TopVideos />
-            <br />
-            <Categories />
-          </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      )}
     </>
   );
 };

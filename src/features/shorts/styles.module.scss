@@ -1,0 +1,33 @@
+@import './../../solutions/assets/scss/variables';
+
+.shorts {
+  height: calc(100vh - 80px - 48px);
+  background: linear-gradient(to right, #4b6cb7, #182848);
+  &-container {
+    background-color: #fff;
+    height: 100%;
+    padding: 24px 16px;
+  }
+  &-col {
+    height: 100% !important;
+    padding: 0 !important;
+  }
+  &-video {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #232526;
+    height: 100%;
+    padding: 0 20px;
+
+    iframe {
+      border-radius: 12px;
+    }
+  }
+}
+
+.btn {
+  border-radius: 100rem !important;
+  width: 80px !important;
+  height: 80px !important;
+}

@@ -1,5 +1,4 @@
 import { Box, Paper, Typography } from '@mui/material';
-import randomColor from 'randomcolor';
 import React from 'react';
 
 interface ProfileItemProps {
@@ -8,20 +7,17 @@ interface ProfileItemProps {
 }
 const ProfileItem = ({ label, children }: ProfileItemProps) => {
   return (
-    <Box component={Paper} elevation={2} height='100%'>
+    <Box component={Paper} elevation={2}>
       <Box
         sx={{
-          background: randomColor({
-            format: 'rgb',
-            luminosity: 'dark',
-          }),
+          backgroundColor: 'rgb(23, 3, 99)',
         }}
         paddingY={1}>
         <Typography textAlign='center' variant='h6' fontWeight={700} color='#fff'>
           {label}
         </Typography>
       </Box>
-      {children}
+      <Box paddingX={1}>{children}</Box>
     </Box>
   );
 };

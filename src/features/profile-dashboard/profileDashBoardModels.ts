@@ -63,4 +63,16 @@ export interface IProfileDetail {
   bookmarkCount?: number;
   profilePhotoUrl?: string;
   coverImageUrl?: string;
+  posts?: IProfilePost[];
+}
+
+export enum ProfilePropertiesEnum {
+  Password = 'password',
+  FirstName = 'firstName',
+  LastName = 'lastName',
+  Email = 'email',
+  Phone = 'phone',
+  Bio = 'bio',
+  Avatar = 'avatar',
+  CoverImage = 'coverImage',
 }

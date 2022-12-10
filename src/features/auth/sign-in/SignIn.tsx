@@ -2,6 +2,7 @@ import { PersonAdd } from '@mui/icons-material';
 import { Box, Button, Divider, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
+import { useEffect } from 'react';
 import GoogleLogin from 'react-google-login';
 import { NavLink, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -10,7 +11,6 @@ import { AppFormInput } from '../../../solutions/components/app-form-input';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { authActions, authSelectors } from '../store';
 import styles from './styles.module.scss';
-import { useEffect } from 'react';
 
 const SignIn = () => {
   const dispatch = useAppDispatch();
@@ -21,7 +21,13 @@ const SignIn = () => {
       username: '',
       password: '',
     },
-    onSubmit: (values) => {},
+    onSubmit: async (values) => {
+      console.log('run function');
+      const response = await dispatch(authActions.signInActionAsync(values));
+      if (response.meta.requestStatus === 'fulfilled') {
+        navigate(-1);
+      }
+    },
     validationSchema: yup.object({
       username: yup.string().required('Required'),
       password: yup.string().required('Required'),
@@ -36,42 +42,42 @@ const SignIn = () => {
     console.log('Handle On Failure', obj);
   };
 
-  const handleSignIn = async () => {
-    const response = await dispatch(authActions.signInActionAsync(form.values));
-    if (response.meta.requestStatus === 'fulfilled') {
-      navigate(-2);
+  useEffect(() => {
+    if (currentUser) {
+      navigate(-1);
     }
-  };
+  }, []);
 
   return (
     <>
       <Box className={styles.wrapper} boxShadow={1}>
         <Box className={styles.form}>
-          <Typography variant='h3' textAlign='center' color='#9391fd' marginBottom={4} fontWeight='500'>
-            Login
-          </Typography>
-          <Box className={styles['form-group']}>
-            <AppFormInput label='Username' form={form} formControlName='username' />
-          </Box>
-          <Box className={styles['form-group']}>
-            <AppFormInput type='password' label='Password' form={form} formControlName='password' />
-          </Box>
-          <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%' paddingY={1}>
-            <AppIcon icon={PersonAdd} />
-            <NavLink to='/sign-up'>Create new account</NavLink>
-          </Stack>
-          <Box className={styles['form-group']}>
-            <Button
-              fullWidth
-              variant='contained'
-              color='secondary'
-              className={styles.btn}
-              onClick={handleSignIn}
-              disabled={!form.isValid}
-            >
+          <form onSubmit={form.handleSubmit}>
+            <Typography variant='h3' textAlign='center' color='#9391fd' marginBottom={4} fontWeight='500'>
               Login
-            </Button>
-          </Box>
+            </Typography>
+            <Box className={styles['form-group']}>
+              <AppFormInput label='Username' form={form} formControlName='username' />
+            </Box>
+            <Box className={styles['form-group']}>
+              <AppFormInput type='password' label='Password' form={form} formControlName='password' />
+            </Box>
+            <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%' paddingY={1}>
+              <AppIcon icon={PersonAdd} />
+              <NavLink to='/sign-up'>Create new account</NavLink>
+            </Stack>
+            <Box className={styles['form-group']}>
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                color='secondary'
+                className={styles.btn}
+                disabled={!form.isValid}>
+                Login
+              </Button>
+            </Box>
+          </form>
           <Divider>Or continue with</Divider>
           <Stack paddingY={4} alignItems='center' justifyContent='center'>
             <GoogleLogin
