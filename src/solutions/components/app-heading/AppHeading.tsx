@@ -11,8 +11,8 @@ interface IAppHeadingProps {
 const AppHeading = ({ variant = 'h4', heading }: IAppHeadingProps) => {
   return (
     <>
-      <Stack direction='row' alignItems='center' justifyContent='flex-start'>
-        <AppIcon icon={Label} color={randomColor({ luminosity: 'dark' })} />
+      <Stack direction='row' alignItems='center' justifyContent='flex-start' spacing={1}>
+        <AppIcon icon={Label} color={randomColor({ luminosity: 'dark' })} fontSize={48} />
         <Typography variant={variant} fontWeight={700}>
           {heading}
         </Typography>
