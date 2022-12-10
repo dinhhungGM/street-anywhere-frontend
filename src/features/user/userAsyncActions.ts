@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { userActions } from '.';
 import AlertUtil from '../../solutions/utils/alertUtil';
 import { wrapperActions } from '../wrapper/store';
 import { default as axios } from './../../solutions/services/axios';
@@ -13,6 +14,7 @@ export const followUser = createAsyncThunk(
           'Content-Type': 'application/json',
         },
       });
+      dispatch(userActions.addNewFollowingUser(data.value));
       dispatch(
         wrapperActions.showToast({
           toastSeverity: 'success',
@@ -21,6 +23,27 @@ export const followUser = createAsyncThunk(
       );
       return data.value;
     } catch (error: any) {
+      dispatch(wrapperActions.hideLoading());
+      AlertUtil.showError(error.response.data.message);
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+
+export const unfollowUser = createAsyncThunk(
+  'user/unfollowUser',
+  async (params: { userId: number; followerId: number; }, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      await axios.post('/followers/unfollow', params, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      dispatch(userActions.removeFollowingUser(params));
+    } catch (error) {
       dispatch(wrapperActions.hideLoading());
       AlertUtil.showError(error.response.data.message);
       return Promise.reject();
@@ -71,4 +94,3 @@ export const getFollowingUsers = createAsyncThunk('user/getFollowingUsers', asyn
     dispatch(wrapperActions.hideLoading());
   }
 });
-

@@ -22,9 +22,21 @@ const userSlice = createSlice({
       state.bookmarkedPosts.push(action.payload);
     },
     removeBookmarkedPost: (state, action) => {
-      state.bookmarkedPosts = state.bookmarkedPosts.filter(
-        (bookmarkedPost) => bookmarkedPost.bookmarkId !== action.payload.bookmarkId,
-      );
+      state.bookmarkedPosts = state.bookmarkedPosts.filter((item) => item.bookmarkId !== action.payload.bookmarkId);
+    },
+    addNewFollowingUser: (state, action) => {
+      state.followingUsers.push(action.payload);
+    },
+    removeFollowingUser: (state, action) => {
+      state.followingUsers = state.followingUsers.filter((item) => {
+        const { userId, followerId } = action.payload;
+        return item.userId !== userId && item.followerId !== followerId;
+      });
+    },
+    resetAllData: (state) => {
+      state.bookmarkedPosts = null;
+      state.followingUsers = null;
+      state.reactedPosts = null;
     },
   },
   extraReducers: (builder) => {

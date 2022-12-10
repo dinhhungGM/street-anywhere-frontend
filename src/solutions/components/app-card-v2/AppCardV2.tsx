@@ -112,11 +112,12 @@ const AppCardV2 = ({
                     }}>
                     <Button
                       variant='contained'
+                      color={post?.isFollowingUser ? 'error' : 'primary'}
                       sx={{
                         borderRadius: '100rem',
                       }}
                       onClick={handleOnClickFollow}>
-                      Follow
+                      {post?.isFollowingUser ? 'Unfollow' : 'Follow'}
                     </Button>
                   </Box>
                 )}
