@@ -27,13 +27,6 @@ const AppReactions = ({
   const reactionItems = useMemo(() => {
     return [
       {
-        id: 'remove-icon',
-        iconSrc: UnReact,
-        tooltip: 'Remove',
-        alt: 'Remove Icon',
-        type: 'Remove',
-      },
-      {
         id: 'angry-icon',
         iconSrc: AngrySrc,
         tooltip: 'Angry',
@@ -82,6 +75,13 @@ const AppReactions = ({
         alt: 'Wow Icon',
         type: 'Wow',
       },
+      {
+        id: 'remove-icon',
+        iconSrc: UnReact,
+        tooltip: 'Remove',
+        alt: 'Remove Icon',
+        type: 'Remove',
+      },
     ];
   }, []);
   return (
@@ -91,7 +91,7 @@ const AppReactions = ({
         alignItems='center'
         justifyContent='center'
         spacing={2}
-        paddingX={4}
+        paddingX={isVerticalAlign ? 1 : 4}
         component={Paper}
         className={styles['reaction-container']}
         elevation={boxShadowSize}>
