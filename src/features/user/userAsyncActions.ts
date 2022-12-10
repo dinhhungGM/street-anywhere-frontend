@@ -3,7 +3,7 @@ import AlertUtil from '../../solutions/utils/alertUtil';
 import { wrapperActions } from '../wrapper/store';
 import { default as axios } from './../../solutions/services/axios';
 
-export const followerUser = createAsyncThunk(
+export const followUser = createAsyncThunk(
   'user/followUser',
   async (payload: { userId: number; followerId: number; }, { dispatch }) => {
     try {
@@ -57,3 +57,18 @@ export const getBookmarkedPost = createAsyncThunk('user/getBookmarkedPost', asyn
     dispatch(wrapperActions.hideLoading());
   }
 });
+
+export const getFollowingUsers = createAsyncThunk('user/getFollowingUsers', async (userId: number, { dispatch }) => {
+  try {
+    dispatch(wrapperActions.showLoading());
+    const { data } = await axios.get(`/users/following/${ userId }`);
+    return data.value;
+  } catch (error: any) {
+    dispatch(wrapperActions.hideLoading());
+    AlertUtil.showError(error.response.data.message);
+    return Promise.reject();
+  } finally {
+    dispatch(wrapperActions.hideLoading());
+  }
+});
+
