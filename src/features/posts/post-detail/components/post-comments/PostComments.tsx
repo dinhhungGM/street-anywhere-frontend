@@ -227,7 +227,7 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
           ) : (
             <>
               <Stack alignItems='center' justifyContent='center'>
-                <Typography marginTop={2}>No comments</Typography>
+                <Typography marginTop={2} fontStyle='italic'>No data</Typography>
               </Stack>
             </>
           )}

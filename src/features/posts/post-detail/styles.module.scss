@@ -22,19 +22,29 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
+    &__container {
+      display: flex;
+      gap: 12px;
+    }
     &__btn {
       height: 48px;
       min-width: 120px;
       border-radius: 100rem;
     }
   }
+  &__stats {
+    padding-top: 20px;
+  }
   &__comment {
     padding-top: 20px;
   }
   &__user {
     &__description {
-      max-height: 330px;
+      height: 330px;
       overflow-y: scroll;
+      background-color: #f2f5f8;
+      padding: 8px;
+      border-radius: 8px;
     }
     &__background {
       color: #fff;
@@ -47,5 +57,16 @@
   }
   &__relevant {
     margin-top: 16px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .post__details {
+    &__reactions {
+      flex-direction: column;
+    }
+    &__user__background {
+      margin-top: -18px;
+    }
   }
 }
