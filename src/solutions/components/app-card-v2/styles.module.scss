@@ -22,13 +22,14 @@
       min-height: 400px;
       object-fit: cover;
       border-radius: inherit;
+      height: 100%;
     }
     & > div {
       width: 100% !important;
       min-height: 500px;
       border-radius: inherit !important;
       & iframe {
-        border-radius: 8px;
+        border-radius: inherit !important;
       }
     }
   }
@@ -57,6 +58,17 @@
       background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       position: absolute;
       bottom: 0;
+      &__name {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
+  }
+  &__fixed {
+    width: 400px;
+    height: 500px;
   }
 }

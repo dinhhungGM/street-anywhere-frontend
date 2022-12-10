@@ -1,5 +1,5 @@
 import { AddReaction, Bookmark } from '@mui/icons-material';
-import { Avatar, Box, Button, Paper, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Button, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import { memo } from 'react';
 import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
@@ -8,9 +8,12 @@ import { AppIcon } from '../app-icon';
 import { AppIconButton } from '../app-icon-button';
 import { AppInnerLoading } from '../app-inner-loading';
 import styles from './styles.module.scss';
+import cx from 'classnames';
 
 interface IAppCardV2Props {
   post?: IPost;
+  currentUserId?: number;
+  isFixedSize?: boolean;
   onReact?: (e) => any;
   onBookmark?: (e) => any;
   onFollow?: (e) => any;
@@ -18,6 +21,8 @@ interface IAppCardV2Props {
 }
 const AppCardV2 = ({
   post,
+  currentUserId,
+  isFixedSize = false,
   onReact = (e) => {
     e.stopPropagation();
     return null;
@@ -48,12 +53,22 @@ const AppCardV2 = ({
     onBookmark(post);
   };
 
+  const handleOnClickFollow = (e): void => {
+    e.stopPropagation(e);
+    onFollow(post);
+  };
+
   return (
     <>
-      <Box component={Paper} className={styles.card} elevation={2}>
+      <Box component={Paper} className={cx(styles.card, isFixedSize && styles.card__fixed)} elevation={2}>
         <Box className={styles.card__media}>
           {post?.type === 'video' ? (
-            <ReactPlayer controls={false} url={post?.videoYtbUrl} fallback={<AppInnerLoading isShowLoading={true} />} />
+            <ReactPlayer
+              light
+              controls={false}
+              url={post?.videoYtbUrl}
+              fallback={<AppInnerLoading isShowLoading={true} />}
+            />
           ) : (
             <img src={post?.imageUrl} alt={post?.shortTitle} className='lazy' />
           )}
@@ -81,22 +96,30 @@ const AppCardV2 = ({
             <Box padding={2} className={styles.card__overlay__user}>
               <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={2}>
                 <Stack direction='row' alignItems='center' spacing={2}>
-                  <Avatar src={post?.user.profilePhotoUrl} />
-                  <Typography fontWeight={700}>{post?.user.fullName}</Typography>
+                  <Tooltip title='View profile'>
+                    <Avatar src={post?.profilePhotoUrl} onClick={onViewProfile} />
+                  </Tooltip>
+                  <Tooltip title='View profile'>
+                    <Typography fontWeight={700} className={styles.card__overlay__user__name}>
+                      {post?.fullName}
+                    </Typography>
+                  </Tooltip>
                 </Stack>
-                <Box
-                  sx={{
-                    alignSelf: 'flex-end',
-                  }}>
-                  <Button
-                    variant='contained'
+                {post?.userId !== currentUserId && (
+                  <Box
                     sx={{
-                      borderRadius: '100rem',
-                    }}
-                    onClick={onFollow}>
-                    Follow
-                  </Button>
-                </Box>
+                      alignSelf: 'flex-end',
+                    }}>
+                    <Button
+                      variant='contained'
+                      sx={{
+                        borderRadius: '100rem',
+                      }}
+                      onClick={handleOnClickFollow}>
+                      Follow
+                    </Button>
+                  </Box>
+                )}
               </Stack>
             </Box>
           </Stack>
