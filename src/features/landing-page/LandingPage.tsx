@@ -12,20 +12,16 @@ const LandingPage = () => {
 
   return (
     <>
-      {isWelcomePage ? (
-        <WelcomeDashboard onChangeToFeedsPage={navigateToFeedsPage} />
-      ) : (
-        <Box
-          sx={{
-            backgroundColor: '#F5F5F7',
-          }}>
-          <Grid container>
-            <Grid item xs={12}>
-              <Gallery />
-            </Grid>
+      <Box
+        sx={{
+          backgroundColor: '#F5F5F7',
+        }}>
+        <Grid container>
+          <Grid item xs={12}>
+            <Gallery />
           </Grid>
-        </Box>
-      )}
+        </Grid>
+      </Box>
     </>
   );
 };

@@ -1,9 +1,10 @@
 import { Bookmark, Category, Description, Map, Room, Tag } from '@mui/icons-material';
-import { Avatar, Box, Button, Grid, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
 import _ from 'lodash';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import SweetAlert from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppCardV2 } from '../../../solutions/components/app-card-v2';
 import { AppCarousel } from '../../../solutions/components/app-carousel';
@@ -11,19 +12,19 @@ import { AppDoughnutChart } from '../../../solutions/components/app-doughnut-cha
 import { AppHeading } from '../../../solutions/components/app-heading';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppListChips } from '../../../solutions/components/app-list-chips';
+import { AppListUserReact } from '../../../solutions/components/app-list-user-react';
 import { AppMapBox } from '../../../solutions/components/app-mapbox';
 import { AppModal } from '../../../solutions/components/app-modal';
 import { AppReactions } from '../../../solutions/components/app-reactions';
+import { IBookmark, IPost, IReaction } from '../../../solutions/models/postModels';
 import { authSelectors } from '../../auth/store';
+import { bookmarkActions } from '../../bookmark';
+import { reactionsActions, reactionsSelectors } from '../../reactions/store';
 import { userActions, userSelectors } from '../../user';
+import { wrapperActions } from '../../wrapper/store';
 import { postActions, postSelectors } from '../store';
 import { PostComments } from './components/post-comments';
 import styles from './styles.module.scss';
-import SweetAlert from 'sweetalert2';
-import { bookmarkActions } from '../../bookmark';
-import { wrapperActions } from '../../wrapper/store';
-import { reactionsActions, reactionsSelectors } from '../../reactions/store';
-import { IPost, IReaction } from '../../../solutions/models/postModels';
 
 const PostDetail = () => {
   const { postId } = useParams();
@@ -36,6 +37,7 @@ const PostDetail = () => {
   const [isOpenMap, setIsOpenMap] = useState<boolean>(false);
   const [currentCoord, setCurrentCoord] = useState<{ long: number; lat: number; } | null>(null);
   const descriptionRef = useRef<any>();
+  const navigate = useNavigate();
 
   //#region Handling map
   const showMap = (): void => {
@@ -47,46 +49,55 @@ const PostDetail = () => {
   }, []);
   //#endregion
 
-  //#region Handling bookmark
-
-  //#endregion
-
   //#region Handling display post
-  const constructReactionDetail = (reactions: IReaction[]) => {
-    if (!reactions.length) {
+  const constructFollowingDetail = (ownerId: number) => {
+    if (!followingUsers || !followingUsers.length) {
       return null;
     }
-    const reaction = _.find(reactions, (item) => {
-      const reactedItem = _.find(item.reactedUsers, (item) => item.userId === currentUser?.id);
-      return !!reactedItem;
+    const data = _.find(followingUsers, (item) => item.followerId === ownerId);
+    return data || null;
+  };
+  const constructBookmarkedDetail = (bookmarks: IBookmark[]) => {
+    if (!bookmarks || !bookmarks.length) {
+      return null;
+    }
+    const data = _.find(bookmarks, (item) => item.userId === currentUser?.id);
+    return data || null;
+  };
+  const constructReactedDetail = () => {
+    if (!currentPost?.reactions || !currentPost?.reactions.length) {
+      return null;
+    }
+    const data = _.find(currentPost?.reactions, (item) => {
+      // Determine user was reacted
+      const reactedUser = _.find(item.reactedUsers, (user) => user.userId === currentUser?.id);
+      return !!reactedUser;
     });
-    if (!reaction) {
+    if (!data) {
       return null;
     }
-    const reactedUser = _.find(reaction.reactedUsers, (item) => item.userId === currentUser?.id);
-    return {
-      ...reactedUser,
-      reactionType: reaction.reactionType,
-    };
+    // Extract reacted user: postReactionId,...
+    const reactUser = _.find(data.reactedUsers, (user) => user.userId === currentUser?.id);
+    return { reactionType: data.reactionType, ...reactUser };
   };
   const post = useMemo(() => {
-    if (_.isNil(currentUser) || _.isNil(currentPost)) {
-      return currentPost;
-    } else {
-      const reactedDetail = constructReactionDetail(currentPost?.reactions);
-      const bookmarkedDetail = _.find(currentPost.bookmarks, (item) => item.userId === currentUser?.id);
-      const followingDetail = _.find(followingUsers, (item) => item.userId === currentUser?.id);
-      return {
-        ...currentPost,
-        isReacted: !!reactedDetail,
-        isBookmarked: !!bookmarkedDetail,
-        isFollowingUser: !!followingDetail,
-        reactedDetail,
-        bookmarkedDetail,
-        followingDetail,
-      } as IPost;
+    if (_.isNil(currentPost)) {
+      return null;
     }
-  }, [currentUser, currentPost, followingUsers]);
+    const followingDetail = constructFollowingDetail(currentPost?.userId);
+    const bookmarkedDetail = constructBookmarkedDetail(currentPost?.bookmarks);
+    const reactedDetail = constructReactedDetail();
+    const newPost = {
+      ...currentPost,
+      isFollowingUser: !!followingDetail,
+      followingDetail,
+      isBookmarked: !!bookmarkedDetail,
+      bookmarkedDetail,
+      isReacted: !!reactedDetail,
+      reactedDetail,
+    } as IPost;
+    return newPost;
+  }, [currentUser, currentPost?.reactions, followingUsers?.length]);
   //#endregion
 
   //#region Toggle bookmark
@@ -96,32 +107,36 @@ const PostDetail = () => {
         title: 'Warning',
         icon: 'info',
         text: 'You are not sign in',
+      }).then(() => {
+        navigate('/sign-in');
       });
     } else {
       if (post?.isBookmarked) {
         dispatch(bookmarkActions.unBookmark({ bookmarkId: post?.bookmarkedDetail.bookmarkId, isDetailPage: true }));
       } else {
         dispatch(bookmarkActions.createBookmark({ postId: post?.id, userId: currentUser?.id, isDetailPage: true }));
-        dispatch(
-          wrapperActions.createNewNotification({
-            postId: post?.id,
-            userId: currentUser?.id,
-            type: 'bookmarked',
-            reactionType: null,
-          }),
-        );
+        if (post?.userId !== currentUser?.id) {
+          dispatch(
+            wrapperActions.createNewNotification({
+              postId: post?.id,
+              userId: currentUser?.id,
+              type: 'bookmarked',
+              reactionType: null,
+            }),
+          );
+        }
       }
     }
   };
   //#endregion
 
   //#region Handling reaction
-  const removeReaction = (postReactionId: number): void => {
-    dispatch(reactionsActions.removeReaction(postReactionId));
+  const removeReaction = (postReactionId: number, postId: number): void => {
+    dispatch(reactionsActions.removeReaction({ postReactionId, postId }));
   };
 
-  const updateCurrentReaction = (postReactionId: number, newReactionTypeId: number): void => {
-    dispatch(reactionsActions.changeReaction({ postReactionId, reactionId: newReactionTypeId }));
+  const updateCurrentReaction = (postReactionId: number, newReactionTypeId: number, postId: number): void => {
+    dispatch(reactionsActions.changeReaction({ postReactionId, reactionId: newReactionTypeId, postId }));
   };
 
   const createNewReaction = (postId: number, reactionId: number, userId: number, reactionType: string | null): void => {
@@ -133,58 +148,48 @@ const PostDetail = () => {
         reactionType,
       }),
     );
-    dispatch(
-      wrapperActions.createNewNotification({
-        postId,
-        userId,
-        type: 'reacted',
-        reactionType,
-      }),
-    );
+    if (currentUser?.id !== userId) {
+      dispatch(
+        wrapperActions.createNewNotification({
+          postId,
+          userId,
+          type: 'reacted',
+          reactionType,
+        }),
+      );
+    }
   };
 
   const isSameReactionType = (clickedReactionType: string, currentReactionType: string): boolean => {
     return clickedReactionType === currentReactionType;
   };
 
-  const handleReactPost = useCallback(
-    (reactionType: string) => {
-      if (_.isNil(currentUser)) {
-        SweetAlert.fire({
-          title: 'Notification',
-          icon: 'warning',
-          text: 'You are not sign in',
-        });
+  const handleReactPost = (reactionType: string) => {
+    if (_.isNil(currentUser)) {
+      SweetAlert.fire({
+        title: 'Notification',
+        icon: 'warning',
+        text: 'You are not sign in',
+      }).then(() => {
+        navigate('/sign-in');
+      });
+    } else {
+      const reactionDetail = constructReactedDetail();
+      const isReacted = !!reactionDetail;
+      if (reactionType === 'Remove') {
+        isReacted && removeReaction(reactionDetail.postReactionId, currentPost?.id);
       } else {
-        if (post) {
-          if (reactionType === 'Remove') {
-            // Case reacted
-            if (post?.isReacted) {
-              removeReaction(post?.reactedDetail.postReactionId);
-            }
-          } else {
-            const reaction = _.find(reactionList, (item) => _.isEqual(item.reactionType, reactionType));
-            if (reaction) {
-              // Case: create new reaction
-              if (post?.isReacted && !isSameReactionType(reaction.reactionType, post?.reactedDetail.reactionType)) {
-                updateCurrentReaction(post?.reactedDetail.postReactionId, reaction.id);
-              } else {
-                createNewReaction(post?.id, reaction?.id, currentUser?.id, null);
-              }
-              // Create: Update current reaction
-            } else {
-              SweetAlert.fire({
-                title: 'Notification',
-                icon: 'error',
-                text: 'The reaction icon does not exist. Please contact administrator to support',
-              });
-            }
+        const reaction = _.find(reactionList, (item) => item.reactionType === reactionType);
+        if (isReacted) {
+          if (!isSameReactionType(reactionType, reactionDetail.reactionType)) {
+            updateCurrentReaction(reactionDetail.postReactionId, reaction.id, currentPost?.id);
           }
+        } else {
+          createNewReaction(currentPost?.id, reaction?.id, currentUser?.id, reactionType);
         }
       }
-    },
-    [post],
-  );
+    }
+  };
   //#endregion
 
   //#region Handling API
@@ -231,7 +236,7 @@ const PostDetail = () => {
               <Stack width='100%' spacing={2}>
                 <Box className={styles.post__details__media__content}>
                   {post?.type === 'video' ? (
-                    <ReactPlayer url={post?.videoYtbUrl} width='100%' height='100%' />
+                    <ReactPlayer playing controls url={post?.videoYtbUrl} width='100%' height='100%' />
                   ) : (
                     <img src={post?.imageUrl} alt={post?.title} />
                   )}
@@ -317,7 +322,9 @@ const PostDetail = () => {
             <AppHeading heading='Number of reactions' />
           </Box>
           {post?.reactions.length ? (
-            <AppDoughnutChart data={post?.reactions} labelField='reactionType' valueField='total' />
+            <Box component={Paper} elevation={2} className={styles.post__details__stats__chart}>
+              <AppListUserReact postId={currentPost?.id} />
+            </Box>
           ) : (
             <Typography textAlign='center' fontStyle='italic'>
               No data
