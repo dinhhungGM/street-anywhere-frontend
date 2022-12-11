@@ -192,6 +192,24 @@ const PostDetail = () => {
   };
   //#endregion
 
+  const handleFollow = () => {
+    if (_.isNil(currentUser)) {
+      SweetAlert.fire({
+        title: 'Warning',
+        icon: 'warning',
+        text: 'You are not sign in',
+      }).then(() => {
+        navigate('/sign-in');
+      });
+    }
+    const payload = { userId: currentUser?.id, followerId: currentPost?.userId };
+    if (post?.isFollowingUser) {
+      dispatch(userActions.unfollowUser(payload));
+    } else {
+      dispatch(userActions.followUser(payload));
+    }
+  };
+
   //#region Handling API
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -289,7 +307,15 @@ const PostDetail = () => {
                     </Typography>
                   </Box>
                 </Stack>
-                {currentUser?.id !== post?.userId && <Button variant='contained'>Follow</Button>}
+                {currentUser?.id !== post?.userId && (
+                  <Button
+                    variant='contained'
+                    color={post?.isFollowingUser ? 'error' : 'primary'}
+                    onClick={handleFollow}
+                    className={styles.follow__btn}>
+                    {post?.isFollowingUser ? 'Unfollow' : 'Follow'}
+                  </Button>
+                )}
               </Stack>
               <Stack spacing={1}>
                 <AppListChips data={post?.tags} icon={Tag} title='Tags' iconColor='#84849d' />
