@@ -25,12 +25,12 @@ const reactionConfigs = {
     alt: 'Care Icon',
     type: 'Care',
   },
-  'Ha Ha': {
+  'HaHa': {
     id: 'haha-icon',
     iconSrc: HahaSrc,
     tooltip: 'Haha',
     alt: 'Haha Icon',
-    type: 'Ha Ha',
+    type: 'HaHa',
   },
   Like: {
     id: 'like-icon',

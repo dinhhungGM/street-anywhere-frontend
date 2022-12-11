@@ -19,12 +19,13 @@ const AppReactions = ({
   isReacted,
   reactedDetail,
 }: IAppReactionsProps) => {
-  const handleClickReactionItem = useCallback((reactionType: string) => {
+
+  const handleClickReactionItem = (reactionType: string) => {
     onClickReactionIcon(reactionType);
-  }, []);
+  };
 
   const reactionItems = useMemo(() => {
-    return ['Angry', 'Care', 'Ha Ha', 'Like', 'Love', 'Sad', 'Wow', 'Remove'];
+    return ['Angry', 'Care', 'HaHa', 'Like', 'Love', 'Sad', 'Wow', 'Remove'];
   }, []);
 
   const isReactedItem = (type): boolean => {

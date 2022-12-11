@@ -12,7 +12,7 @@ export const getReactionList = createAsyncThunk('reactions/getReactions', async 
     dispatch(
       wrapperActions.showNotification({
         typeOfNotification: 'error',
-        message: error.toString(),
+        message: error.response.data.message,
       }),
     );
   } finally {
@@ -31,22 +31,23 @@ export const addReaction = createAsyncThunk(
   async (params: IAddReactionPayload, { dispatch }) => {
     const { reactionType, ...payload } = params;
     try {
-      const { data } = await axios.post(`/reactions/post/${ payload.postId }`, payload, {
+      await axios.post(`/reactions/post/${ payload.postId }`, payload, {
         headers: {
           'content-type': 'application/json',
         },
       });
+      // dispatch(postActions.addNewReaction({ reactionType, ...data.value }));
       dispatch(
         wrapperActions.showToast({
           toastSeverity: 'success',
           toastMessage: 'Add reaction successfully',
         }),
       );
-      dispatch(postActions.addNewReaction({ ...data.value, reactionType }));
+      dispatch(postActions.getPostByIdAsync(payload.postId));
     } catch (error) {
       wrapperActions.showNotification({
         typeOfNotification: 'error',
-        message: error.toString(),
+        message: error.response.data.message,
       });
     } finally {
       dispatch(wrapperActions.hideLoading());
@@ -63,7 +64,7 @@ export const getPostsByReaction = createAsyncThunk('reactions/getPostsByReaction
     dispatch(
       wrapperActions.showNotification({
         typeOfNotification: 'error',
-        message: error.toString(),
+        message: error.response.data.message,
       }),
     );
   } finally {
@@ -73,15 +74,22 @@ export const getPostsByReaction = createAsyncThunk('reactions/getPostsByReaction
 
 export const removeReaction = createAsyncThunk(
   'reactions/removeReaction',
-  async (postReactionId: number, { dispatch }) => {
+  async (params: { postReactionId: number; postId: number; }, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      await axios.delete(`/reactions/${ postReactionId }`);
+      await axios.delete(`/reactions/${ params.postReactionId }`);
+      dispatch(
+        wrapperActions.showToast({
+          toastSeverity: 'success',
+          toastMessage: 'Removed',
+        }),
+      );
+      dispatch(postActions.getPostByIdAsync(params.postId));
     } catch (error) {
       dispatch(
         wrapperActions.showNotification({
           typeOfNotification: 'error',
-          message: error.toString(),
+          message: error.response.data.message,
         }),
       );
     } finally {
@@ -92,9 +100,9 @@ export const removeReaction = createAsyncThunk(
 
 export const changeReaction = createAsyncThunk(
   'reactions/changeReaction',
-  async (params: { postReactionId: number; reactionId: number; }, { dispatch }) => {
+  async (params: { postReactionId: number; reactionId: number; postId: number; }, { dispatch }) => {
     try {
-      const { data } = await axios.patch(
+      await axios.patch(
         `/reactions/${ params.postReactionId }`,
         { reactionId: params.reactionId },
         {
@@ -102,6 +110,13 @@ export const changeReaction = createAsyncThunk(
             'Content-Type': 'application/json',
           },
         },
+      );
+      dispatch(postActions.getPostByIdAsync(params.postId));
+      dispatch(
+        wrapperActions.showToast({
+          toastSeverity: 'success',
+          toastMessage: 'Updated',
+        }),
       );
     } catch (error) {
       dispatch(
