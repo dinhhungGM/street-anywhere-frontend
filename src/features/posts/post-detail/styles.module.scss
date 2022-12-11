@@ -36,8 +36,6 @@
     padding-top: 20px;
     &__chart {
       margin: auto;
-      max-height: 400px;
-      overflow-y: scroll;
       width: 50%;
     }
   }
@@ -64,6 +62,10 @@
   &__relevant {
     margin-top: 16px;
   }
+}
+
+.follow__btn {
+  border-radius: 100rem;
 }
 
 @media only screen and (max-width: 768px) {
