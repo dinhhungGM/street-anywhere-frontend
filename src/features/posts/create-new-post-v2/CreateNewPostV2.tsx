@@ -1,4 +1,4 @@
-import { Add, Close, Map, PostAdd } from '@mui/icons-material';
+import { Add, Close, Map, PostAdd, Room } from '@mui/icons-material';
 import { Box, Button, Divider, Grid, Paper, Stack, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import _ from 'lodash';
@@ -63,6 +63,7 @@ const CreateNewPostV2 = () => {
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const categories = useAppSelector(categoriesSelectors.selectCategoryList);
   const hashtags = useAppSelector(tagSelectors.selectTagList);
+  const [isAddLocation, setIsAddLocation] = useState<boolean>(false);
   const form = useFormik({
     initialValues: {
       title: '',
@@ -76,9 +77,11 @@ const CreateNewPostV2 = () => {
       const formData = new FormData();
       formData.append('title', values.title);
       formData.append('shortTitle', values.shortTitle);
-      formData.append('longitude', values.longitude);
-      formData.append('latitude', values.latitude);
-      formData.append('location', values.location);
+      if (isAddLocation) {
+        formData.append('longitude', values.longitude);
+        formData.append('latitude', values.latitude);
+        formData.append('location', values.location);
+      }
       formData.append('userId', currentUser.id.toString());
 
       // Check media
@@ -126,11 +129,8 @@ const CreateNewPostV2 = () => {
       }
     },
     validationSchema: yup.object().shape({
-      title: yup.string().trim().required('Required!').max(50, 'Can not be more than 50 characters'),
-      shortTitle: yup.string().trim().required('Required!').max(20, 'Can not be more than 20 characters'),
-      location: yup.string().trim().required('Required!'),
-      longitude: yup.number().required('Required!').typeError('Invalid longitude value'),
-      latitude: yup.number().required('Required!').typeError('Invalid latitude value'),
+      title: yup.string().trim().required('Required!').max(100, 'Can not be more than 50 characters'),
+      shortTitle: yup.string().trim().required('Required!').max(50, 'Can not be more than 20 characters'),
     }),
   });
   const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
@@ -251,6 +251,15 @@ const CreateNewPostV2 = () => {
     }
   };
 
+  const onClickAddLocation = (): void => {
+    if (isAddLocation) {
+      form.setFieldValue('longitude', '');
+      form.setFieldValue('latitude', '');
+      form.setFieldValue('location', '');
+    }
+    setIsAddLocation(!isAddLocation);
+  };
+
   useEffect(() => {
     if (_.isNil(currentUser)) {
       SweetAlert.fire({
@@ -364,50 +373,68 @@ const CreateNewPostV2 = () => {
                     )}
                   </Box>
                   <Box marginTop={1}>
-                    <Typography fontWeight={700} color='rgba(0, 0, 0, 0.6)'>
-                      Location
-                    </Typography>
-                    <Stack direction='row' spacing={3} justifyContent='space-between' alignItems='center' marginTop={1}>
-                      <TextField
-                        sx={{
-                          display: 'block',
-                        }}
-                        fullWidth
-                        label='Longitude'
-                        {...form.getFieldProps('longitude')}
-                        error={isInvalidControl('longitude')}
-                        helperText={getErrorMessage('longitude')}
-                      />
-                      <TextField
-                        sx={{
-                          display: 'block',
-                        }}
-                        fullWidth
-                        label='Latitude'
-                        {...form.getFieldProps('latitude')}
-                        error={isInvalidControl('latitude')}
-                        helperText={getErrorMessage('latitude')}
-                      />
-                    </Stack>
-                    <TextField
-                      sx={{
-                        display: 'block',
-                        marginTop: '12px',
-                      }}
-                      fullWidth
-                      label='Address'
-                      {...form.getFieldProps('location')}
-                      error={isInvalidControl('location')}
-                      helperText={getErrorMessage('location')}
-                    />
-                    <Box marginTop={1}>
+                    {isAddLocation && (
+                      <>
+                        <Typography fontWeight={700} color='rgba(0, 0, 0, 0.6)'>
+                          Location
+                        </Typography>
+                        <Stack
+                          direction='row'
+                          spacing={3}
+                          justifyContent='space-between'
+                          alignItems='center'
+                          marginTop={1}>
+                          <TextField
+                            sx={{
+                              display: 'block',
+                            }}
+                            fullWidth
+                            label='Longitude'
+                            {...form.getFieldProps('longitude')}
+                            error={isInvalidControl('longitude')}
+                            helperText={getErrorMessage('longitude')}
+                          />
+                          <TextField
+                            sx={{
+                              display: 'block',
+                            }}
+                            fullWidth
+                            label='Latitude'
+                            {...form.getFieldProps('latitude')}
+                            error={isInvalidControl('latitude')}
+                            helperText={getErrorMessage('latitude')}
+                          />
+                        </Stack>
+                        <TextField
+                          sx={{
+                            display: 'block',
+                            marginTop: '12px',
+                          }}
+                          fullWidth
+                          label='Address'
+                          {...form.getFieldProps('location')}
+                          error={isInvalidControl('location')}
+                          helperText={getErrorMessage('location')}
+                        />
+                        <Box marginTop={1}>
+                          <Button
+                            type='button'
+                            variant='contained'
+                            onClick={openMap}
+                            sx={{ textTransform: 'initial' }}
+                            startIcon={<AppIcon icon={Map} color='#fff' />}>
+                            Select on map
+                          </Button>
+                        </Box>
+                      </>
+                    )}
+                    <Box marginY={1}>
                       <Button
-                        type='button'
+                        startIcon={<AppIcon icon={isAddLocation ? Close : Room} color='#fff' />}
                         variant='contained'
-                        onClick={openMap}
-                        sx={{ textTransform: 'initial' }}
-                        startIcon={<AppIcon icon={Map} color='#fff' />}>
-                        Select on map
+                        color={isAddLocation ? 'error' : 'primary'}
+                        onClick={onClickAddLocation}>
+                        {isAddLocation ? 'Cancel' : 'Add location'}
                       </Button>
                     </Box>
                   </Box>
