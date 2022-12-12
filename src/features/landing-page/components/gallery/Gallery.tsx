@@ -1,4 +1,4 @@
-import { Search } from '@mui/icons-material';
+import { Close, Search } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
 import { Box, Grid, InputAdornment, TextField } from '@mui/material';
 import _ from 'lodash';
@@ -33,48 +33,40 @@ const Gallery = () => {
   const hashtags = useAppSelector(tagSelectors.selectTagList);
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState('');
-
+  const [searchTitle, setSearchTitle] = useState('');
+  const [searchCategories, setSearchCategories] = useState<ICategory[]>([]);
+  const [searchHashtags, setSearchHashtags] = useState<ITag[]>([]);
+  const [search, setSearch] = useState<string>('');
   //#region Handling search
 
   const onCategoryDropDownChange = useCallback((e, values: ICategory[]): void => {
-    if (values.length) {
-      searchParams.set('category', _.map(values, 'id').toString());
-    } else {
-      searchParams.delete('category');
-    }
-    setSearchParams(searchParams);
+    setSearchCategories(values);
   }, []);
 
   const onHashTagDropDownChange = useCallback((e, values: ITag[]): void => {
-    if (values.length) {
-      searchParams.set('tag', _.map(values, 'id').toString());
-    } else {
-      searchParams.delete('tag');
-    }
-    setSearchParams(searchParams);
+    setSearchHashtags(values);
   }, []);
 
   const onSearchFieldChange = (e): void => {
-    if (!e.target.value) {
-      executeSearch(true);
-    }
-    setSearch(e.target.value);
+    setSearchTitle(e.target.value);
   };
 
-  const executeSearch = (event?: any): void => {
-    if (search.trim() && typeof event !== 'boolean') {
-      searchParams.set('search', search.trim());
-    } else {
-      searchParams.delete('search');
-    }
-    setSearchParams(searchParams);
+  const handleBlur = (): void => {
+    setSearch(searchTitle);
   };
 
   const handleKeyDown = (e): void => {
     if (e.code === 'Enter' && !e.altKey && !e.ctrlKey && !e.shiftKey) {
-      executeSearch();
+      handleBlur();
     }
+  };
+
+  const clearSearch = (e): void => {
+    e.stopPropagation();
+    if (search) {
+      setSearch('');
+    }
+    setSearchTitle('');
   };
 
   //#endregion
@@ -159,6 +151,30 @@ const Gallery = () => {
   }, [searchParams]);
 
   useEffect(() => {
+    // Search by title
+    if (searchParams.has('search') && !search.trim()) {
+      searchParams.delete('search');
+    } else {
+      search.trim() && searchParams.set('search', search);
+    }
+    // Search by categories
+    if (searchParams.has('category') && !searchCategories.length) {
+      searchParams.delete('category');
+    } else if (searchCategories.length) {
+      const cateIds = _.map(searchCategories, 'id');
+      searchParams.set('category', cateIds.toString());
+    }
+    // Search by hashtags
+    if (searchParams.has('tag') && !searchHashtags.length) {
+      searchParams.delete('tag');
+    } else if (searchHashtags.length) {
+      const tagIds = _.map(searchHashtags, 'id');
+      searchParams.set('tag', tagIds.toString());
+    }
+    setSearchParams(searchParams);
+  }, [search, searchCategories, searchHashtags]);
+
+  useEffect(() => {
     dispatch(categoriesActions.getCategoryList());
     dispatch(tagsActions.getTagList());
     dispatch(reactionsActions.getReactionList());
@@ -214,9 +230,9 @@ const Gallery = () => {
               <TextField
                 fullWidth
                 label='Search'
-                placeholder='Search by title, author, ...'
+                placeholder='Search by title, ...'
                 InputProps={{
-                  endAdornment: (
+                  startAdornment: (
                     <InputAdornment position='end'>
                       <AppIconButton
                         tooltip='Search'
@@ -226,10 +242,21 @@ const Gallery = () => {
                       />
                     </InputAdornment>
                   ),
+                  endAdornment: search && (
+                    <InputAdornment position='end'>
+                      <AppIconButton
+                        tooltip='Clear'
+                        icon={<AppIcon icon={Close} />}
+                        buttonSize='large'
+                        buttonColor='error'
+                        onClick={clearSearch}
+                      />
+                    </InputAdornment>
+                  ),
                 }}
-                value={search}
+                value={searchTitle}
                 onChange={onSearchFieldChange}
-                onBlur={executeSearch}
+                onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
               />
             </Grid>

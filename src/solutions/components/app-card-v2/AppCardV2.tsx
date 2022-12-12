@@ -35,7 +35,7 @@ const AppCardV2 = ({
   const navigate = useNavigate();
 
   const navigateToPostDetail = (postId: number): void => {
-    navigate(`/posts/${ postId }`);
+    navigate(`/posts/${ postId }`, { replace: true });
   };
 
   const handleOnClickBookmark = (e): void => {

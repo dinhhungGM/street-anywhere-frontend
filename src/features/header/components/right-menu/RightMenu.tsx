@@ -95,7 +95,7 @@ const RightMenu = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title='Profile'>
-              <IconButton size='large' onClick={() => navigate('/profile')}>
+              <IconButton size='large' onClick={() => navigate(`/profile/${ currentUser?.id }`)}>
                 <AppIcon icon={Person} color='#0288d1' />
               </IconButton>
             </Tooltip>
