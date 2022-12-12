@@ -8,7 +8,6 @@ import SweetAlert from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppCardV2 } from '../../../solutions/components/app-card-v2';
 import { AppCarousel } from '../../../solutions/components/app-carousel';
-import { AppDoughnutChart } from '../../../solutions/components/app-doughnut-chart';
 import { AppHeading } from '../../../solutions/components/app-heading';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppListChips } from '../../../solutions/components/app-list-chips';
@@ -16,7 +15,7 @@ import { AppListUserReact } from '../../../solutions/components/app-list-user-re
 import { AppMapBox } from '../../../solutions/components/app-mapbox';
 import { AppModal } from '../../../solutions/components/app-modal';
 import { AppReactions } from '../../../solutions/components/app-reactions';
-import { IBookmark, IPost, IReaction } from '../../../solutions/models/postModels';
+import { IBookmark, IPost } from '../../../solutions/models/postModels';
 import { authSelectors } from '../../auth/store';
 import { bookmarkActions } from '../../bookmark';
 import { reactionsActions, reactionsSelectors } from '../../reactions/store';
@@ -97,7 +96,7 @@ const PostDetail = () => {
       reactedDetail,
     } as IPost;
     return newPost;
-  }, [currentUser, currentPost?.reactions, followingUsers?.length]);
+  }, [currentUser, currentPost, followingUsers]);
   //#endregion
 
   //#region Toggle bookmark

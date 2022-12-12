@@ -14,12 +14,8 @@ const AppCarousel = ({
     dots: true,
     speed: 300,
     autoplay: true,
-    slidesToShow: 4,
-    rows: 1,
+    slidesToShow: 1,
     slidesToScroll: 1,
-    className: 'center',
-    centerMode: true,
-    centerPadding: '60px',
     responsive: [
       {
         breakpoint: 2560,
