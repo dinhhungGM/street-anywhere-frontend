@@ -1,0 +1,50 @@
+.wrapper {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &__tabs {
+    width: 20%;
+    &__item {
+      gap: 12px;
+      align-self: flex-start;
+    }
+  }
+  &__tab {
+    width: 100%;
+    margin-left: -2px;
+    border-left: 2px solid #ccc;
+    min-height: 320px;
+  }
+}
+
+.content {
+  padding: 12px;
+  display: flex;
+}
+
+.description {
+  position: relative;
+  min-height: 270px;
+  .edit {
+    position: absolute;
+    bottom: -10%;
+    right: -2%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .content {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 1921px) {
+  .content {
+    width: 60%;
+  }
+}
