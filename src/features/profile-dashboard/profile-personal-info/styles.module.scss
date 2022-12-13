@@ -18,7 +18,7 @@
     width: 100%;
     margin-left: -2px;
     border-left: 2px solid #ccc;
-    min-height: 320px;
+    min-height: 326px;
   }
 }
 
@@ -29,7 +29,7 @@
 
 .description {
   position: relative;
-  min-height: 270px;
+  min-height: 220px;
   .edit {
     position: absolute;
     bottom: -10%;
@@ -37,14 +37,17 @@
   }
 }
 
-@media screen and (max-width: 768px) {
+@media only screen and (max-width: 1024px) {
   .content {
-    width: 100%;
+    width: 100% !important;
   }
 }
 
-@media screen and (max-width: 1921px) {
+@media only screen and (max-width: 1920px) {
   .content {
-    width: 60%;
+    width: 55%;
+  }
+  .wrapper__tabs {
+    width: 30%;
   }
 }

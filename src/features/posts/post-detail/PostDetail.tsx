@@ -111,9 +111,20 @@ const PostDetail = () => {
       });
     } else {
       if (post?.isBookmarked) {
-        dispatch(bookmarkActions.unBookmark({ bookmarkId: post?.bookmarkedDetail.bookmarkId, isDetailPage: true }));
+        dispatch(
+          bookmarkActions.unBookmark({
+            bookmarkId: post?.bookmarkedDetail.bookmarkId,
+            isDetailPage: true,
+          }),
+        );
       } else {
-        dispatch(bookmarkActions.createBookmark({ postId: post?.id, userId: currentUser?.id, isDetailPage: true }));
+        dispatch(
+          bookmarkActions.createBookmark({
+            postId: post?.id,
+            userId: currentUser?.id,
+            isDetailPage: true,
+          }),
+        );
         if (post?.userId !== currentUser?.id) {
           dispatch(
             wrapperActions.createNewNotification({
@@ -134,11 +145,22 @@ const PostDetail = () => {
     dispatch(reactionsActions.removeReaction({ postReactionId, postId }));
   };
 
-  const updateCurrentReaction = (postReactionId: number, newReactionTypeId: number, postId: number): void => {
-    dispatch(reactionsActions.changeReaction({ postReactionId, reactionId: newReactionTypeId, postId }));
+  const updateCurrentReaction = (
+    postReactionId: number,
+    newReactionTypeId: number,
+    postId: number,
+  ): void => {
+    dispatch(
+      reactionsActions.changeReaction({ postReactionId, reactionId: newReactionTypeId, postId }),
+    );
   };
 
-  const createNewReaction = (postId: number, reactionId: number, userId: number, reactionType: string | null): void => {
+  const createNewReaction = (
+    postId: number,
+    reactionId: number,
+    userId: number,
+    reactionType: string | null,
+  ): void => {
     dispatch(
       reactionsActions.addReaction({
         postId,
@@ -159,7 +181,10 @@ const PostDetail = () => {
     }
   };
 
-  const isSameReactionType = (clickedReactionType: string, currentReactionType: string): boolean => {
+  const isSameReactionType = (
+    clickedReactionType: string,
+    currentReactionType: string,
+  ): boolean => {
     return clickedReactionType === currentReactionType;
   };
 
@@ -191,7 +216,8 @@ const PostDetail = () => {
   };
   //#endregion
 
-  const handleFollow = () => {
+  const handleFollow = (e) => {
+    e.stopPropagation();
     if (_.isNil(currentUser)) {
       SweetAlert.fire({
         title: 'Warning',
@@ -253,7 +279,13 @@ const PostDetail = () => {
               <Stack width='100%' spacing={2}>
                 <Box className={styles.post__details__media__content}>
                   {post?.type === 'video' ? (
-                    <ReactPlayer playing controls url={post?.videoYtbUrl} width='100%' height='100%' />
+                    <ReactPlayer
+                      playing
+                      controls
+                      url={post?.videoYtbUrl}
+                      width='100%'
+                      height='100%'
+                    />
                   ) : (
                     <img src={post?.imageUrl} alt={post?.title} />
                   )}
@@ -290,14 +322,18 @@ const PostDetail = () => {
             </Box>
           </Grid>
           <Grid item xs={12} sm={12} md={6}>
-            <Box className={styles.post__details__user}>
+            <Box className={styles.post__details__user} onClick={() => navigate(`/profile/${ post?.userId }`)}>
               <Stack
                 direction='row'
                 alignItems='center'
                 justifyContent='space-between'
                 padding={4}
                 className={styles.post__details__user__background}>
-                <Stack direction='row' alignItems='center' spacing={3}>
+                <Stack
+                  direction='row'
+                  alignItems='center'
+                  spacing={3}
+                  sx={{ cursor: 'pointer' }}>
                   <Avatar src={post?.profilePhotoUrl} />
                   <Box>
                     <Typography fontWeight={700}>{post?.fullName}</Typography>
@@ -318,10 +354,20 @@ const PostDetail = () => {
               </Stack>
               <Stack spacing={1}>
                 <AppListChips data={post?.tags} icon={Tag} title='Tags' iconColor='#84849d' />
-                <AppListChips data={post?.categories} icon={Category} title='Categories' iconColor='#ff5b00' />
+                <AppListChips
+                  data={post?.categories}
+                  icon={Category}
+                  title='Categories'
+                  iconColor='#ff5b00'
+                />
               </Stack>
               {post?.location && (
-                <Stack direction='row' alignItems='center' justifyContent='flex-start' spacing={1} marginTop={1}>
+                <Stack
+                  direction='row'
+                  alignItems='center'
+                  justifyContent='flex-start'
+                  spacing={1}
+                  marginTop={1}>
                   <AppIcon icon={Room} color='#e60023' />
                   <Typography fontWeight={700}>Address:</Typography>
                   <Typography fontStyle='italic'>{post?.location}</Typography>
@@ -340,7 +386,12 @@ const PostDetail = () => {
           </Grid>
         </Grid>
         <Box className={styles.post__details__comment}>
-          <PostComments currentUserId={currentUser?.id} ownerId={post?.userId} postId={post?.id} key={post?.id} />
+          <PostComments
+            currentUserId={currentUser?.id}
+            ownerId={post?.userId}
+            postId={post?.id}
+            key={post?.id}
+          />
         </Box>
         <Box className={styles.post__details__stats}>
           <Box marginY={2}>
