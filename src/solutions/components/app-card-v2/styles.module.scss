@@ -72,6 +72,10 @@
       &__name {
         cursor: pointer;
         transition: all 0.3s ease;
+        max-width: 140px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
         &:hover {
           text-decoration: underline;
         }

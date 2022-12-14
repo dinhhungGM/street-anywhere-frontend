@@ -10,12 +10,14 @@ interface IAppInputWithEditProps {
   title?: string;
   inputType?: string;
   isReadonly?: boolean;
+  onEdit?: any;
 }
 const AppInputWithEdit = ({
   value,
   title = 'Title',
   inputType = 'text',
   isReadonly = false,
+  onEdit,
 }: IAppInputWithEditProps) => {
   return (
     <>
@@ -35,12 +37,18 @@ const AppInputWithEdit = ({
               sx={{
                 '& fieldset': { border: 'none' },
                 '& .Mui-disabled': {
-                  WebkitTextFillColor: '#000',
+                  WebkitTextFillColor: '#000 !important',
                 },
               }}
               disabled
             />
-            {!isReadonly && <AppIconButton tooltip='Edit' icon={<AppIcon icon={Edit} color='success' />} />}
+            {!isReadonly && (
+              <AppIconButton
+                tooltip='Edit'
+                icon={<AppIcon icon={Edit} color='success' />}
+                onClick={onEdit}
+              />
+            )}
           </Stack>
         </Stack>
       </Box>

@@ -1,4 +1,4 @@
-import { Bookmark } from '@mui/icons-material';
+import { Bookmark, Visibility } from '@mui/icons-material';
 import { Avatar, Box, Button, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import cx from 'classnames';
 import { memo } from 'react';
@@ -16,7 +16,6 @@ interface IAppCardV2Props {
   isFixedSize?: boolean;
   onBookmark?: (e) => any;
   onFollow?: (e) => any;
-  onViewProfile?: (e) => any;
 }
 const AppCardV2 = ({
   post,
@@ -26,9 +25,6 @@ const AppCardV2 = ({
     return null;
   },
   onFollow = (post = null) => {
-    return null;
-  },
-  onViewProfile = (e) => {
     return null;
   },
 }: IAppCardV2Props) => {
@@ -48,9 +44,17 @@ const AppCardV2 = ({
     onFollow(post);
   };
 
+  const viewProfile = (e): void => {
+    e.stopPropagation(e);
+    navigate(`/profile/${ post?.userId }`);
+  };
+
   return (
     <>
-      <Box component={Paper} className={cx(styles.card, isFixedSize && styles.card__fixed)} elevation={2}>
+      <Box
+        component={Paper}
+        className={cx(styles.card, isFixedSize && styles.card__fixed)}
+        elevation={2}>
         <Box className={styles.card__media}>
           {post?.type === 'video' ? (
             <ReactPlayer
@@ -65,7 +69,11 @@ const AppCardV2 = ({
         </Box>
         <Box className={styles.card__overlay} onClick={() => navigateToPostDetail(post?.id)}>
           <Stack alignItems='center' height='100%' position='relative'>
-            <Stack direction='row' spacing={1} className={styles.card__overlay__actions} alignItems='center'>
+            <Stack
+              direction='row'
+              spacing={1}
+              className={styles.card__overlay__actions}
+              alignItems='center'>
               <AppIconButton
                 tooltip='Bookmark'
                 icon={<AppIcon icon={Bookmark} color={post?.isBookmarked ? '#fff' : '#0288d1'} />}
@@ -80,10 +88,13 @@ const AppCardV2 = ({
               <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={2}>
                 <Stack direction='row' alignItems='center' spacing={2}>
                   <Tooltip title='View profile'>
-                    <Avatar src={post?.profilePhotoUrl} onClick={onViewProfile} />
+                    <Avatar src={post?.profilePhotoUrl} onClick={viewProfile} />
                   </Tooltip>
                   <Tooltip title='View profile'>
-                    <Typography fontWeight={700} className={styles.card__overlay__user__name}>
+                    <Typography
+                      fontWeight={700}
+                      className={styles.card__overlay__user__name}
+                      onClick={viewProfile}>
                       {post?.fullName}
                     </Typography>
                   </Tooltip>

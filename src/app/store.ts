@@ -32,13 +32,10 @@ const combineReducer = combineReducers({
   admin: adminReducer,
   shorts: shortsReducer,
   bookmark: bookmarkReducer,
-  user: userReducer
+  user: userReducer,
 });
 
 const rootReducer = (state, action) => {
-  if (action.type === 'auth/signOut') {
-    state = undefined;
-  }
   return combineReducer(state, action);
 };
 
@@ -54,5 +51,10 @@ export const store = configureStore({
 });
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof combineReducer>;
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
 export const persistor = persistStore(store);

@@ -49,3 +49,7 @@
 .slick-slide {
   padding: 12px !important;
 }
+
+.Mui-selected svg {
+  color: #0288d1 !important;
+}

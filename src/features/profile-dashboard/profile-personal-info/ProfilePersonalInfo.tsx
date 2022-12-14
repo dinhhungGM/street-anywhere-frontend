@@ -142,11 +142,6 @@ const ProfilePersonalInfo = ({ isCurrentUser, profileDetail }: IProfilePersonalI
               />
             </AppTabPanel>
             <AppTabPanel value={tab} index={2}>
-              <AppHeading heading='Account Information' />
-              <AppInputWithEdit title='Username' value={profileDetail?.username} isReadonly />
-              <AppInputWithEdit title='Password' value='****************' inputType='password' />
-            </AppTabPanel>
-            <AppTabPanel value={tab} index={3}>
               <AppHeading heading='Personal Information' />
               <AppInputWithEdit
                 title='First name'
@@ -204,6 +199,25 @@ const ProfilePersonalInfo = ({ isCurrentUser, profileDetail }: IProfilePersonalI
                     'text',
                     profileDetail?.phone,
                     'phone',
+                    updateUser,
+                  )
+                }
+              />
+            </AppTabPanel>
+            <AppTabPanel value={tab} index={3}>
+              <AppHeading heading='Account Information' />
+              <AppInputWithEdit title='Username' value={profileDetail?.username} isReadonly />
+              <AppInputWithEdit
+                title='Password'
+                value='****************'
+                inputType='password'
+                onEdit={() =>
+                  openUpdatingDataModal(
+                    'Update password',
+                    'New password',
+                    'password',
+                    '',
+                    'password',
                     updateUser,
                   )
                 }

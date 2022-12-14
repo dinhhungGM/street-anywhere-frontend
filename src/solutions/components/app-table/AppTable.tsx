@@ -1,5 +1,6 @@
 import { Close, Search } from '@mui/icons-material';
 import {
+  Avatar,
   Box,
   FormControl,
   Grid,
@@ -31,13 +32,15 @@ import styles from './styles.module.scss';
 
 interface IAppTableProps {
   headerConfigs: {
-    isCenter: boolean;
-    header: string;
+    isCenter?: boolean;
+    header?: string;
+    customClass?: string;
   }[];
   rowConfigs: {
     isCenter?: boolean;
     field: string;
     customClass?: string;
+    isAvatar?: boolean;
   }[];
   rowKey?: string;
   customTableHeaderClasses?: string;
@@ -57,13 +60,15 @@ interface IAppTableProps {
   appTableFilterBarCustomClass?: string;
   appTableContentClass?: string;
   isFilterByOption?: boolean;
+  onRowClick?: any;
 }
 
 const AppTable = ({
   rowKey,
   data = [],
-  pageSize = 9,
   rowConfigs,
+  onRowClick,
+  pageSize = 9,
   headerConfigs,
   menuTemplate = null,
   searchByField = null,
@@ -96,9 +101,15 @@ const AppTable = ({
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleRowClick = (data) => {
+    onRowClick(data);
   };
 
   const displayData = useMemo(() => {
@@ -106,7 +117,9 @@ const AppTable = ({
       if (!search && !dropdown) {
         return true;
       }
-      let isValidSearch = !search ? true : _.lowerCase(item[searchByField]).includes(search.trim().toLowerCase());
+      let isValidSearch = !search
+        ? true
+        : _.lowerCase(item[searchByField]).includes(search.trim().toLowerCase());
       let isValidField = !dropdown ? true : _.isEqual(item[filterByField], dropdown);
       return isValidSearch && isValidField;
     });
@@ -114,7 +127,10 @@ const AppTable = ({
 
   return (
     <>
-      <Box component={Paper} elevation={3} className={cx(styles['app-table'], appTableCustomClass)}>
+      <Box
+        component={Paper}
+        elevation={3}
+        className={cx(styles['app-table'], styles[appTableCustomClass])}>
         <Box className={cx(styles['app-table__filter-bar'], appTableFilterBarCustomClass)}>
           <Grid container spacing={2}>
             <Grid item sm={12} md={6}>
@@ -161,8 +177,7 @@ const AppTable = ({
                           </InputAdornment>
                         )}
                       </>
-                    }
-                  >
+                    }>
                     {dropDownOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
                         {option.label}
@@ -177,10 +192,15 @@ const AppTable = ({
         <Box className={cx(styles['app-table__content'], appTableContentClass)}>
           <TableContainer>
             <Table aria-label='custom pagination table'>
-              <TableHead className={cx(styles['app-table__content__thead'], customTableHeaderClasses)}>
+              <TableHead
+                className={cx(styles['app-table__content__thead'], customTableHeaderClasses)}>
                 <TableRow>
                   {headerConfigs.map((col) => (
-                    <TableCell key={col.header} component='th' align={col.isCenter ? 'center' : 'left'}>
+                    <TableCell
+                      key={col.header}
+                      component='th'
+                      align={col.isCenter ? 'center' : 'left'}
+                      className={cx(styles[col.customClass])}>
                       <TableSortLabel>
                         <Typography fontWeight={700}>{col.header}</Typography>
                       </TableSortLabel>
@@ -200,9 +220,12 @@ const AppTable = ({
                         key={config.field || i}
                         component='td'
                         align={config.isCenter ? 'center' : 'left'}
-                        className={cx(config.customClass)}
-                      >
-                        <Typography fontWeight={600}>{item[config.field]}</Typography>
+                        className={cx(styles[config.customClass])}>
+                        {config.isAvatar ? (
+                          <Avatar src={item[config.field]} alt='Avatar' />
+                        ) : (
+                          <Typography fontWeight={600}>{item[config.field]}</Typography>
+                        )}
                       </TableCell>
                     ))}
                     {isDisplayMoreMenu && <TableCell>{menuTemplate}</TableCell>}

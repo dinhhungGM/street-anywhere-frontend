@@ -23,41 +23,47 @@ export const getAllPostsOfCurrentUser = createAsyncThunk(
   },
 );
 
-export const deletePostById = createAsyncThunk('profile/deletePostById', async (postId: number, { dispatch }) => {
-  try {
-    dispatch(wrapperActions.showLoading());
-    const { data } = await axios.delete(`/posts/${ postId }`);
-    return data.value;
-  } catch (error) {
-    dispatch(
-      wrapperActions.showNotification({
-        typeOfNotification: 'error',
-        message: error.response.data.message,
-      }),
-    );
-    return Promise.reject();
-  } finally {
-    dispatch(wrapperActions.hideLoading());
-  }
-});
+export const deletePostById = createAsyncThunk(
+  'profile/deletePostById',
+  async (postId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.delete(`/posts/${ postId }`);
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
 
-export const getProfileOfUser = createAsyncThunk('profile/getProfileOfUser', async (userId: number, { dispatch }) => {
-  try {
-    dispatch(wrapperActions.showLoading());
-    const { data } = await axios.get(`/users/${ userId }`);
-    return data.value;
-  } catch (error) {
-    dispatch(
-      wrapperActions.showNotification({
-        typeOfNotification: 'error',
-        message: error.response.data.message,
-      }),
-    );
-    return Promise.reject();
-  } finally {
-    dispatch(wrapperActions.hideLoading());
-  }
-});
+export const getProfileOfUser = createAsyncThunk(
+  'profile/getProfileOfUser',
+  async (userId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/users/${ userId }`);
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
 
 export const updateUser = createAsyncThunk(
   'profile/updateUser',
@@ -76,6 +82,27 @@ export const updateUser = createAsyncThunk(
         }),
       );
       dispatch(getProfileOfUser(params.userId));
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+
+export const getFollowers = createAsyncThunk(
+  'profile/getFollowers',
+  async (userId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/users/followers/${ userId }`);
+      return data.value;
     } catch (error) {
       dispatch(
         wrapperActions.showNotification({
