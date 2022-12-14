@@ -6,4 +6,5 @@
 
 .main-content {
   width: calc(100% - 320px);
+  min-height: calc(100vh - 72px - 56px);
 }

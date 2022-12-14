@@ -1,7 +1,9 @@
+import { Box } from '@mui/material';
 import React from 'react';
+import styles from './styles.module.scss';
 
 const Explore = () => {
-  return <div>Explore</div>;
+  return <Box className={styles.explore}>Explore</Box>;
 };
 
 export default Explore;

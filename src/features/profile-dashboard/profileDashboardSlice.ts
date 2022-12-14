@@ -5,11 +5,13 @@ import { IMyPost, IProfileDetail } from './profileDashBoardModels';
 interface IProfileState {
   profileDetail: IProfileDetail;
   postsOfCurrentUser: IMyPost[];
+  followers: any[];
 }
 
 const initialState: IProfileState = {
   profileDetail: null,
   postsOfCurrentUser: [],
+  followers: [],
 };
 
 const profileSlice = createSlice({
@@ -22,6 +24,9 @@ const profileSlice = createSlice({
     });
     builder.addCase(profileAsyncActions.getProfileOfUser.fulfilled, (state, action) => {
       state.profileDetail = action.payload;
+    });
+    builder.addCase(profileAsyncActions.getFollowers.fulfilled, (state, action) => {
+      state.followers = action.payload;
     });
   },
 });

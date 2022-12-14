@@ -1,5 +1,6 @@
 .dashboard {
   padding: 20px;
+  min-height: calc(100vh - 56px - 72px);
   &-add-cover-image {
     position: absolute !important;
     bottom: 16px !important;
@@ -13,12 +14,14 @@
   &-user {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 20px 40px;
     &-info {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
     }
     &-avatar {
       width: 120px !important;
@@ -34,7 +37,19 @@
   }
 }
 
-@media screen and (max-width: 1024px) {
+.tab-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background-color: #ededed;
+}
+
+.tab-item {
+  gap: 12px;
+}
+
+@media only screen and (max-width: 1024px) {
   .dashboard-user {
     flex-direction: column;
   }

@@ -1,0 +1,16 @@
+.title {
+  width: 15%;
+}
+
+.input {
+  width: 85%;
+}
+
+@media only screen and (max-width: 768px) {
+  .title {
+    width: 30%;
+  }
+  .input {
+    width: 70%;
+  }
+}

@@ -89,7 +89,7 @@ const routes: Route[] = [
   },
   {
     id: 'profile',
-    path: '/profile',
+    path: '/profile/:userId',
     element: <LazyProfileDashBoard />,
   },
   {
