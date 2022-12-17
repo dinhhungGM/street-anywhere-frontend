@@ -205,7 +205,7 @@ const ProfileDashBoard = () => {
                   flexDirection: 'column',
                 }}>
                 <Typography variant='h5' fontWeight={700}>
-                  {currentUser?.fullName}
+                  {profileDetail?.fullName}
                 </Typography>
                 <Typography textAlign='center' marginTop={1}>
                   0 Followers
