@@ -134,7 +134,7 @@ const CreateNewPostV2 = () => {
           showError('Please fill youtube link');
           return;
         }
-        if (checkIsValidVideoUrl(videoYtbUrl)) {
+        if (!checkIsValidVideoUrl(videoYtbUrl)) {
           showError('The video is invalid. Please check it again');
           return;
         }
@@ -171,7 +171,18 @@ const CreateNewPostV2 = () => {
   const [description, setDescription] = useState('');
 
   const changeContentType = (event: ChangeEvent<HTMLInputElement>): void => {
-    setContentType((event.target as HTMLInputElement).value);
+    const val = (event.target as HTMLInputElement).value;
+    if (val === 'image') {
+      setFile(null);
+      form.setFieldValue('videoYtbUrl', '');
+    } else if (val === 'upload') {
+      form.setFieldValue('videoYtbUrl', '');
+      form.setFieldValue('imageUrl', '');
+    } else if (val === 'video') {
+      setFile(null);
+      form.setFieldValue('imageUrl', '');
+    }
+    setContentType(val);
   };
 
   const openMap = (): void => {
@@ -342,7 +353,7 @@ const CreateNewPostV2 = () => {
               md: '80%',
               lg: '50%',
             },
-            height: 'fit-content',
+            minHeight: 'fit-content',
           }}
           padding={2}
           elevation={2}
