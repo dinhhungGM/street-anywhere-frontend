@@ -130,13 +130,11 @@ const CreateNewPostV2 = () => {
         formData.append('imageUrl', imageUrl);
       } else if (contentType === 'video') {
         const { videoYtbUrl } = form.values;
-        const regex =
-          /(http:|https:|)\/\/(player.|www.)?(vimeo\.com|youtu(be\.com|\.be|be\.googleapis\.com))\/(video\/|embed\/|channels\/(?:\w+\/)|watch\?v=|v\/)?([A-Za-z0-9._%-]*)(\&\S+)?/;
         if (!videoYtbUrl.trim()) {
           showError('Please fill youtube link');
           return;
         }
-        if (regex.test(videoYtbUrl)) {
+        if (checkIsValidVideoUrl(videoYtbUrl)) {
           showError('The video is invalid. Please check it again');
           return;
         }
@@ -293,9 +291,19 @@ const CreateNewPostV2 = () => {
   };
 
   const checkIsImageUrl = (imageUrl: string): boolean => {
-    const validImageUrls = ['photo', 'images', 'unsplash'];
+    const validImageUrls = process.env.REACT_APP_SUPPORT_IMAGE_LINK.split(',');
     for (const type of validImageUrls) {
       if (imageUrl.includes(type)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const checkIsValidVideoUrl = (videoUrl: string): boolean => {
+    const validUrls = process.env.REACT_APP_SUPPORT_VIDEO_LINK.split(',');
+    for (const type of validUrls) {
+      if (videoUrl.includes(type.trim())) {
         return true;
       }
     }
@@ -386,26 +394,36 @@ const CreateNewPostV2 = () => {
                         </Stack>
                       ))}
                     {contentType === 'video' && (
-                      <TextField
-                        sx={{
-                          display: 'block',
-                          marginBottom: '12px',
-                        }}
-                        fullWidth
-                        label='Video link'
-                        {...form.getFieldProps('videoYtbUrl')}
-                      />
+                      <Box>
+                        <TextField
+                          sx={{
+                            display: 'block',
+                            marginBottom: '12px',
+                          }}
+                          fullWidth
+                          label='Video link'
+                          {...form.getFieldProps('videoYtbUrl')}
+                        />
+                        <Typography marginY={1} fontStyle='italic'>
+                          Support link: {process.env.REACT_APP_SUPPORT_VIDEO_LINK}
+                        </Typography>
+                      </Box>
                     )}
                     {contentType === 'image' && (
-                      <TextField
-                        sx={{
-                          display: 'block',
-                          marginBottom: '12px',
-                        }}
-                        fullWidth
-                        label='Image link'
-                        {...form.getFieldProps('imageUrl')}
-                      />
+                      <Box>
+                        <TextField
+                          sx={{
+                            display: 'block',
+                            marginBottom: '12px',
+                          }}
+                          fullWidth
+                          label='Image link'
+                          {...form.getFieldProps('imageUrl')}
+                        />
+                        <Typography marginY={1} fontStyle='italic'>
+                          Support link: {process.env.REACT_APP_SUPPORT_IMAGE_LINK}
+                        </Typography>
+                      </Box>
                     )}
                   </Box>
                   <Divider>
