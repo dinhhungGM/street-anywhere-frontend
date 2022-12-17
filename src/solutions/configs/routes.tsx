@@ -1,29 +1,47 @@
 import { lazy, ReactNode } from 'react';
 
-const LazyLandingPage = lazy(() => import('../../features/landing-page').then((m) => ({ default: m.LandingPage })));
-const LazySignUp = lazy(() => import('../../features/auth/sign-up').then((m) => ({ default: m.SignUp })));
+const LazyLandingPage = lazy(() =>
+  import('../../features/landing-page').then((m) => ({ default: m.LandingPage })),
+);
+const LazySignUp = lazy(() =>
+  import('../../features/auth/sign-up').then((m) => ({ default: m.SignUp })),
+);
 const LazyCreateNewPost = lazy(() =>
   import('./../../features/posts/create-new-post-v2').then((m) => ({ default: m.CreateNewPostV2 })),
 );
 const LazyPostDetail = lazy(() =>
   import('./../../features/posts/post-detail').then((m) => ({ default: m.PostDetail })),
 );
-const LazySignIn = lazy(() => import('./../../features/auth/sign-in').then((m) => ({ default: m.SignIn })));
-const LazyPageNotFound = lazy(() =>
-  import('./../../solutions/components/app-page-not-found').then((m) => ({ default: m.AppPageNotFound })),
+const LazySignIn = lazy(() =>
+  import('./../../features/auth/sign-in').then((m) => ({ default: m.SignIn })),
 );
-const LazyShorts = lazy(() => import('./../../features/shorts').then((m) => ({ default: m.Shorts })));
-const LazyReactions = lazy(() => import('./../../features/reactions').then((m) => ({ default: m.Reactions })));
+const LazyPageNotFound = lazy(() =>
+  import('./../../solutions/components/app-page-not-found').then((m) => ({
+    default: m.AppPageNotFound,
+  })),
+);
+const LazyShorts = lazy(() =>
+  import('./../../features/shorts').then((m) => ({ default: m.Shorts })),
+);
+const LazyReactions = lazy(() =>
+  import('./../../features/reactions').then((m) => ({ default: m.Reactions })),
+);
 const LazyHots = lazy(() => import('./../../features/hots').then((m) => ({ default: m.Hots })));
-const LazyExplore = lazy(() => import('./../../features/explore').then((m) => ({ default: m.Explore })));
+const LazyExplore = lazy(() =>
+  import('./../../features/explore').then((m) => ({ default: m.Explore })),
+);
 const LazyAdminDashboard = lazy(() =>
   import('./../../features/admin-dashboard').then((m) => ({ default: m.AdminDashboard })),
 );
 const LazyDashboardHome = lazy(() =>
-  import('./../../features/admin-dashboard/components/dashboard-home').then((m) => ({ default: m.DashboardHome })),
+  import('./../../features/admin-dashboard/components/dashboard-home').then((m) => ({
+    default: m.DashboardHome,
+  })),
 );
 const LazyUserManagement = lazy(() =>
-  import('./../../features/admin-dashboard/components/user-management').then((m) => ({ default: m.UserManagement })),
+  import('./../../features/admin-dashboard/components/user-management').then((m) => ({
+    default: m.UserManagement,
+  })),
 );
 const LazyCategoriesManagement = lazy(() =>
   import('./../../features/admin-dashboard/components/categories-management').then((m) => ({
@@ -53,7 +71,6 @@ const LazyWelcomeDashboard = lazy(() =>
   import('../../features/welcome-dashboard').then((m) => ({ default: m.WelcomeDashboard })),
 );
 
-
 type Route = {
   id: string;
   path: string;
@@ -63,8 +80,13 @@ type Route = {
 
 const routes: Route[] = [
   {
-    id: 'home',
+    id: 'welcome-page',
     path: '/',
+    element: <LazyWelcomeDashboard />,
+  },
+  {
+    id: 'home',
+    path: '/home',
     element: <LazyLandingPage />,
   },
   {

@@ -1,14 +1,7 @@
 import { Box, Grid } from '@mui/material';
 import { Gallery } from './components/gallery';
-import { useState, useCallback } from 'react';
-import { WelcomeDashboard } from '../welcome-dashboard';
 
 const LandingPage = () => {
-  const [isWelcomePage, setIsWelcomePage] = useState<boolean>(true);
-
-  const navigateToFeedsPage = useCallback(() => {
-    setIsWelcomePage(false);
-  }, []);
 
   return (
     <>
