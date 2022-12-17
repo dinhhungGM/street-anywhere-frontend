@@ -322,18 +322,16 @@ const PostDetail = () => {
             </Box>
           </Grid>
           <Grid item xs={12} sm={12} md={6}>
-            <Box className={styles.post__details__user} onClick={() => navigate(`/profile/${ post?.userId }`)}>
+            <Box
+              className={styles.post__details__user}
+              onClick={() => navigate(`/profile/${ post?.userId }`)}>
               <Stack
                 direction='row'
                 alignItems='center'
                 justifyContent='space-between'
                 padding={4}
                 className={styles.post__details__user__background}>
-                <Stack
-                  direction='row'
-                  alignItems='center'
-                  spacing={3}
-                  sx={{ cursor: 'pointer' }}>
+                <Stack direction='row' alignItems='center' spacing={3} sx={{ cursor: 'pointer' }}>
                   <Avatar src={post?.profilePhotoUrl} />
                   <Box>
                     <Typography fontWeight={700}>{post?.fullName}</Typography>
@@ -361,6 +359,7 @@ const PostDetail = () => {
                   iconColor='#ff5b00'
                 />
               </Stack>
+
               {post?.location && (
                 <Stack
                   direction='row'

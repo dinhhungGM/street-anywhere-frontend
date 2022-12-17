@@ -8,30 +8,41 @@ import { default as axios } from './../../../solutions/services/axios';
 export const landingPageActionsAsync = {
   getPostsAsync: createAsyncThunk(
     'landingPage/getPostsAsync',
-    async (searchParams: { page: string; search: string; category: string; tag: string; }, { dispatch }) => {
+    async (
+      searchParams: { page: string; search: string; category: string; tag: string; },
+      { dispatch },
+    ) => {
       try {
         dispatch(wrapperActions.showLoading());
         const { data } = await postService.getPosts(searchParams);
         return data.value;
       } catch (error) {
-        dispatch(wrapperActions.showNotification({ typeOfNotification: 'error', message: error.toString() }));
+        dispatch(
+          wrapperActions.showNotification({
+            typeOfNotification: 'error',
+            message: error.response.data.message,
+          }),
+        );
       } finally {
         dispatch(wrapperActions.hideLoading());
       }
     },
   ),
-  getAllCategoriesAsync: createAsyncThunk('landingPage/getAllCategoriesAsync', async (_: any, { dispatch }) => {
-    try {
-      dispatch(wrapperActions.showLoading());
-      const { data } = await categoryService.getAllCategories();
-      return data.value;
-    } catch (error) {
-      AlertUtil.showError(error);
-      dispatch(wrapperActions.hideLoading());
-    } finally {
-      dispatch(wrapperActions.hideLoading());
-    }
-  }),
+  getAllCategoriesAsync: createAsyncThunk(
+    'landingPage/getAllCategoriesAsync',
+    async (_: any, { dispatch }) => {
+      try {
+        dispatch(wrapperActions.showLoading());
+        const { data } = await categoryService.getAllCategories();
+        return data.value;
+      } catch (error) {
+        AlertUtil.showError(error);
+        dispatch(wrapperActions.hideLoading());
+      } finally {
+        dispatch(wrapperActions.hideLoading());
+      }
+    },
+  ),
   getTopPosts: createAsyncThunk('landingPage/getTopPosts', async (_: any, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
@@ -40,6 +51,18 @@ export const landingPageActionsAsync = {
     } catch (error) {
       AlertUtil.showError(error);
       dispatch(wrapperActions.hideLoading());
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  }),
+  getTotalPage: createAsyncThunk('landingPage/getTotalPage', async (_, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get('/posts/getTotalPage');
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({ typeOfNotification: 'error', message: error.toString() }),
+      );
     } finally {
       dispatch(wrapperActions.hideLoading());
     }

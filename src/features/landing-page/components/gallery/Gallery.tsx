@@ -1,4 +1,4 @@
-import { Close, Search } from '@mui/icons-material';
+import { Close, ConnectingAirportsOutlined, Search } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
 import { Box, Grid, InputAdornment, TextField } from '@mui/material';
 import _ from 'lodash';
@@ -31,12 +31,14 @@ const Gallery = () => {
   const bookmarkedPosts = useAppSelector(userSelectors.selectBookmarkedPosts);
   const categories = useAppSelector(categoriesSelectors.selectCategoryList);
   const hashtags = useAppSelector(tagSelectors.selectTagList);
+  const totalPage = useAppSelector(landingPageSelectors.selectTotalPage);
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTitle, setSearchTitle] = useState('');
   const [searchCategories, setSearchCategories] = useState<ICategory[]>([]);
   const [searchHashtags, setSearchHashtags] = useState<ITag[]>([]);
   const [search, setSearch] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
   //#region Handling search
 
   const onCategoryDropDownChange = useCallback((e, values: ICategory[]): void => {
@@ -151,6 +153,8 @@ const Gallery = () => {
   }, [searchParams]);
 
   useEffect(() => {
+    // Pagination
+    searchParams.set('page', page.toString());
     // Search by title
     if (searchParams.has('search') && !search.trim()) {
       searchParams.delete('search');
@@ -172,7 +176,7 @@ const Gallery = () => {
       searchParams.set('tag', tagIds.toString());
     }
     setSearchParams(searchParams);
-  }, [search, searchCategories, searchHashtags]);
+  }, [search, searchCategories, searchHashtags, page]);
 
   useEffect(() => {
     dispatch(categoriesActions.getCategoryList());
@@ -183,8 +187,20 @@ const Gallery = () => {
       dispatch(userActions.getBookmarkedPost(currentUser?.id));
       dispatch(userActions.getReactedPost(currentUser?.id));
     }
+
+    const loadMore = (): void => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop ===
+        document.scrollingElement.scrollHeight &&
+        page < totalPage
+      ) {
+        setPage((prev) => prev++);
+      }
+    };
+    window.addEventListener('scroll', loadMore);
     return () => {
       dispatch(userActions.resetAllData());
+      window.removeEventListener('scroll', loadMore);
     };
   }, []);
 
@@ -198,8 +214,14 @@ const Gallery = () => {
     } else {
       return _.map(posts, (post) => {
         const reactedDetail = _.find(reactedPosts, (reactedPost) => reactedPost.postId === post.id);
-        const bookmarkedDetail = _.find(bookmarkedPosts, (bookmarkedPost) => bookmarkedPost.postId === post.id);
-        const followingDetail = _.find(followingUsers, (followingUser) => followingUser.followerId === post.userId);
+        const bookmarkedDetail = _.find(
+          bookmarkedPosts,
+          (bookmarkedPost) => bookmarkedPost.postId === post.id,
+        );
+        const followingDetail = _.find(
+          followingUsers,
+          (followingUser) => followingUser.followerId === post.userId,
+        );
         return {
           ...post,
           reactedDetail,

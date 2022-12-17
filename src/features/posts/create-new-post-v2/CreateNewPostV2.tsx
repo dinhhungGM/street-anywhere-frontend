@@ -1,5 +1,17 @@
-import { Add, Close, Map, PostAdd, Room } from '@mui/icons-material';
-import { Box, Button, Divider, Grid, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Add, Close, ExpandMore, Map, PostAdd } from '@mui/icons-material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useFormik } from 'formik';
 import _ from 'lodash';
 import { Marker } from 'mapbox-gl';
@@ -29,10 +41,15 @@ const contentTypeOptions = [
   {
     id: 1,
     value: 'image',
-    label: 'Image',
+    label: 'Image Link',
   },
   {
     id: 2,
+    value: 'upload',
+    label: 'Upload image',
+  },
+  {
+    id: 3,
     value: 'video',
     label: 'Video',
   },
@@ -63,29 +80,34 @@ const CreateNewPostV2 = () => {
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const categories = useAppSelector(categoriesSelectors.selectCategoryList);
   const hashtags = useAppSelector(tagSelectors.selectTagList);
-  const [isAddLocation, setIsAddLocation] = useState<boolean>(false);
   const form = useFormik({
     initialValues: {
       title: '',
-      shortTitle: '',
       location: '',
       longitude: '',
       latitude: '',
       videoYtbUrl: '',
+      imageUrl: '',
     },
     onSubmit: async (values) => {
       const formData = new FormData();
       formData.append('title', values.title);
-      formData.append('shortTitle', values.shortTitle);
-      if (isAddLocation) {
+      formData.append('shortTitle', values.title);
+      formData.append('userId', currentUser.id.toString());
+
+      // Check location
+      const { longitude, latitude, location } = values;
+      const isValidLong = longitude && longitude.trim();
+      const isValidLat = latitude && latitude.trim();
+      const isValidAddress = location && location.trim();
+      if (isValidLong && isValidLat && isValidAddress) {
         formData.append('longitude', values.longitude);
         formData.append('latitude', values.latitude);
         formData.append('location', values.location);
       }
-      formData.append('userId', currentUser.id.toString());
 
       // Check media
-      if (contentType === 'image') {
+      if (contentType === 'upload') {
         if (_.isNil(file)) {
           showError('Please choose an image  file to continue');
           return;
@@ -93,24 +115,33 @@ const CreateNewPostV2 = () => {
           formData.append('type', 'image');
           formData.append('media', file);
         }
+      } else if (contentType === 'image') {
+        const { imageUrl } = form.values;
+        const regex = /^https?:\/\/.*\/.*\.(png|gif|webp|jpeg|jpg)\??.*$/gim;
+        if (!imageUrl.trim()) {
+          showError('Please fill the image link');
+          return;
+        }
+        if (!regex.test(imageUrl) && !checkIsImageUrl(imageUrl)) {
+          showError('The image link is invalid');
+          return;
+        }
+        formData.append('type', 'image');
+        formData.append('imageUrl', imageUrl);
       } else if (contentType === 'video') {
         const { videoYtbUrl } = form.values;
+        const regex =
+          /(http:|https:|)\/\/(player.|www.)?(vimeo\.com|youtu(be\.com|\.be|be\.googleapis\.com))\/(video\/|embed\/|channels\/(?:\w+\/)|watch\?v=|v\/)?([A-Za-z0-9._%-]*)(\&\S+)?/;
         if (!videoYtbUrl.trim()) {
           showError('Please fill youtube link');
           return;
         }
+        if (regex.test(videoYtbUrl)) {
+          showError('The video is invalid. Please check it again');
+          return;
+        }
         formData.append('type', 'video');
         formData.append('videoYtbUrl', videoYtbUrl);
-      }
-      // Check categories
-      if (!selectedCategories.length) {
-        showError('Please select category for post');
-        return;
-      }
-      // Check hashtags
-      if (!selectedCategories.length) {
-        showError('Please select hashtag for post');
-        return;
       }
       // Check description
       if (description) {
@@ -129,8 +160,11 @@ const CreateNewPostV2 = () => {
       }
     },
     validationSchema: yup.object().shape({
-      title: yup.string().trim().required('Required!').max(100, 'Can not be more than 50 characters'),
-      shortTitle: yup.string().trim().required('Required!').max(50, 'Can not be more than 20 characters'),
+      title: yup
+        .string()
+        .trim()
+        .required('Required!')
+        .max(100, 'Can not be more than 100 characters'),
     }),
   });
   const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
@@ -151,7 +185,12 @@ const CreateNewPostV2 = () => {
     setIsOpenMap(false);
   };
 
-  const openCreateFormPopup = async (title: string, placeholder: string, maxLength: number, handlerFn?: any) => {
+  const openCreateFormPopup = async (
+    title: string,
+    placeholder: string,
+    maxLength: number,
+    handlerFn?: any,
+  ) => {
     const { value } = await SweetAlert.fire({
       title,
       input: 'text',
@@ -241,7 +280,9 @@ const CreateNewPostV2 = () => {
     const file = event.target.files[0] as File;
     if (!_.isNil(file)) {
       const isValidExt = ['image/gif', 'image/jpeg', 'image/png'].includes(file.type);
-      if (isValidExt) {
+      if (file.size >= 10485760) {
+        showError('The file is so large, please choose a image which has size less than  10MB');
+      } else if (isValidExt) {
         setFile(file);
       } else {
         showError('Invalid file type. It should be a image file');
@@ -251,13 +292,14 @@ const CreateNewPostV2 = () => {
     }
   };
 
-  const onClickAddLocation = (): void => {
-    if (isAddLocation) {
-      form.setFieldValue('longitude', '');
-      form.setFieldValue('latitude', '');
-      form.setFieldValue('location', '');
+  const checkIsImageUrl = (imageUrl: string): boolean => {
+    const validImageUrls = ['photo', 'images', 'unsplash'];
+    for (const type of validImageUrls) {
+      if (imageUrl.includes(type)) {
+        return true;
+      }
     }
-    setIsAddLocation(!isAddLocation);
+    return false;
   };
 
   useEffect(() => {
@@ -283,22 +325,14 @@ const CreateNewPostV2 = () => {
 
   return (
     <>
-      <Box
-        padding={4}
-        sx={{
-          backgroundImage:
-            'linear-gradient(43deg, rgb(65, 88, 208) 0%, rgb(200, 80, 192) 46%, rgb(255, 204, 112) 100%)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: 'calc(100% - 80px)',
-        }}>
+      <Box padding={4} className={styles.wrapper}>
         <Box
           sx={{
             backgroundColor: '#fff',
             width: {
               sm: '100%',
               md: '80%',
+              lg: '50%',
             },
             height: 'fit-content',
           }}
@@ -309,11 +343,13 @@ const CreateNewPostV2 = () => {
           <Typography textAlign='center' variant='h2' textTransform='uppercase' fontWeight={600}>
             New Post
           </Typography>
-          <Divider>Information</Divider>
+          <Divider>
+            <Typography fontWeight={700}>Content</Typography>
+          </Divider>
           <form onSubmit={form.handleSubmit} style={{ width: '100%' }}>
             <Box marginTop={2} width='100%'>
               <Grid container spacing={2} width='100%'>
-                <Grid item xs={12} sm={12} md={6} alignItems='center' justifyContent='center'>
+                <Grid item xs={12} sm={12} md={12} alignItems='center' justifyContent='center'>
                   <TextField
                     sx={{
                       display: 'block',
@@ -325,25 +361,14 @@ const CreateNewPostV2 = () => {
                     error={isInvalidControl('title')}
                     helperText={getErrorMessage('title')}
                   />
-                  <TextField
-                    sx={{
-                      display: 'block',
-                      marginBottom: '12px',
-                    }}
-                    fullWidth
-                    label='Short title'
-                    {...form.getFieldProps('shortTitle')}
-                    error={isInvalidControl('shortTitle')}
-                    helperText={getErrorMessage('shortTitle')}
-                  />
                   <AppRadioGroup
-                    label='Content type'
+                    label='Media type'
                     options={contentTypeOptions}
                     value={contentType}
                     onChange={changeContentType}
                   />
                   <Box marginTop={1}>
-                    {contentType === 'image' &&
+                    {contentType === 'upload' &&
                       (_.isNil(file) ? (
                         <AppUploadButton
                           buttonLabel='Upload image'
@@ -367,17 +392,34 @@ const CreateNewPostV2 = () => {
                           marginBottom: '12px',
                         }}
                         fullWidth
-                        label='Youtube link'
+                        label='Video link'
                         {...form.getFieldProps('videoYtbUrl')}
                       />
                     )}
+                    {contentType === 'image' && (
+                      <TextField
+                        sx={{
+                          display: 'block',
+                          marginBottom: '12px',
+                        }}
+                        fullWidth
+                        label='Image link'
+                        {...form.getFieldProps('imageUrl')}
+                      />
+                    )}
                   </Box>
+                  <Divider>
+                    <Typography fontWeight={700}>Optional Information</Typography>
+                  </Divider>
                   <Box marginTop={1}>
-                    {isAddLocation && (
-                      <>
-                        <Typography fontWeight={700} color='rgba(0, 0, 0, 0.6)'>
-                          Location
-                        </Typography>
+                    <Accordion TransitionProps={{ unmountOnExit: true }}>
+                      <AccordionSummary
+                        expandIcon={<AppIcon icon={ExpandMore} />}
+                        aria-controls='panel1a-content'
+                        id='panel1a-header'>
+                        <Typography fontWeight={700}>Add location</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
                         <Stack
                           direction='row'
                           spacing={3}
@@ -426,61 +468,97 @@ const CreateNewPostV2 = () => {
                             Select on map
                           </Button>
                         </Box>
-                      </>
-                    )}
-                    <Box marginY={1}>
-                      <Button
-                        startIcon={<AppIcon icon={isAddLocation ? Close : Room} color='#fff' />}
-                        variant='contained'
-                        color={isAddLocation ? 'error' : 'primary'}
-                        onClick={onClickAddLocation}>
-                        {isAddLocation ? 'Cancel' : 'Add location'}
-                      </Button>
-                    </Box>
+                      </AccordionDetails>
+                    </Accordion>
                   </Box>
-                  <Stack direction='row' alignItems='center' justifyContent='space-between' marginTop={2} spacing={2}>
-                    <AppSelect
-                      data={categories}
-                      mappingLabelField='categoryName'
-                      isMultipleSelect={true}
-                      optionLabel='Categories'
-                      value={selectedCategories}
-                      onChange={handleCategoryChange}
-                    />
-                    <AppIconButton
-                      tooltip='Add new category'
-                      icon={<AppIcon icon={Add} color='#0288d1' />}
-                      buttonColor='info'
-                      onClick={() => openCreateFormPopup('New category', 'Enter new category', 20, createNewCategory)}
-                    />
-                  </Stack>
-                  <Stack direction='row' alignItems='center' justifyContent='space-between' marginTop={2} spacing={2}>
-                    <AppSelect
-                      data={hashtags}
-                      mappingLabelField='tagName'
-                      isMultipleSelect={true}
-                      optionLabel='Hashtags'
-                      value={selectedHashtags}
-                      onChange={handleHashTagChange}
-                    />
-                    <AppIconButton
-                      tooltip='Add new hashtag'
-                      icon={<AppIcon icon={Add} color='#0288d1' />}
-                      buttonColor='info'
-                      onClick={() => openCreateFormPopup('New hashtag', 'Enter new hashtag', 10, createNewHashTag)}
-                    />
-                  </Stack>
-                </Grid>
-                <Grid item xs={12} sm={12} md={6} alignItems='center' justifyContent='center'>
-                  <Box height='500px' width='100%'>
-                    <ReactQuill
-                      id='description'
-                      theme='snow'
-                      placeholder='Description (optional)'
-                      className={styles['text-editor']}
-                      value={description}
-                      onChange={setDescription}
-                    />
+                  <Box marginTop={1}>
+                    <Accordion TransitionProps={{ unmountOnExit: true }}>
+                      <AccordionSummary
+                        expandIcon={<AppIcon icon={ExpandMore} />}
+                        aria-controls='panel1a-content'
+                        id='panel1a-header'>
+                        <Typography fontWeight={700}>Add Categories & tags</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Stack
+                          direction='row'
+                          alignItems='center'
+                          justifyContent='space-between'
+                          spacing={2}>
+                          <AppSelect
+                            data={categories}
+                            mappingLabelField='categoryName'
+                            isMultipleSelect={true}
+                            optionLabel='Categories'
+                            value={selectedCategories}
+                            onChange={handleCategoryChange}
+                          />
+                          <AppIconButton
+                            tooltip='Add new category'
+                            icon={<AppIcon icon={Add} color='#0288d1' />}
+                            buttonColor='info'
+                            onClick={() =>
+                              openCreateFormPopup(
+                                'New category',
+                                'Enter new category',
+                                20,
+                                createNewCategory,
+                              )
+                            }
+                          />
+                        </Stack>
+                        <Stack
+                          direction='row'
+                          alignItems='center'
+                          justifyContent='space-between'
+                          marginTop={2}
+                          spacing={2}>
+                          <AppSelect
+                            data={hashtags}
+                            mappingLabelField='tagName'
+                            isMultipleSelect={true}
+                            optionLabel='Hashtags'
+                            value={selectedHashtags}
+                            onChange={handleHashTagChange}
+                          />
+                          <AppIconButton
+                            tooltip='Add new hashtag'
+                            icon={<AppIcon icon={Add} color='#0288d1' />}
+                            buttonColor='info'
+                            onClick={() =>
+                              openCreateFormPopup(
+                                'New hashtag',
+                                'Enter new hashtag',
+                                10,
+                                createNewHashTag,
+                              )
+                            }
+                          />
+                        </Stack>
+                      </AccordionDetails>
+                    </Accordion>
+                  </Box>
+                  <Box marginTop={1} height='fit-content'>
+                    <Accordion TransitionProps={{ unmountOnExit: true }}>
+                      <AccordionSummary
+                        expandIcon={<AppIcon icon={ExpandMore} />}
+                        aria-controls='panel1a-content'
+                        id='panel1a-header'>
+                        <Typography fontWeight={700}>Add description</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Box height='600px' width='100%'>
+                          <ReactQuill
+                            id='description'
+                            theme='snow'
+                            placeholder='Description (optional)'
+                            className={styles['text-editor']}
+                            value={description}
+                            onChange={setDescription}
+                          />
+                        </Box>
+                      </AccordionDetails>
+                    </Accordion>
                   </Box>
                 </Grid>
               </Grid>
@@ -509,7 +587,9 @@ const CreateNewPostV2 = () => {
         height='60vh'
         okText='Select'
         onOk={handleOnSelectPoint}>
-        <AppMapBox onClickOnMap={handleClickOnMap} onSearchOnMap={handleOnSearchOnMap} />
+        <Box height='60vh'>
+          <AppMapBox onClickOnMap={handleClickOnMap} onSearchOnMap={handleOnSearchOnMap} />
+        </Box>
       </AppModal>
     </>
   );

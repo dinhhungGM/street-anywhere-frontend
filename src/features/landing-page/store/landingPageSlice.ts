@@ -5,11 +5,13 @@ import { landingPageActionsAsync } from './landingPageActionsAsync';
 type LandingPageState = {
   posts: IPost[];
   topPosts: IPost[];
+  totalPage: number;
 };
 
 const initialState: LandingPageState = {
   posts: [],
   topPosts: [],
+  totalPage: 0,
 };
 
 const landingPageSlice = createSlice({
@@ -22,6 +24,9 @@ const landingPageSlice = createSlice({
     });
     builder.addCase(landingPageActionsAsync.getTopPosts.fulfilled, (state, action) => {
       state.topPosts = action.payload;
+    });
+    builder.addCase(landingPageActionsAsync.getTotalPage.fulfilled, (state, action) => {
+      state.totalPage = (action.payload as any).totalPage;
     });
   },
 });
