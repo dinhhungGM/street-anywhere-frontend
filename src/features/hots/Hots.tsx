@@ -1,7 +1,8 @@
-import React from 'react';
+import { Box } from '@mui/material';
+import styles from './styles.module.scss';
 
 const Hots = () => {
-  return <div>Hots</div>;
+  return <Box className={styles.hots}>Hots</Box>;
 };
 
 export default Hots;

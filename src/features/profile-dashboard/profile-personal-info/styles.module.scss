@@ -25,6 +25,9 @@
 .content {
   padding: 12px;
   display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .description {
@@ -49,5 +52,18 @@
   }
   .wrapper__tabs {
     width: 30%;
+  }
+  .wrapper__tab {
+    border-left: none;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .content {
+    width: 100% !important;
+    flex-direction: column;
+  }
+  .wrapper__tabs {
+    width: 100%;
   }
 }

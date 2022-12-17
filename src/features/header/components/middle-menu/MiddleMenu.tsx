@@ -1,32 +1,24 @@
 import { Collections, Explore, Home, MovieCreation, Whatshot } from '@mui/icons-material';
 import { Box, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { NavLink, useNavigate } from 'react-router-dom';
-import SweetAlert from 'sweetalert2';
+import { NavLink } from 'react-router-dom';
 import { AppIcon } from '../../../../solutions/components/app-icon';
 import styles from './styles.module.scss';
+import cx from 'classnames';
 
 const MiddleMenu = () => {
-  const navigate = useNavigate();
-
-  const handleListItemClick = (config) => {
-    if (config.isComingSoon) {
-      SweetAlert.fire({
-        title: 'Info',
-        icon: 'info',
-        text: 'Coming soon',
-      });
-    } else {
-      navigate(config.path);
-    }
-  };
-
   return (
     <>
       <Box>
         <List className={styles.menu}>
           {configs.map((config) => (
-            <ListItemButton key={config.id} onClick={() => handleListItemClick(config)}>
-              <NavLink to='/' className={styles.menu__item}>
+            <ListItemButton key={config.id} className={styles.menu__btn}>
+              <NavLink
+                to={config.path}
+                className={(navData) =>
+                  navData.isActive
+                    ? cx(styles.menu__item, styles.menu__item__active)
+                    : styles.menu__item
+                }>
                 <ListItemIcon>{config.icon}</ListItemIcon>
                 <ListItemText>{config.title}</ListItemText>
               </NavLink>

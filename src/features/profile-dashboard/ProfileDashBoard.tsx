@@ -158,6 +158,7 @@ const ProfileDashBoard = () => {
           <input type='file' accept='image/*' hidden ref={inputFileRef} onChange={onFileChange} />
           <Box
             sx={{
+              width: '100%',
               height: '400px',
               background: profileDetail?.coverImageUrl
                 ? `url(${ profileDetail?.coverImageUrl })`
@@ -166,6 +167,7 @@ const ProfileDashBoard = () => {
               position: 'relative',
               backgroundSize: 'cover',
               backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center'
             }}
             component={Paper}>
             {isCurrentUser && (

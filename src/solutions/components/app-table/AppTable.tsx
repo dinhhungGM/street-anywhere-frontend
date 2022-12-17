@@ -61,6 +61,7 @@ interface IAppTableProps {
   appTableContentClass?: string;
   isFilterByOption?: boolean;
   onRowClick?: any;
+  mappingClickField?: string;
 }
 
 const AppTable = ({
@@ -70,6 +71,7 @@ const AppTable = ({
   onRowClick,
   pageSize = 9,
   headerConfigs,
+  mappingClickField,
   menuTemplate = null,
   searchByField = null,
   filterByField = null,
@@ -214,13 +216,14 @@ const AppTable = ({
                   ? displayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   : displayData
                 ).map((item, idx) => (
-                  <TableRow key={item[rowKey] || idx} hover>
+                  <TableRow key={item[rowKey] || idx} hover className={styles['cursor-pointer']}>
                     {rowConfigs.map((config, i) => (
                       <TableCell
                         key={config.field || i}
                         component='td'
                         align={config.isCenter ? 'center' : 'left'}
-                        className={cx(styles[config.customClass])}>
+                        className={cx(styles[config.customClass])}
+                        onClick={() => handleRowClick(item[mappingClickField])}>
                         {config.isAvatar ? (
                           <Avatar src={item[config.field]} alt='Avatar' />
                         ) : (

@@ -1,12 +1,26 @@
 .menu {
   display: flex;
+  &__btn {
+    &:hover {
+      background: unset;
+    }
+  }
   &__item {
     font-size: 16px;
     font-weight: bold;
     display: flex;
     align-items: center;
+    transition: background-color 0.5s ease;
+    padding: 4px 16px;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
     &--icon {
       background-color: transparent !important;
+    }
+    &__active {
+      border-bottom: 2px solid #f49d1a;
+      color: #f49d1a;
     }
   }
 }

@@ -66,7 +66,10 @@ const ProfilePersonalInfo = ({ isCurrentUser, profileDetail }: IProfilePersonalI
               value={tab}
               onChange={handleTabChange}
               orientation='vertical'
-              aria-label='Vertical tabs'>
+              aria-label='Vertical tabs'
+              allowScrollButtonsMobile
+              variant='scrollable'
+              scrollButtons='auto'>
               <Tab
                 icon={<AppIcon icon={EmojiPeople} />}
                 label='Introduction'
