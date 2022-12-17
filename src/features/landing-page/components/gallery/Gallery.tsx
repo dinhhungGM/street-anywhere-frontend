@@ -162,16 +162,16 @@ const Gallery = () => {
       search.trim() && searchParams.set('search', search);
     }
     // Search by categories
-    if (searchParams.has('category') && !searchCategories.length) {
+    if (searchParams.has('category') && !searchCategories?.length) {
       searchParams.delete('category');
-    } else if (searchCategories.length) {
+    } else if (searchCategories?.length) {
       const cateIds = _.map(searchCategories, 'id');
       searchParams.set('category', cateIds.toString());
     }
     // Search by hashtags
-    if (searchParams.has('tag') && !searchHashtags.length) {
+    if (searchParams.has('tag') && !searchHashtags?.length) {
       searchParams.delete('tag');
-    } else if (searchHashtags.length) {
+    } else if (searchHashtags?.length) {
       const tagIds = _.map(searchHashtags, 'id');
       searchParams.set('tag', tagIds.toString());
     }
@@ -283,24 +283,28 @@ const Gallery = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6} md={2}>
-              <AppSelect
-                maxItem={1}
-                isMultipleSelect
-                data={categories}
-                optionLabel='Category'
-                mappingLabelField='categoryName'
-                onChange={onCategoryDropDownChange}
-              />
+              {categories ? (
+                <AppSelect
+                  maxItem={1}
+                  isMultipleSelect
+                  data={categories}
+                  optionLabel='Category'
+                  mappingLabelField='categoryName'
+                  onChange={onCategoryDropDownChange}
+                />
+              ) : null}
             </Grid>
             <Grid item xs={12} sm={6} md={2}>
-              <AppSelect
-                maxItem={1}
-                data={hashtags}
-                isMultipleSelect
-                optionLabel='Hashtag'
-                mappingLabelField='tagName'
-                onChange={onHashTagDropDownChange}
-              />
+              {hashtags ? (
+                <AppSelect
+                  maxItem={1}
+                  data={hashtags}
+                  isMultipleSelect
+                  optionLabel='Hashtag'
+                  mappingLabelField='tagName'
+                  onChange={onHashTagDropDownChange}
+                />
+              ) : null}
             </Grid>
           </Grid>
         </Box>
