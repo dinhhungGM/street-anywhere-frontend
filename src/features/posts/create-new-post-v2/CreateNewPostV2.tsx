@@ -293,7 +293,7 @@ const CreateNewPostV2 = () => {
   const checkIsImageUrl = (imageUrl: string): boolean => {
     const validImageUrls = process.env.REACT_APP_SUPPORT_IMAGE_LINK.split(',');
     for (const type of validImageUrls) {
-      if (imageUrl.includes(type)) {
+      if (imageUrl.includes(type.trim())) {
         return true;
       }
     }
