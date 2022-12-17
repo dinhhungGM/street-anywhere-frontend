@@ -2,11 +2,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Box, Typography } from '@mui/material';
 import styles from './styles.module.scss';
 import { memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-interface IWelcomeDashboardProps {
-  onChangeToFeedsPage?: (e) => any;
-}
-const WelcomeDashboard = ({ onChangeToFeedsPage }: IWelcomeDashboardProps) => {
+const WelcomeDashboard = () => {
+  const navigate = useNavigate();
+  const navigateToHome = (): void => {
+    navigate('/home');
+  };
   return (
     <>
       <Box style={{ height: '800px', position: 'relative' }}>
@@ -19,36 +21,36 @@ const WelcomeDashboard = ({ onChangeToFeedsPage }: IWelcomeDashboardProps) => {
         </Box>
         <Box className={styles.ca_list_img}>
           <Box className={styles.ca_img}>
-            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
-            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://i.pinimg.com/564x/57/34/13/573413216527571e0256193496b24f02.jpg' alt='#' />
+            <img className='lazy' src='https://i.pinimg.com/564x/ba/5d/11/ba5d118df7b34bcd39526305952921a9.jpg' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
-            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://i.pinimg.com/564x/90/d9/73/90d973cd4637f52f8b0cbe2e71ef3f7c.jpg' alt='#' />
+            <img className='lazy' src='https://i.pinimg.com/736x/8d/ec/95/8dec957b2da18ce6a1f4b1c7fdff3ed4.jpg' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://i.pinimg.com/736x/c9/2b/33/c92b335a3b6a920f28ce16c7585701d6.jpg' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://i.pinimg.com/564x/2e/57/3c/2e573cfb0c5f733882f2b122ce56d97b.jpg' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://i.pinimg.com/736x/01/75/0e/01750e79b49f2d256fa7a6ba17a2b454.jpg' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
-            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://i.pinimg.com/564x/a9/f4/68/a9f468a00bfeeb705c9fc6ead66f99c2.jpg' alt='#' />
+            <img className='lazy' src='https://i.pinimg.com/564x/e4/51/53/e451534987d71ac29ef10b636bfeb427.jpg' alt='#' />
           </Box>
           <Box className={styles.ca_img}>
-            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
-            <img className='lazy' src='https://picsum.photos/220/400' alt='#' />
+            <img className='lazy' src='https://i.pinimg.com/564x/06/69/1c/06691c5c57f81e76debe03907291fcc0.jpg' alt='#' />
+            <img className='lazy' src='https://i.pinimg.com/564x/f7/8d/e8/f78de893f8de5d157dee91ba66368904.jpg' alt='#' />
           </Box>
         </Box>
         <Box className={styles.ca_blur}></Box>
       </Box>
       <Box className={styles.page1}>
         <Box className={styles.image}>
-          <img className='lazy' src='https://picsum.photos/400/700' alt='#' />
+          <img className='lazy' src='https://i.pinimg.com/564x/33/9e/10/339e1075b64e083508a163e1ea935613.jpg' alt='#' />
           <Box className={styles.search}>
             <SearchIcon style={{ fontSize: '35px', color: 'black' }} /> Having dinner with chicken
           </Box>
@@ -57,10 +59,11 @@ const WelcomeDashboard = ({ onChangeToFeedsPage }: IWelcomeDashboardProps) => {
           <Box style={{ maxWidth: '500px' }}>
             <Box className={styles.title}>Looking for ideas</Box>
             <Box className={styles.text}>
-              What do you want to try next? Think about your favorite idea. Like an evening with chickens and pigs
+              What do you want to try next? Think about your favorite idea. Like an evening with
+              chickens and pigs
             </Box>
             <Box>
-              <button onClick={onChangeToFeedsPage}>Discover</button>
+              <button onClick={navigateToHome}>Discover</button>
             </Box>
           </Box>
         </Box>
@@ -71,14 +74,14 @@ const WelcomeDashboard = ({ onChangeToFeedsPage }: IWelcomeDashboardProps) => {
             <Box className={styles.title}>Save ideas you like</Box>
             <Box className={styles.text}>Earning content you like so you can watch it later</Box>
             <Box>
-              <button onClick={onChangeToFeedsPage}>Discover</button>
+              <button onClick={navigateToHome}>Discover</button>
             </Box>
           </Box>
         </Box>
         <Box className={styles.image}>
           <Box className={styles.left}>
             <Box>
-              <img className='lazy' src='https://picsum.photos/400/400' alt='#' />
+              <img className='lazy' src='https://i.pinimg.com/564x/bb/70/40/bb704096070b10a4205f9856916204e8.jpg' alt='#' />
             </Box>
             <Box>
               <img className='lazy' src='https://picsum.photos/250/250' alt='#' />
@@ -109,10 +112,11 @@ const WelcomeDashboard = ({ onChangeToFeedsPage }: IWelcomeDashboardProps) => {
           <Box style={{ maxWidth: '500px' }}>
             <Box className={styles.title}>Watch, do, try, do</Box>
             <Box className={styles.text}>
-              The best thing about Street Anywhere is discovering new content and ideas from people around the world.
+              The best thing about Street Anywhere is discovering new content and ideas from people
+              around the world.
             </Box>
             <Box>
-              <button onClick={onChangeToFeedsPage}>Discover</button>
+              <button onClick={navigateToHome}>Discover</button>
             </Box>
           </Box>
         </Box>

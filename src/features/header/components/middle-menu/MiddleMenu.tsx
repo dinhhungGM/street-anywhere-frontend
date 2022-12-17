@@ -1,4 +1,4 @@
-import { Explore, Home, MovieCreation, Whatshot } from '@mui/icons-material';
+import { Collections, Explore, Home, MovieCreation, Whatshot } from '@mui/icons-material';
 import { Box, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
@@ -40,10 +40,16 @@ const MiddleMenu = () => {
 
 const configs = [
   {
-    id: 'home_tab',
+    id: 'landing_page',
     title: 'Home',
     icon: <AppIcon icon={Home} color='#44ff00' />,
     path: '/',
+  },
+  {
+    id: 'home_tab',
+    title: 'Collections',
+    icon: <AppIcon icon={Collections} color='#472183' />,
+    path: '/home',
   },
   {
     id: 'shorts_tab',
