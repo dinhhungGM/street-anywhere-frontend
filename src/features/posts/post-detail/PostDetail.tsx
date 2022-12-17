@@ -304,7 +304,7 @@ const PostDetail = () => {
                       variant={post?.isBookmarked ? 'contained' : 'outlined'}
                       onClick={handleBookmark}>
                       <AppIcon icon={Bookmark} color={post?.isBookmarked ? '#fff' : '#84849d'} />
-                      <Typography marginLeft={1}>Save</Typography>
+                      <Typography marginLeft={1}>Bookmark</Typography>
                     </Button>
                     {post?.isHasLocation && (
                       <Button
