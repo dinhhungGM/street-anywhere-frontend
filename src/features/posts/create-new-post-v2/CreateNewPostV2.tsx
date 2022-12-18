@@ -112,7 +112,7 @@ const CreateNewPostV2 = () => {
           showError('Please choose an image  file to continue');
           return;
         } else {
-          formData.append('type', 'image');
+          formData.append('type', 'upload');
           formData.append('media', file);
         }
       } else if (contentType === 'image') {
@@ -154,7 +154,7 @@ const CreateNewPostV2 = () => {
       const result = await dispatch(postActions.createPostActionAsync(formData));
       if (result.meta.requestStatus === 'fulfilled') {
         showSuccess('Create successfully');
-        navigate('/');
+        navigate('/home');
       }
     },
     validationSchema: yup.object().shape({
@@ -288,7 +288,7 @@ const CreateNewPostV2 = () => {
   const handleUploadFile = (event) => {
     const file = event.target.files[0] as File;
     if (!_.isNil(file)) {
-      const isValidExt = ['image/gif', 'image/jpeg', 'image/png'].includes(file.type);
+      const isValidExt = ['image/gif', 'image/jpeg', 'image/png', 'image/jpg'].includes(file.type);
       if (file.size >= 10485760) {
         showError('The file is so large, please choose a image which has size less than  10MB');
       } else if (isValidExt) {
@@ -353,7 +353,7 @@ const CreateNewPostV2 = () => {
               md: '80%',
               lg: '50%',
             },
-            minHeight: 'fit-content',
+            minHeight: '705px',
           }}
           padding={2}
           elevation={2}
@@ -367,7 +367,7 @@ const CreateNewPostV2 = () => {
           </Divider>
           <form onSubmit={form.handleSubmit} style={{ width: '100%' }}>
             <Box marginTop={2} width='100%'>
-              <Grid container spacing={2} width='100%'>
+              <Grid container width='100%'>
                 <Grid item xs={12} sm={12} md={12} alignItems='center' justifyContent='center'>
                   <TextField
                     sx={{
@@ -387,23 +387,28 @@ const CreateNewPostV2 = () => {
                     onChange={changeContentType}
                   />
                   <Box marginTop={1}>
-                    {contentType === 'upload' &&
-                      (_.isNil(file) ? (
-                        <AppUploadButton
-                          buttonLabel='Upload image'
-                          acceptFile='image/*'
-                          onUploadingFile={handleUploadFile}
-                        />
-                      ) : (
-                        <Stack direction='row' spacing={2} alignItems='center'>
-                          <Typography>{file.name}</Typography>
-                          <AppIconButton
-                            tooltip='Cancel'
-                            icon={<AppIcon icon={Close} color='#e60023' />}
-                            onClick={() => setFile(null)}
+                    <Box>
+                      {contentType === 'upload' &&
+                        (_.isNil(file) ? (
+                          <AppUploadButton
+                            buttonLabel='Upload image'
+                            acceptFile='image/*'
+                            onUploadingFile={handleUploadFile}
                           />
-                        </Stack>
-                      ))}
+                        ) : (
+                          <Stack direction='row' spacing={2} alignItems='center'>
+                            <Typography>{file.name}</Typography>
+                            <AppIconButton
+                              tooltip='Cancel'
+                              icon={<AppIcon icon={Close} color='#e60023' />}
+                              onClick={() => setFile(null)}
+                            />
+                          </Stack>
+                        ))}
+                      <Typography marginY={2} fontStyle='italic'>
+                        Support file: .png, .jpg, .jpeg, .gif
+                      </Typography>
+                    </Box>
                     {contentType === 'video' && (
                       <Box>
                         <TextField
@@ -589,21 +594,21 @@ const CreateNewPostV2 = () => {
                       </AccordionDetails>
                     </Accordion>
                   </Box>
+                  <Stack marginTop={2} width='100%'>
+                    <Button
+                      type='submit'
+                      variant='contained'
+                      startIcon={<AppIcon icon={PostAdd} color='#fff' />}
+                      sx={{
+                        textTransform: 'inherit',
+                        fontSize: '18px',
+                      }}>
+                      Create
+                    </Button>
+                  </Stack>
                 </Grid>
               </Grid>
             </Box>
-            <Stack marginTop={2}>
-              <Button
-                type='submit'
-                variant='contained'
-                startIcon={<AppIcon icon={PostAdd} color='#fff' />}
-                sx={{
-                  textTransform: 'inherit',
-                  fontSize: '18px',
-                }}>
-                Create
-              </Button>
-            </Stack>
           </form>
         </Box>
       </Box>

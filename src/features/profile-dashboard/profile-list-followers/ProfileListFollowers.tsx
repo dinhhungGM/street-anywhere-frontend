@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { useNavigate } from 'react-router-dom';
 import { profileSelectors, profileActions } from '../index';
@@ -8,6 +8,10 @@ import { Box, Typography } from '@mui/material';
 import styles from './styles.module.scss';
 
 const headerConfigs = [
+  {
+    header: '#',
+    isCenter: false,
+  },
   {
     header: 'User',
     isCenter: false,
@@ -21,10 +25,13 @@ const headerConfigs = [
 
 const rowConfigs = [
   {
+    field: 'userId',
+    isCenter: false,
+  },
+  {
     field: 'profilePhotoUrl',
-    isCenter: true,
+    isCenter: false,
     isAvatar: true,
-    customClass: 'w-50px',
   },
   {
     field: 'fullName',
@@ -37,8 +44,12 @@ interface IProfileListFollowersProps {
 }
 const ProfileListFollowers = ({ currentUserId }: IProfileListFollowersProps) => {
   const dispatch = useAppDispatch();
-  const naviate = useNavigate();
+  const navigate = useNavigate();
   const followers = useAppSelector(profileSelectors.selectFollowers);
+
+  const goToProfile = useCallback((userId: number) => {
+    navigate(`/profile/${ userId }`);
+  }, []);
 
   useEffect(() => {
     dispatch(profileActions.getFollowers(currentUserId));
@@ -48,7 +59,7 @@ const ProfileListFollowers = ({ currentUserId }: IProfileListFollowersProps) => 
     <>
       <Box className={styles.wrapper}>
         <Box paddingBottom={2}>
-          <AppHeading heading={`Followers(${ followers.length })`} />
+          <AppHeading heading={`Followers (${ followers.length })`} />
         </Box>
         {followers?.length ? (
           <AppTable
@@ -56,6 +67,8 @@ const ProfileListFollowers = ({ currentUserId }: IProfileListFollowersProps) => 
             headerConfigs={headerConfigs}
             rowConfigs={rowConfigs}
             isFilterByOption={false}
+            onRowClick={goToProfile}
+            mappingClickField='userId'
           />
         ) : (
           <Typography textAlign='center'>No data</Typography>
