@@ -16,7 +16,7 @@ const MiddleMenu = () => {
                 to={config.path}
                 className={(navData) =>
                   navData.isActive
-                    ? cx(styles.menu__item, styles.menu__item__active)
+                    ? cx(styles.menu__item, styles.menu__btn__active)
                     : styles.menu__item
                 }>
                 <ListItemIcon>{config.icon}</ListItemIcon>
