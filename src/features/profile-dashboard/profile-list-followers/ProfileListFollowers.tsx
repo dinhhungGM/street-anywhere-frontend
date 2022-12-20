@@ -1,10 +1,10 @@
-import { memo, useEffect, useCallback } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { useNavigate } from 'react-router-dom';
-import { profileSelectors, profileActions } from '../index';
-import { AppTable } from '../../../solutions/components/app-table';
-import { AppHeading } from '../../../solutions/components/app-heading';
 import { Box, Typography } from '@mui/material';
+import { memo, useCallback, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { AppHeading } from '../../../solutions/components/app-heading';
+import { AppTable } from '../../../solutions/components/app-table';
+import { profileActions, profileSelectors } from '../index';
 import styles from './styles.module.scss';
 
 const headerConfigs = [
@@ -39,12 +39,10 @@ const rowConfigs = [
   },
 ];
 
-interface IProfileListFollowersProps {
-  currentUserId: number;
-}
-const ProfileListFollowers = ({ currentUserId }: IProfileListFollowersProps) => {
-  const dispatch = useAppDispatch();
+const ProfileListFollowers = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { userId: currentUserId } = useParams();
   const followers = useAppSelector(profileSelectors.selectFollowers);
 
   const goToProfile = useCallback((userId: number) => {
@@ -52,14 +50,17 @@ const ProfileListFollowers = ({ currentUserId }: IProfileListFollowersProps) => 
   }, []);
 
   useEffect(() => {
-    dispatch(profileActions.getFollowers(currentUserId));
+    dispatch(profileActions.getFollowers(+currentUserId));
+    return () => {
+      dispatch(profileActions.resetFollowers());
+    };
   }, []);
 
   return (
     <>
       <Box className={styles.wrapper}>
         <Box paddingBottom={2}>
-          <AppHeading heading={`Followers (${ followers.length })`} />
+          <AppHeading heading={`Followers (${ followers?.length })`} />
         </Box>
         {followers?.length ? (
           <AppTable

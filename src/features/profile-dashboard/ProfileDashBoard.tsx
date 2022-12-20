@@ -1,12 +1,10 @@
 import {
   AddAPhoto,
-  Bookmark,
-  Feed,
-  Image,
+  Bookmark, Image,
   People,
   Person,
   Upload,
-  YouTube,
+  YouTube
 } from '@mui/icons-material';
 import {
   Avatar,
@@ -17,23 +15,21 @@ import {
   Stack,
   Tab,
   Tabs,
-  Typography,
+  Typography
 } from '@mui/material';
 import _ from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
+import { profileActions } from '.';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { AppIcon } from '../../solutions/components/app-icon';
-import AppTabPanel from '../../solutions/components/app-tab-panel/AppTabPanel';
 import { authSelectors } from '../auth/store';
-import { ProfileListFollowers } from './profile-list-followers';
-import { ProfilePersonalInfo } from './profile-personal-info';
 import * as profileAsyncActions from './profileDashboardAsyncActions';
 import { ProfilePropertiesEnum } from './profileDashBoardModels';
 import * as profileSelectors from './profileDashBoardSelectors';
+import { profileSyncActions } from './profileDashboardSlice';
 import styles from './styles.module.scss';
-import { ProfileListPosts } from './profile-list-posts';
 
 const showSuccess = (message: string): void => {
   SweetAlert.fire({
@@ -61,6 +57,7 @@ const ProfileDashBoard = () => {
   const [field, setField] = useState<ProfilePropertiesEnum | null>(null);
   const { userId } = useParams();
   const [tab, setTab] = useState(0);
+  const location = useLocation();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
@@ -87,13 +84,29 @@ const ProfileDashBoard = () => {
 
   // Load post and user information
   useEffect(() => {
-    dispatch(profileAsyncActions.getAllPostsOfCurrentUser(+userId));
-    dispatch(profileAsyncActions.getProfileOfUser(+userId));
+    dispatch(profileActions.getAllPostsOfCurrentUser(+userId));
+    dispatch(profileActions.getProfileOfUser(+userId));
+
+    return () => {
+      dispatch(profileSyncActions.resetProfileDetail());
+    };
   }, []);
 
   const isCurrentUser = useMemo(() => {
     return currentUser?.id === +userId;
   }, [currentUser?.id, userId]);
+
+  useEffect(() => {
+    if (location.pathname.includes('followers')) {
+      setTab(1);
+    } else if (location.pathname.includes('posts') && location.search.includes('image')) {
+      setTab(2);
+    } else if (location.pathname.includes('video') && location.search.includes('video')) {
+      setTab(3);
+    } else {
+      setTab(0);
+    }
+  }, [location.pathname]);
 
   // Update user
   useEffect(() => {
@@ -143,6 +156,10 @@ const ProfileDashBoard = () => {
       }
     }
   }, [file, field]);
+
+  const handleNavigate = (path): void => {
+    navigate(path);
+  };
 
   return (
     <>
@@ -220,7 +237,6 @@ const ProfileDashBoard = () => {
             <Tabs
               value={tab}
               onChange={handleTabChange}
-              centered
               variant='scrollable'
               scrollButtons='auto'
               allowScrollButtonsMobile
@@ -230,24 +246,28 @@ const ProfileDashBoard = () => {
                 label='Info'
                 iconPosition='start'
                 className={styles['tab-item']}
+                onClick={() => handleNavigate(`/profile/${ userId }`)}
               />
               <Tab
                 icon={<AppIcon icon={People} />}
                 label='Followers'
                 iconPosition='start'
                 className={styles['tab-item']}
+                onClick={() => handleNavigate(`/profile/${ userId }/followers`)}
               />
               <Tab
                 icon={<AppIcon icon={Image} />}
                 label='Images'
                 iconPosition='start'
                 className={styles['tab-item']}
+                onClick={() => handleNavigate(`/profile/${ userId }/posts?mediatype=image`)}
               />
               <Tab
                 icon={<AppIcon icon={YouTube} />}
                 label='Videos'
                 iconPosition='start'
                 className={styles['tab-item']}
+                onClick={() => handleNavigate(`/profile/${ userId }/posts?mediatype=video`)}
               />
               {isCurrentUser && (
                 <Tab
@@ -259,30 +279,8 @@ const ProfileDashBoard = () => {
               )}
             </Tabs>
           </Box>
-          <Box>
-            <AppTabPanel value={tab} index={0}>
-              <ProfilePersonalInfo isCurrentUser={isCurrentUser} profileDetail={profileDetail} />
-            </AppTabPanel>
-            <AppTabPanel value={tab} index={1}>
-              <ProfileListFollowers currentUserId={profileDetail?.id} />
-            </AppTabPanel>
-            <AppTabPanel value={tab} index={2}>
-              <ProfileListPosts
-                currentUserId={profileDetail?.id}
-                mediaType='image'
-                isCreator={isCurrentUser}
-              />
-            </AppTabPanel>
-            <AppTabPanel value={tab} index={3}>
-              <ProfileListPosts
-                currentUserId={profileDetail?.id}
-                mediaType='video'
-                isCreator={isCurrentUser}
-              />
-            </AppTabPanel>
-            <AppTabPanel value={tab} index={4}>
-              value 5
-            </AppTabPanel>
+          <Box marginY={2} className={styles['profile-content']}>
+            <Outlet />
           </Box>
         </Box>
       )}

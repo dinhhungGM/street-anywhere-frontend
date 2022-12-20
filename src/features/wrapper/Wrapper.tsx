@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import AppHeader from '../../solutions/components/app-header/AppHeader';
 import { AppMoveToTop } from '../../solutions/components/app-move-to-top';
 import { AppNotification } from '../../solutions/components/app-notification';
 import { AppToast } from '../../solutions/components/app-toast';
@@ -15,7 +14,6 @@ const Wrapper = ({ children }: WrapperProps) => {
   return (
     <>
       <Header />
-      {/* <AppHeader /> */}
       {children}
       <Footer />
       <LoadingSpinner />

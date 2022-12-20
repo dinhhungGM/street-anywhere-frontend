@@ -126,7 +126,7 @@ export const getFollowers = createAsyncThunk(
 
 export const getPostsOfUser = createAsyncThunk(
   'profile/getPostsOfUser',
-  async (params: { mediaType: 'image' | 'video'; userId: number; }, { dispatch }) => {
+  async (params: { mediaType: string; userId: number; }, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
       const { data } = await axios.get(

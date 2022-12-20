@@ -1,27 +1,31 @@
 import { Masonry } from '@mui/lab';
-import { Box } from '@mui/material';
-import { memo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Box, Paper, Stack, Typography } from '@mui/material';
+import { memo, useEffect, useMemo } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { profileActions, profileSelectors } from '..';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppCardV2 } from '../../../solutions/components/app-card-v2';
+import { authSelectors } from '../../auth/store';
 import styles from './styles.module.scss';
 
-interface IProfileListPostsProps {
-  currentUserId: number;
-  mediaType: 'image' | 'video';
-  isCreator?: boolean;
-}
-const ProfileListPosts = ({ currentUserId, mediaType, isCreator }: IProfileListPostsProps) => {
+const ProfileListPosts = () => {
+  const { userId } = useParams();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const myPosts = useAppSelector(profileSelectors.selectMyPosts);
+  const currentUser = useAppSelector(authSelectors.selectCurrentUser);
+
+  const isCreator = useMemo(() => {
+    return currentUser?.id === +userId;
+  }, [currentUser]);
+
   useEffect(() => {
-    dispatch(profileActions.getPostsOfUser({ userId: currentUserId, mediaType }));
+    const mediaType = searchParams.get('mediatype');
+    dispatch(profileActions.getPostsOfUser({ userId: +userId, mediaType }));
     return () => {
       dispatch(profileActions.resetMyPosts());
     };
-  }, []);
+  }, [searchParams]);
   return (
     <>
       <Box className={styles.images}>
@@ -46,7 +50,9 @@ const ProfileListPosts = ({ currentUserId, mediaType, isCreator }: IProfileListP
             ))}
           </Masonry>
         ) : (
-          <Box></Box>
+          <Stack height='100%' alignItems='center' justifyContent='center'>
+            <img src='/empty-data.jpg' alt='No data' />
+          </Stack>
         )}
       </Box>
     </>

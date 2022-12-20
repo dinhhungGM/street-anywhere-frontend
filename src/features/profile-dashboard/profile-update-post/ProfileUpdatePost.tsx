@@ -10,7 +10,7 @@ import {
   Paper,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import _ from 'lodash';
@@ -36,30 +36,20 @@ import { tagsActions, tagSelectors } from '../../tags/store';
 import { ITag } from '../../tags/store/tagModels';
 import styles from './styles.module.scss';
 
-const showError = (errorMessage: string): void => {
-  SweetAlert.fire({
-    title: 'Error',
-    icon: 'error',
-    text: errorMessage,
-  });
-};
-
-const showSuccess = (message: string): void => {
-  SweetAlert.fire({
-    title: 'Success',
-    icon: 'success',
-    text: message,
-  });
-};
-
 const ProfileUpdatePost = () => {
+  const descRef = useRef();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { userId, postId } = useParams();
   const [isOpenMap, setIsOpenMap] = useState(false);
+  const [description, setDescription] = useState('');
   const [marker, setMarker] = useState<IPoint | null>(null);
+  const hashtags = useAppSelector(tagSelectors.selectTagList);
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const categories = useAppSelector(categoriesSelectors.selectCategoryList);
-  const hashtags = useAppSelector(tagSelectors.selectTagList);
+  const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
+  const [selectedHashtags, setSelectedHashtags] = useState<ITag[]>([]);
+  const currentPost = useAppSelector(postSelectors.selectSelectedPost);
   const form = useFormik({
     initialValues: {
       title: '',
@@ -135,12 +125,6 @@ const ProfileUpdatePost = () => {
         .max(100, 'Can not be more than 100 characters'),
     }),
   });
-  const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
-  const [selectedHashtags, setSelectedHashtags] = useState<ITag[]>([]);
-  const [description, setDescription] = useState('');
-  const { userId, postId } = useParams();
-  const currentPost = useAppSelector(postSelectors.selectSelectedPost);
-  const descRef = useRef();
 
   const openMap = useCallback((): void => {
     setIsOpenMap(true);
@@ -295,17 +279,17 @@ const ProfileUpdatePost = () => {
       const {
         title,
         latitude,
-        longitude,
         location,
-        categories: postCategories,
+        longitude,
         tags: postTags,
         description: desc,
+        categories: postCategories,
       } = currentPost;
       form.setValues({
         title: title || '',
+        location: location || '',
         latitude: latitude ? latitude.toString() : '',
         longitude: longitude ? longitude.toString() : '',
-        location: location || '',
       });
       // Set categories
       const currCategories = _.map(postCategories, (cate) => {
