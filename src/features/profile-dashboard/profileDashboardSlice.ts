@@ -1,28 +1,30 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { IPost } from '../../solutions/models/postModels';
 import * as profileAsyncActions from './profileDashboardAsyncActions';
 import { IMyPost, IProfileDetail } from './profileDashBoardModels';
-import { IPost } from '../../solutions/models/postModels';
 
 interface IProfileState {
   profileDetail: IProfileDetail;
   postsOfCurrentUser: IMyPost[];
   followers: any[];
-  myImages: IPost[];
-  myVideos: IPost[];
+  myPosts: IPost[];
 }
 
 const initialState: IProfileState = {
   profileDetail: null,
   postsOfCurrentUser: [],
   followers: [],
-  myImages: [],
-  myVideos: [],
+  myPosts: [],
 };
 
 const profileSlice = createSlice({
   name: 'profile',
   initialState,
-  reducers: {},
+  reducers: {
+    resetMyPosts: (state) => {
+      state.myPosts = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(profileAsyncActions.getAllPostsOfCurrentUser.fulfilled, (state, action) => {
       state.postsOfCurrentUser = action.payload;
@@ -30,8 +32,14 @@ const profileSlice = createSlice({
     builder.addCase(profileAsyncActions.getProfileOfUser.fulfilled, (state, action) => {
       state.profileDetail = action.payload;
     });
+    builder.addCase(profileAsyncActions.getProfileOfUser.rejected, (state, action) => {
+      state.profileDetail = null;
+    });
     builder.addCase(profileAsyncActions.getFollowers.fulfilled, (state, action) => {
       state.followers = action.payload;
+    });
+    builder.addCase(profileAsyncActions.getPostsOfUser.fulfilled, (state, action) => {
+      state.myPosts = action.payload;
     });
   },
 });

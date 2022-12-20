@@ -116,3 +116,26 @@ export const getFollowers = createAsyncThunk(
     }
   },
 );
+
+export const getPostsOfUser = createAsyncThunk(
+  'profile/getPostsOfUser',
+  async (params: { mediaType: 'image' | 'video'; userId: number; }, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(
+        `/posts/user/${ params.userId }?mediatype=${ params.mediaType }`,
+      );
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);

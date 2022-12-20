@@ -11,3 +11,4 @@ export const selectProfileDetail = createSelector(
   (profile) => profile.profileDetail,
 );
 export const selectFollowers = createSelector(selectProfileFeature, (profile) => profile.followers);
+export const selectMyPosts = createSelector(selectProfileFeature, (profile) => profile.myPosts);

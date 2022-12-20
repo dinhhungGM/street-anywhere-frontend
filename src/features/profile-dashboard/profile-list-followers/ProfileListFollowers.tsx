@@ -48,7 +48,7 @@ const ProfileListFollowers = ({ currentUserId }: IProfileListFollowersProps) => 
   const followers = useAppSelector(profileSelectors.selectFollowers);
 
   const goToProfile = useCallback((userId: number) => {
-    navigate(`/profile/${ userId }`);
+    navigate(`/profile/${ userId }`, { replace: true });
   }, []);
 
   useEffect(() => {

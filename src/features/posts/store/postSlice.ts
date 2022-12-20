@@ -28,7 +28,9 @@ const postSlice = createSlice({
       };
     },
     removeBookmark: (state, action) => {
-      const newBookmarks = state.selectedPost.bookmarks.filter((item) => item.bookmarkId !== action.payload.bookmarkId);
+      const newBookmarks = state.selectedPost.bookmarks.filter(
+        (item) => item.bookmarkId !== action.payload.bookmarkId,
+      );
       state.selectedPost.bookmarks = newBookmarks;
     },
   },
@@ -36,8 +38,14 @@ const postSlice = createSlice({
     builder.addCase(postActionsAsync.getPostByIdAsync.fulfilled, (state, action) => {
       state.selectedPost = action.payload;
     });
+    builder.addCase(postActionsAsync.getPostByIdAsync.rejected, (state, action) => {
+      state.selectedPost = null;
+    });
     builder.addCase(postActionsAsync.getPostRelevantToCurrentPost.fulfilled, (state, action) => {
       state.relevantPost = action.payload;
+    });
+    builder.addCase(postActionsAsync.getPostRelevantToCurrentPost.rejected, (state, action) => {
+      state.relevantPost = null;
     });
   },
 });

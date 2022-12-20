@@ -2,6 +2,7 @@ import { Box, Paper, Stack } from '@mui/material';
 import { LeftMenu } from './components/left-menu';
 import { MiddleMenu } from './components/middle-menu';
 import { RightMenu } from './components/right-menu';
+import styles from './styles.module.scss';
 
 const Header = () => {
   return (
@@ -15,8 +16,12 @@ const Header = () => {
         elevation={2}>
         <Stack direction='row' alignItems='center' justifyContent='space-between'>
           <LeftMenu />
-          <MiddleMenu />
-          <RightMenu />
+          <Box className={styles['middle-menu']}>
+            <MiddleMenu />
+          </Box>
+          <Box className={styles['right-menu']}>
+            <RightMenu />
+          </Box>
         </Stack>
       </Box>
     </>

@@ -33,6 +33,7 @@ import * as profileAsyncActions from './profileDashboardAsyncActions';
 import { ProfilePropertiesEnum } from './profileDashBoardModels';
 import * as profileSelectors from './profileDashBoardSelectors';
 import styles from './styles.module.scss';
+import { ProfileListPosts } from './profile-list-posts';
 
 const showSuccess = (message: string): void => {
   SweetAlert.fire({
@@ -167,7 +168,7 @@ const ProfileDashBoard = () => {
               position: 'relative',
               backgroundSize: 'cover',
               backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center'
+              backgroundPosition: 'center',
             }}
             component={Paper}>
             {isCurrentUser && (
@@ -266,10 +267,18 @@ const ProfileDashBoard = () => {
               <ProfileListFollowers currentUserId={profileDetail?.id} />
             </AppTabPanel>
             <AppTabPanel value={tab} index={2}>
-              value 3
+              <ProfileListPosts
+                currentUserId={profileDetail?.id}
+                mediaType='image'
+                isCreator={isCurrentUser}
+              />
             </AppTabPanel>
             <AppTabPanel value={tab} index={3}>
-              value 4
+              <ProfileListPosts
+                currentUserId={profileDetail?.id}
+                mediaType='video'
+                isCreator={isCurrentUser}
+              />
             </AppTabPanel>
             <AppTabPanel value={tab} index={4}>
               value 5

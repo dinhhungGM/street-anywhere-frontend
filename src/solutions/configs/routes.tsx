@@ -173,7 +173,7 @@ const routes: Route[] = [
   },
   {
     id: 'page-not-found',
-    path: '*',
+    path: '/404',
     element: <LazyPageNotFound />,
   },
 ];

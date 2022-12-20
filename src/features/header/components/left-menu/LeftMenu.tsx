@@ -14,10 +14,17 @@ const LeftMenu = () => {
     <>
       <Stack direction='row' alignItems='center' justifyContent='flex-start' spacing={2}>
         <Box>
-          <Button onClick={() => setIsShowSubLeftMenu(true)} variant='outlined' color='info'>
+          <Button
+            onClick={() => setIsShowSubLeftMenu(true)}
+            variant='outlined'
+            color='info'
+            className={styles['btn-hamburger']}>
             <HamburgerIcon />
           </Button>
-          <Drawer anchor='left' open={isShowSubLeftMenu} onClose={() => setIsShowSubLeftMenu(false)}>
+          <Drawer
+            anchor='left'
+            open={isShowSubLeftMenu}
+            onClose={() => setIsShowSubLeftMenu(false)}>
             <SubLeftMenu onClose={() => setIsShowSubLeftMenu(false)} />
           </Drawer>
         </Box>

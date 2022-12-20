@@ -1,5 +1,5 @@
-import { Bookmark, Visibility } from '@mui/icons-material';
-import { Avatar, Box, Button, Paper, Stack, Tooltip, Typography } from '@mui/material';
+import { Bookmark, Delete, Edit, Visibility } from '@mui/icons-material';
+import { Avatar, Box, Button, MenuItem, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import cx from 'classnames';
 import { memo } from 'react';
 import ReactPlayer from 'react-player';
@@ -8,12 +8,14 @@ import { IPost } from '../../models/postModels';
 import { AppIcon } from '../app-icon';
 import { AppIconButton } from '../app-icon-button';
 import { AppInnerLoading } from '../app-inner-loading';
+import { AppMoreMenu } from '../app-more-menu';
 import styles from './styles.module.scss';
 
 interface IAppCardV2Props {
   post?: IPost;
   currentUserId?: number;
   isFixedSize?: boolean;
+  isCreator?: boolean;
   onBookmark?: (e) => any;
   onFollow?: (e) => any;
 }
@@ -21,6 +23,7 @@ const AppCardV2 = ({
   post,
   currentUserId,
   isFixedSize = false,
+  isCreator = false,
   onBookmark = (post = null) => {
     return null;
   },
@@ -40,13 +43,21 @@ const AppCardV2 = ({
   };
 
   const handleOnClickFollow = (e): void => {
-    e.stopPropagation(e);
+    e.stopPropagation();
     onFollow(post);
   };
 
   const viewProfile = (e): void => {
-    e.stopPropagation(e);
+    e.stopPropagation();
     navigate(`/profile/${ post?.userId }`);
+  };
+
+  const handleEdit = (e): void => {
+    e.stopPropagation();
+  };
+
+  const handleDelete = (e): void => {
+    e.stopPropagation();
   };
 
   return (
@@ -82,6 +93,21 @@ const AppCardV2 = ({
                 buttonSize='large'
                 onClick={handleOnClickBookmark}
               />
+              {isCreator && (
+                <AppMoreMenu bgColor='#fff' btnSize='large'>
+                  <MenuItem onClick={handleEdit}>
+                    <AppIconButton tooltip='Edit' icon={<AppIcon icon={Edit} color='#44ff00' />} />
+                    <Typography>Edit</Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleDelete}>
+                    <AppIconButton
+                      tooltip='Delete'
+                      icon={<AppIcon icon={Delete} color='#e60023' />}
+                    />
+                    <Typography>Delete</Typography>
+                  </MenuItem>
+                </AppMoreMenu>
+              )}
             </Stack>
             <Typography className={styles.card__overlay__title}>{post?.shortTitle}</Typography>
             <Box padding={2} className={styles.card__overlay__user}>
