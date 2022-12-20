@@ -1,4 +1,5 @@
 import { lazy, ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
 
 const LazyLandingPage = lazy(() =>
   import('../../features/landing-page').then((m) => ({ default: m.LandingPage })),
@@ -71,6 +72,30 @@ const LazyWelcomeDashboard = lazy(() =>
   import('../../features/welcome-dashboard').then((m) => ({ default: m.WelcomeDashboard })),
 );
 
+const LazyProfileUpdatePost = lazy(() =>
+  import('./../../features/profile-dashboard/profile-update-post').then((m) => ({
+    default: m.ProfileUpdatePost,
+  })),
+);
+
+const LazyProfilePersonalInfo = lazy(() =>
+  import('./../../features/profile-dashboard/profile-personal-info').then((m) => ({
+    default: m.ProfilePersonalInfo,
+  })),
+);
+
+const LazyProfileListFollowers = lazy(() =>
+  import('./../../features/profile-dashboard/profile-list-followers').then((m) => ({
+    default: m.ProfileListFollowers,
+  })),
+);
+
+const LazyProfileMyPosts = lazy(() =>
+  import('./../../features/profile-dashboard/profile-list-posts').then((m) => ({
+    default: m.ProfileListPosts,
+  })),
+);
+
 type Route = {
   id: string;
   path: string;
@@ -113,6 +138,28 @@ const routes: Route[] = [
     id: 'profile',
     path: '/profile/:userId',
     element: <LazyProfileDashBoard />,
+    children: [
+      {
+        id: 'profile/followers',
+        path: 'followers',
+        element: <LazyProfileListFollowers />,
+      },
+      {
+        id: 'profile/my-post',
+        path: 'posts',
+        element: <LazyProfileMyPosts />,
+      },
+      {
+        id: 'profile/info',
+        path: '',
+        element: <LazyProfilePersonalInfo />,
+      },
+      {
+        id: 'profile/not-found',
+        path: '*',
+        element: <Navigate to='/404' />,
+      },
+    ],
   },
   {
     id: 'shorts',
@@ -172,8 +219,13 @@ const routes: Route[] = [
     ],
   },
   {
+    id: 'profile-update-post',
+    path: '/profile/:userId/update-post/:postId',
+    element: <LazyProfileUpdatePost />,
+  },
+  {
     id: 'page-not-found',
-    path: '*',
+    path: '/404',
     element: <LazyPageNotFound />,
   },
 ];

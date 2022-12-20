@@ -1,5 +1,5 @@
 import { Box, Paper, Stack } from '@mui/material';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { IReactedPost } from '../../../features/user/userModels';
 import { AppReactButton } from '../app-react-button';
 import styles from './styles.module.scss';

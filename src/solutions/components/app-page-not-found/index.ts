@@ -1,1 +1,1 @@
-export {default as AppPageNotFound} from './AppPageNotFound'
+export { default as AppPageNotFound } from './AppPageNotFound';

@@ -1,24 +1,24 @@
 import { AccountBox, Edit, EmojiPeople, Info, Person } from '@mui/icons-material';
 import { Box, IconButton, Paper, Tab, Tabs, Typography } from '@mui/material';
 import _ from 'lodash';
-import { memo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
-import { useAppDispatch } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppHeading } from '../../../solutions/components/app-heading';
 import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppInputWithEdit } from '../../../solutions/components/app-input-with-edit';
 import AppTabPanel from '../../../solutions/components/app-tab-panel/AppTabPanel';
-import { profileActions } from '../index';
-import { IProfileDetail } from '../profileDashBoardModels';
+import { authSelectors } from '../../auth/store';
+import { profileActions, profileSelectors } from '../index';
 import styles from './styles.module.scss';
 
-interface IProfilePersonalInfoProps {
-  isCurrentUser?: boolean;
-  profileDetail?: IProfileDetail;
-}
-const ProfilePersonalInfo = ({ isCurrentUser, profileDetail }: IProfilePersonalInfoProps) => {
+const ProfilePersonalInfo = () => {
+  const { userId } = useParams();
   const [tab, setTab] = useState(0);
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(authSelectors.selectCurrentUser);
+  const profileDetail = useAppSelector(profileSelectors.selectProfileDetail);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
@@ -56,6 +56,14 @@ const ProfilePersonalInfo = ({ isCurrentUser, profileDetail }: IProfilePersonalI
       profileActions.updateUser({ userId: profileDetail?.id, payload: data, isFormData: false }),
     );
   };
+
+  const isCurrentUser = useMemo(() => {
+    return currentUser?.id === +userId;
+  }, [currentUser]);
+
+  useEffect(() => {
+    dispatch(profileActions.getProfileOfUser(+userId));
+  }, [userId]);
 
   return (
     <>

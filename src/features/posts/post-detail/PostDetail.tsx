@@ -106,8 +106,12 @@ const PostDetail = () => {
         title: 'Warning',
         icon: 'info',
         text: 'You are not sign in',
-      }).then(() => {
-        navigate('/sign-in');
+        confirmButtonText: 'Sign in',
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/sign-in');
+        }
       });
     } else {
       if (post?.isBookmarked) {
@@ -223,15 +227,18 @@ const PostDetail = () => {
         title: 'Warning',
         icon: 'warning',
         text: 'You are not sign in',
-      }).then(() => {
-        navigate('/sign-in');
+        showCancelButton: true,
+        confirmButtonText: 'Sign in',
+      }).then((result) => {
+        result.isConfirmed && navigate('/sign-in');
       });
-    }
-    const payload = { userId: currentUser?.id, followerId: currentPost?.userId };
-    if (post?.isFollowingUser) {
-      dispatch(userActions.unfollowUser(payload));
     } else {
-      dispatch(userActions.followUser(payload));
+      const payload = { userId: currentUser?.id, followerId: currentPost?.userId };
+      if (post?.isFollowingUser) {
+        dispatch(userActions.unfollowUser(payload));
+      } else {
+        dispatch(userActions.followUser(payload));
+      }
     }
   };
 
@@ -433,7 +440,7 @@ const PostDetail = () => {
         isDisplayOkButton
         title='Map'
         width='60vw'
-        height='60vh'
+        height='60vh !important'
         okText='Close'>
         <AppMapBox
           address={post?.location}

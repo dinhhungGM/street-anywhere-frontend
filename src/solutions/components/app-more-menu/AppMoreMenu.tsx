@@ -1,26 +1,40 @@
 import { MoreVert } from '@mui/icons-material';
 import { IconButton, Menu } from '@mui/material';
 import React, { useRef, useState } from 'react';
+import { boolean } from 'yup';
 import { AppIcon } from '../app-icon';
 
-const AppMoreMenu = ({ children = null }) => {
+interface IAppMoreMenuProps {
+  bgColor?: string;
+  children?: any;
+  btnSize?: 'small' | 'medium' | 'large';
+  isOpenMenu?: boolean;
+  onOpen?: any;
+  onClose?: any;
+}
+const AppMoreMenu = ({
+  bgColor = 'initial',
+  btnSize = 'medium',
+  children = null,
+  isOpenMenu,
+  onOpen,
+  onClose,
+}: IAppMoreMenuProps) => {
   const ref = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
   return (
     <>
-      <IconButton ref={ref} onClick={() => setIsOpen(true)}>
+      <IconButton ref={ref} onClick={onOpen} sx={{ backgroundColor: bgColor }} size={btnSize}>
         <AppIcon icon={MoreVert} />
       </IconButton>
       <Menu
-        open={isOpen}
+        open={isOpenMenu}
         anchorEl={ref.current}
-        onClose={() => setIsOpen(false)}
+        onClose={onClose}
         PaperProps={{
           sx: { width: 200, maxWidth: '100%' },
         }}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
         {children}
       </Menu>
     </>

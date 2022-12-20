@@ -1,4 +1,4 @@
-import { Add, Close, ExpandMore, Map, PostAdd } from '@mui/icons-material';
+import { Add, Delete, ExpandMore, Map, PostAdd } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
@@ -15,10 +15,11 @@ import {
 import { useFormik } from 'formik';
 import _ from 'lodash';
 import { Marker } from 'mapbox-gl';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import ReactPlayer from 'react-player';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
 import * as yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
@@ -26,135 +27,94 @@ import { AppIcon } from '../../../solutions/components/app-icon';
 import { AppIconButton } from '../../../solutions/components/app-icon-button';
 import { AppMapBox, IPoint } from '../../../solutions/components/app-mapbox';
 import { AppModal } from '../../../solutions/components/app-modal';
-import { AppRadioGroup } from '../../../solutions/components/app-radio-group';
 import { AppSelect } from '../../../solutions/components/app-select';
-import { AppUploadButton } from '../../../solutions/components/app-upload-button';
 import { authSelectors } from '../../auth/store';
 import { categoriesActions, categoriesSelectors } from '../../categories/store';
 import { ICategory } from '../../categories/store/categoriesModels';
+import { postActions, postSelectors } from '../../posts/store';
 import { tagsActions, tagSelectors } from '../../tags/store';
 import { ITag } from '../../tags/store/tagModels';
-import { postActions } from '../store';
 import styles from './styles.module.scss';
 
-const contentTypeOptions = [
-  {
-    id: 1,
-    value: 'image',
-    label: 'Image Link',
-  },
-  {
-    id: 2,
-    value: 'upload',
-    label: 'Upload image',
-  },
-  {
-    id: 3,
-    value: 'video',
-    label: 'Video',
-  },
-];
-
-const showError = (errorMessage: string): void => {
-  SweetAlert.fire({
-    title: 'Error',
-    icon: 'error',
-    text: errorMessage,
-  });
-};
-
-const showSuccess = (message: string): void => {
-  SweetAlert.fire({
-    title: 'Success',
-    icon: 'success',
-    text: message,
-  });
-};
-
-const CreateNewPostV2 = () => {
+const ProfileUpdatePost = () => {
+  const descRef = useRef();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [contentType, setContentType] = useState('image');
+  const { userId, postId } = useParams();
   const [isOpenMap, setIsOpenMap] = useState(false);
+  const [description, setDescription] = useState('');
   const [marker, setMarker] = useState<IPoint | null>(null);
+  const hashtags = useAppSelector(tagSelectors.selectTagList);
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const categories = useAppSelector(categoriesSelectors.selectCategoryList);
-  const hashtags = useAppSelector(tagSelectors.selectTagList);
+  const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
+  const [selectedHashtags, setSelectedHashtags] = useState<ITag[]>([]);
+  const currentPost = useAppSelector(postSelectors.selectSelectedPost);
   const form = useFormik({
     initialValues: {
       title: '',
       location: '',
       longitude: '',
       latitude: '',
-      videoYtbUrl: '',
-      imageUrl: '',
     },
     onSubmit: async (values) => {
-      const formData = new FormData();
-      formData.append('title', values.title);
-      formData.append('shortTitle', values.title);
-      formData.append('userId', currentUser.id.toString());
-
-      // Check location
-      const { longitude, latitude, location } = values;
-      const isValidLong = longitude && longitude.trim();
-      const isValidLat = latitude && latitude.trim();
-      const isValidAddress = location && location.trim();
-      if (isValidLong && isValidLat && isValidAddress) {
-        formData.append('longitude', values.longitude);
-        formData.append('latitude', values.latitude);
-        formData.append('location', values.location);
+      const payload = {};
+      const { title, location, longitude, latitude } = values;
+      // Check title, location
+      if (!_.isEqual(title, currentPost?.title)) {
+        payload['title'] = values.title;
       }
-
-      // Check media
-      if (contentType === 'upload') {
-        if (_.isNil(file)) {
-          showError('Please choose an image  file to continue');
-          return;
-        } else {
-          formData.append('type', 'upload');
-          formData.append('media', file);
+      // Check location
+      const isEmptyAll = Boolean(!location.trim() && !longitude.trim() && !latitude.trim());
+      const isDirtyAll = Boolean(location && longitude && latitude);
+      const isDirty = [location, latitude, longitude].some((data) => data.trim());
+      const newLocation = { location, longitude, latitude };
+      if (isEmptyAll && currentPost.isHasLocation) {
+        for (const field of Object.keys(newLocation)) {
+          payload[field] = null;
         }
-      } else if (contentType === 'image') {
-        const { imageUrl } = form.values;
-        const regex = /^https?:\/\/.*\/.*\.(png|gif|webp|jpeg|jpg)\??.*$/gim;
-        if (!imageUrl.trim()) {
-          showError('Please fill the image link');
-          return;
+      } else if (isDirtyAll) {
+        for (const field of Object.keys(newLocation)) {
+          const newVal = newLocation[field];
+          const currVal = `${ currentPost[field] }`;
+          if (!_.isEqual(newVal, currVal)) {
+            payload[field] = newVal;
+          }
         }
-        if (!regex.test(imageUrl) && !checkIsImageUrl(imageUrl)) {
-          showError('The image link is invalid');
-          return;
-        }
-        formData.append('type', 'image');
-        formData.append('imageUrl', imageUrl);
-      } else if (contentType === 'video') {
-        const { videoYtbUrl } = form.values;
-        if (!videoYtbUrl.trim()) {
-          showError('Please fill youtube link');
-          return;
-        }
-        if (!checkIsValidVideoUrl(videoYtbUrl)) {
-          showError('The video is invalid. Please check it again');
-          return;
-        }
-        formData.append('type', 'video');
-        formData.append('videoYtbUrl', videoYtbUrl);
+      } else if (isDirty) {
+        // For case, at least one field was filled
+        SweetAlert.fire({ title: 'Info', icon: 'info', text: 'Please fill all location data' });
+        return;
+      }
+      // Check categories
+      const newCates = _.map(selectedCategories, 'categoryName');
+      if (!_.isEqual(newCates, currentPost?.categories)) {
+        const listId = _.map(selectedCategories, 'id');
+        payload['categories'] = listId;
+      }
+      // Check tags
+      const newTags = _.map(selectedHashtags, 'tagName');
+      if (!_.isEqual(newTags, currentPost?.tags)) {
+        const listId = _.map(selectedHashtags, 'id');
+        payload['tags'] = listId;
       }
       // Check description
-      if (description) {
-        formData.append('description', encodeURIComponent(description));
+      if (!_.isEqual(description, currentPost?.description)) {
+        payload['description'] = description;
       }
-
-      // Success
-      const tagIds = _.map(selectedHashtags, 'id');
-      const categoryIds = _.map(selectedCategories, 'id');
-      formData.append('tags', JSON.stringify(tagIds));
-      formData.append('categories', JSON.stringify(categoryIds));
-      const result = await dispatch(postActions.createPostActionAsync(formData));
-      if (result.meta.requestStatus === 'fulfilled') {
-        showSuccess('Create successfully');
-        navigate('/home');
+      if (Object.keys(payload).length) {
+        const res = await dispatch(postActions.updatePost({ postId: currentPost?.id, payload }));
+        if (res.meta.requestStatus === 'fulfilled') {
+          navigate(-1);
+        }
+      } else {
+        SweetAlert.fire({
+          title: 'Success',
+          icon: 'success',
+          text: 'Nothing changes',
+        }).then(() => {
+          navigate(-1);
+        });
       }
     },
     validationSchema: yup.object().shape({
@@ -165,34 +125,15 @@ const CreateNewPostV2 = () => {
         .max(100, 'Can not be more than 100 characters'),
     }),
   });
-  const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
-  const [selectedHashtags, setSelectedHashtags] = useState<ITag[]>([]);
-  const [file, setFile] = useState<File | null>(null);
-  const [description, setDescription] = useState('');
 
-  const changeContentType = (event: ChangeEvent<HTMLInputElement>): void => {
-    const val = (event.target as HTMLInputElement).value;
-    if (val === 'image') {
-      setFile(null);
-      form.setFieldValue('videoYtbUrl', '');
-    } else if (val === 'upload') {
-      form.setFieldValue('videoYtbUrl', '');
-      form.setFieldValue('imageUrl', '');
-    } else if (val === 'video') {
-      setFile(null);
-      form.setFieldValue('imageUrl', '');
-    }
-    setContentType(val);
-  };
-
-  const openMap = (): void => {
+  const openMap = useCallback((): void => {
     setIsOpenMap(true);
-  };
+  }, []);
 
-  const closeMap = (): void => {
+  const closeMap = useCallback((): void => {
     setMarker(null);
     setIsOpenMap(false);
-  };
+  }, []);
 
   const openCreateFormPopup = async (
     title: string,
@@ -285,40 +226,19 @@ const CreateNewPostV2 = () => {
     setSelectedCategories(newValues);
   };
 
-  const handleUploadFile = (event) => {
-    const file = event.target.files[0] as File;
-    if (!_.isNil(file)) {
-      const isValidExt = ['image/gif', 'image/jpeg', 'image/png', 'image/jpg'].includes(file.type);
-      if (file.size >= 10485760) {
-        showError('The file is so large, please choose a image which has size less than  10MB');
-      } else if (isValidExt) {
-        setFile(file);
-      } else {
-        showError('Invalid file type. It should be a image file');
-      }
-    } else {
-      showError('Please choose an image file to upload');
-    }
+  const isHasLocation = (): boolean => {
+    const { location, latitude, longitude } = form.values;
+    return Boolean(location?.trim() || latitude?.trim() || longitude?.trim());
   };
 
-  const checkIsImageUrl = (imageUrl: string): boolean => {
-    const validImageUrls = process.env.REACT_APP_SUPPORT_IMAGE_LINK.split(',');
-    for (const type of validImageUrls) {
-      if (imageUrl.includes(type.trim())) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const checkIsValidVideoUrl = (videoUrl: string): boolean => {
-    const validUrls = process.env.REACT_APP_SUPPORT_VIDEO_LINK.split(',');
-    for (const type of validUrls) {
-      if (videoUrl.includes(type.trim())) {
-        return true;
-      }
-    }
-    return false;
+  const removeLocation = (): void => {
+    const values = form.values;
+    form.setValues({
+      ...values,
+      location: '',
+      latitude: '',
+      longitude: '',
+    });
   };
 
   useEffect(() => {
@@ -329,18 +249,66 @@ const CreateNewPostV2 = () => {
         text: 'You are not sign in. Please sign in to continue',
         confirmButtonText: 'Sign in',
         showCancelButton: true,
-      }).then((status) => {
-        if (!status.isConfirmed || status.isDismissed) {
-          navigate('/');
-        } else {
-          navigate('/sign-in');
-        }
+      })
+        .then((status) => {
+          if (!status.isConfirmed || status.isDismissed) {
+            navigate('/');
+          } else {
+            navigate('/sign-in');
+          }
+        })
+        .then(() => {
+          navigate(-1);
+        });
+    } else if (currentUser?.id !== +userId) {
+      SweetAlert.fire({
+        title: 'Error',
+        icon: 'error',
+        text: "You cannot edit other people's posts",
       });
     } else {
       dispatch(categoriesActions.getCategoryList());
       dispatch(tagsActions.getTagList());
+      dispatch(postActions.getPostByIdAsync(+postId));
     }
   }, []);
+
+  useEffect(() => {
+    if (currentPost) {
+      // set title for post
+      const {
+        title,
+        latitude,
+        location,
+        longitude,
+        tags: postTags,
+        description: desc,
+        categories: postCategories,
+      } = currentPost;
+      form.setValues({
+        title: title || '',
+        location: location || '',
+        latitude: latitude ? latitude.toString() : '',
+        longitude: longitude ? longitude.toString() : '',
+      });
+      // Set categories
+      const currCategories = _.map(postCategories, (cate) => {
+        const category = _.find(categories, (item) => item.categoryName === cate);
+        return category;
+      });
+      setSelectedCategories(currCategories);
+      // Set hashtags
+      const currTags = _.map(postTags, (tag) => {
+        const category = _.find(hashtags, (item) => item.tagName === tag);
+        return category;
+      });
+      setSelectedHashtags(currTags);
+      // set description
+      if (desc) {
+        setDescription(desc);
+      }
+    }
+  }, [currentPost]);
 
   return (
     <>
@@ -353,14 +321,13 @@ const CreateNewPostV2 = () => {
               md: '80%',
               lg: '50%',
             },
-            minHeight: '705px',
           }}
           padding={2}
           elevation={2}
           borderRadius={2}
           component={Paper}>
           <Typography textAlign='center' variant='h2' textTransform='uppercase' fontWeight={600}>
-            New Post
+            Update Post
           </Typography>
           <Divider>
             <Typography fontWeight={700}>Content</Typography>
@@ -380,66 +347,16 @@ const CreateNewPostV2 = () => {
                     error={isInvalidControl('title')}
                     helperText={getErrorMessage('title')}
                   />
-                  <AppRadioGroup
-                    label='Media type'
-                    options={contentTypeOptions}
-                    value={contentType}
-                    onChange={changeContentType}
-                  />
-                  <Box marginTop={1}>
-                    <Box>
-                      {contentType === 'upload' &&
-                        (_.isNil(file) ? (
-                          <AppUploadButton
-                            buttonLabel='Upload image'
-                            acceptFile='image/*'
-                            onUploadingFile={handleUploadFile}
-                          />
-                        ) : (
-                          <Stack direction='row' spacing={2} alignItems='center'>
-                            <Typography>{file.name}</Typography>
-                            <AppIconButton
-                              tooltip='Cancel'
-                              icon={<AppIcon icon={Close} color='#e60023' />}
-                              onClick={() => setFile(null)}
-                            />
-                          </Stack>
-                        ))}
-                      <Typography marginY={2} fontStyle='italic'>
-                        Support file: .png, .jpg, .jpeg, .gif
-                      </Typography>
-                    </Box>
-                    {contentType === 'video' && (
-                      <Box>
-                        <TextField
-                          sx={{
-                            display: 'block',
-                            marginBottom: '12px',
-                          }}
-                          fullWidth
-                          label='Video link'
-                          {...form.getFieldProps('videoYtbUrl')}
-                        />
-                        <Typography marginY={1} fontStyle='italic'>
-                          Support link: {process.env.REACT_APP_SUPPORT_VIDEO_LINK}
-                        </Typography>
-                      </Box>
-                    )}
-                    {contentType === 'image' && (
-                      <Box>
-                        <TextField
-                          sx={{
-                            display: 'block',
-                            marginBottom: '12px',
-                          }}
-                          fullWidth
-                          label='Image link'
-                          {...form.getFieldProps('imageUrl')}
-                        />
-                        <Typography marginY={1} fontStyle='italic'>
-                          Support link: {process.env.REACT_APP_SUPPORT_IMAGE_LINK}
-                        </Typography>
-                      </Box>
+                  <Box marginY={1} className={styles['post-content']} component={Paper}>
+                    {currentPost?.type === 'video' ? (
+                      <ReactPlayer
+                        url={currentPost?.videoYtbUrl}
+                        light
+                        width='100%'
+                        height='100%'
+                      />
+                    ) : (
+                      <img src={currentPost?.imageUrl} alt={currentPost?.title} />
                     )}
                   </Box>
                   <Divider>
@@ -501,6 +418,17 @@ const CreateNewPostV2 = () => {
                             startIcon={<AppIcon icon={Map} color='#fff' />}>
                             Select on map
                           </Button>
+                          {isHasLocation() && (
+                            <Button
+                              type='button'
+                              variant='contained'
+                              color='error'
+                              onClick={removeLocation}
+                              sx={{ textTransform: 'initial', ml: 1 }}
+                              startIcon={<AppIcon icon={Delete} color='#fff' />}>
+                              Clear
+                            </Button>
+                          )}
                         </Box>
                       </AccordionDetails>
                     </Accordion>
@@ -511,7 +439,7 @@ const CreateNewPostV2 = () => {
                         expandIcon={<AppIcon icon={ExpandMore} />}
                         aria-controls='panel1a-content'
                         id='panel1a-header'>
-                        <Typography fontWeight={700}>Add Categories & tags</Typography>
+                        <Typography fontWeight={700}>Add categories & tags</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
                         <Stack
@@ -589,6 +517,7 @@ const CreateNewPostV2 = () => {
                             className={styles['text-editor']}
                             value={description}
                             onChange={setDescription}
+                            ref={descRef}
                           />
                         </Box>
                       </AccordionDetails>
@@ -603,7 +532,7 @@ const CreateNewPostV2 = () => {
                         textTransform: 'inherit',
                         fontSize: '18px',
                       }}>
-                      Create
+                      Update
                     </Button>
                   </Stack>
                 </Grid>
@@ -629,4 +558,4 @@ const CreateNewPostV2 = () => {
   );
 };
 
-export default CreateNewPostV2;
+export default ProfileUpdatePost;
