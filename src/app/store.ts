@@ -6,6 +6,7 @@ import { authReducer } from '../features/auth/store';
 import { bookmarkReducer } from '../features/bookmark';
 import { categoriesReducer } from '../features/categories/store';
 import { commentsReducer } from '../features/comments/store';
+import { exploreReducer } from '../features/explore/exploreSlice';
 import { landingPageReducer } from '../features/landing-page/store';
 import { postReducer } from '../features/posts/store';
 import { profileReducer } from '../features/profile-dashboard';
@@ -33,6 +34,7 @@ const combineReducer = combineReducers({
   shorts: shortsReducer,
   bookmark: bookmarkReducer,
   user: userReducer,
+  explore: exploreReducer
 });
 
 const rootReducer = (state, action) => {

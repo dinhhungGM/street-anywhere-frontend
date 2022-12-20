@@ -440,7 +440,7 @@ const PostDetail = () => {
         isDisplayOkButton
         title='Map'
         width='60vw'
-        height='60vh'
+        height='60vh !important'
         okText='Close'>
         <AppMapBox
           address={post?.location}

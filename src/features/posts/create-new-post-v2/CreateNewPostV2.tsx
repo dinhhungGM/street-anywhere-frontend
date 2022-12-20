@@ -618,7 +618,7 @@ const CreateNewPostV2 = () => {
         onClose={closeMap}
         onCancel={closeMap}
         width='60vw'
-        height='60vh'
+        height='60vh !important'
         okText='Select'
         onOk={handleOnSelectPoint}>
         <Box height='60vh'>

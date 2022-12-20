@@ -40,6 +40,7 @@ export interface IPost {
   isBookmarked?: boolean;
   followingDetail?: IFollowingUser | null | undefined;
   isFollowingUser?: boolean;
+  distance?: number;
 }
 
 export interface ITag {
