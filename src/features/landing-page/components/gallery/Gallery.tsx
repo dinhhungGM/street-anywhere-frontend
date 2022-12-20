@@ -1,9 +1,9 @@
-import { Close, ConnectingAirportsOutlined, Search } from '@mui/icons-material';
+import { Close, Search } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
 import { Box, Grid, InputAdornment, TextField } from '@mui/material';
 import _ from 'lodash';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppCardV2 } from '../../../../solutions/components/app-card-v2';
@@ -39,6 +39,7 @@ const Gallery = () => {
   const [searchHashtags, setSearchHashtags] = useState<ITag[]>([]);
   const [search, setSearch] = useState<string>('');
   const [page, setPage] = useState<number>(1);
+  const navigate = useNavigate();
   //#region Handling search
 
   const onCategoryDropDownChange = useCallback((e, values: ICategory[]): void => {
@@ -81,6 +82,10 @@ const Gallery = () => {
         title: 'Notification',
         icon: 'warning',
         text: 'You are not sign in',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/sign-in');
+        }
       });
     } else {
       if (post.isBookmarked) {
@@ -114,6 +119,12 @@ const Gallery = () => {
         title: 'Notification',
         icon: 'warning',
         text: 'You are not sign in',
+        confirmButtonText: 'Sign in',
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/sign-in');
+        }
       });
     } else {
       if (post.isFollowingUser) {

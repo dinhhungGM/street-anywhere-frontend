@@ -60,6 +60,7 @@ const AppCardV2 = ({
   const handleEdit = (e): void => {
     e.stopPropagation();
     handleCloseMoreMenu(e);
+    navigate(`/profile/${ currentUserId }/update-post/${ post?.id }`);
   };
 
   const handleDelete = (e): void => {

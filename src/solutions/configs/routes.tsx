@@ -71,6 +71,12 @@ const LazyWelcomeDashboard = lazy(() =>
   import('../../features/welcome-dashboard').then((m) => ({ default: m.WelcomeDashboard })),
 );
 
+const LazyProfileUpdatePost = lazy(() =>
+  import('./../../features/profile-dashboard/profile-update-post').then((m) => ({
+    default: m.ProfileUpdatePost,
+  })),
+);
+
 type Route = {
   id: string;
   path: string;
@@ -170,6 +176,11 @@ const routes: Route[] = [
         element: <LazyDashboardHome />,
       },
     ],
+  },
+  {
+    id: 'profile-update-port',
+    path: '/profile/:userId/update-post/:postId',
+    element: <LazyProfileUpdatePost />,
   },
   {
     id: 'page-not-found',
