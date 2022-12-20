@@ -1,3 +1,35 @@
 .shorts {
   min-height: calc(100vh - 72px - 56px);
+  background-image: linear-gradient(
+    112.1deg,
+    rgba(32, 38, 57, 1) 11.4%,
+    rgba(63, 76, 119, 1) 70.2%
+  );
+  &__container {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 16px;
+  }
+  &__card {
+    min-height: 600px;
+    width: 700px;
+    padding: 16px;
+
+    &:not(:last-child) {
+      border-bottom: 2px solid #ccc;
+      margin-bottom: 16px;
+    }
+
+    &__header {
+      padding: 12px 0;
+    }
+
+    &__body {
+      min-height: calc(600px - 64px);
+      iframe {
+        border-radius: 4px;
+      }
+    }
+  }
 }

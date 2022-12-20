@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { IPost } from '../../../solutions/models/postModels';
 import * as shortAsyncActions from './shortsAsyncActions';
 interface IShortsState {
-  shorts: any[];
+  shorts: IPost[];
 }
 
 const initialState: IShortsState = {
@@ -11,7 +12,11 @@ const initialState: IShortsState = {
 const shortsSlice = createSlice({
   name: 'shorts',
   initialState,
-  reducers: {},
+  reducers: {
+    resetShorts: (state) => {
+      state.shorts = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(shortAsyncActions.getShorts.fulfilled, (state, action) => {
       state.shorts = action.payload;
