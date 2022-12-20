@@ -1,10 +1,11 @@
 import { Masonry } from '@mui/lab';
-import { Box, Paper, Stack, Typography } from '@mui/material';
+import { Box, Divider, Stack } from '@mui/material';
 import { memo, useEffect, useMemo } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { profileActions, profileSelectors } from '..';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppCardV2 } from '../../../solutions/components/app-card-v2';
+import { AppHeading } from '../../../solutions/components/app-heading';
 import { authSelectors } from '../../auth/store';
 import styles from './styles.module.scss';
 
@@ -19,6 +20,11 @@ const ProfileListPosts = () => {
     return currentUser?.id === +userId;
   }, [currentUser]);
 
+  const getHeading = (): string => {
+    const mediaType = searchParams.get('mediatype');
+    return mediaType === 'image' ? `Images (${ myPosts?.length })` : `Videos (${ myPosts?.length })`;
+  };
+
   useEffect(() => {
     const mediaType = searchParams.get('mediatype');
     dispatch(profileActions.getPostsOfUser({ userId: +userId, mediaType }));
@@ -30,25 +36,29 @@ const ProfileListPosts = () => {
     <>
       <Box className={styles.images}>
         {myPosts?.length ? (
-          <Masonry
-            columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
-            spacing={2}
-            sx={{
-              width: '100%',
-            }}>
-            {myPosts.map((post) => (
-              <Box
-                sx={{
-                  margin: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                key={post?.id}>
-                <AppCardV2 post={post} currentUserId={post?.userId} isCreator={isCreator} />
-              </Box>
-            ))}
-          </Masonry>
+          <>
+            <AppHeading heading={getHeading()} />
+            <br />
+            <Masonry
+              columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
+              spacing={2}
+              sx={{
+                width: '100%',
+              }}>
+              {myPosts.map((post) => (
+                <Box
+                  sx={{
+                    margin: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  key={post?.id}>
+                  <AppCardV2 post={post} currentUserId={post?.userId} isCreator={isCreator} />
+                </Box>
+              ))}
+            </Masonry>
+          </>
         ) : (
           <Stack height='100%' alignItems='center' justifyContent='center'>
             <img src='/empty-data.jpg' alt='No data' />
