@@ -1,9 +1,12 @@
-import { Bookmark, Delete, Edit, Visibility } from '@mui/icons-material';
+import { Bookmark, Delete, Edit } from '@mui/icons-material';
 import { Avatar, Box, Button, MenuItem, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import cx from 'classnames';
-import { memo } from 'react';
+import { memo, useCallback, useState } from 'react';
 import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
+import SweetAlert from 'sweetalert2';
+import { useAppDispatch } from '../../../app/hooks';
+import { profileActions } from '../../../features/profile-dashboard/index';
 import { IPost } from '../../models/postModels';
 import { AppIcon } from '../app-icon';
 import { AppIconButton } from '../app-icon-button';
@@ -32,6 +35,8 @@ const AppCardV2 = ({
   },
 }: IAppCardV2Props) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [isOpenMoreMenu, setIsOpenMoreMenu] = useState(false);
 
   const navigateToPostDetail = (postId: number): void => {
     navigate(`/posts/${ postId }`, { replace: true });
@@ -54,11 +59,33 @@ const AppCardV2 = ({
 
   const handleEdit = (e): void => {
     e.stopPropagation();
+    handleCloseMoreMenu(e);
   };
 
   const handleDelete = (e): void => {
     e.stopPropagation();
+    handleCloseMoreMenu(e);
+    SweetAlert.fire({
+      title: 'Confirm',
+      icon: 'question',
+      text: 'Are you sure to remove this post?',
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(profileActions.deletePostById(post?.id));
+      }
+    });
   };
+
+  const handleOpenMoreMenu = useCallback((e) => {
+    e.stopPropagation();
+    setIsOpenMoreMenu(true);
+  }, []);
+
+  const handleCloseMoreMenu = useCallback((e) => {
+    e.stopPropagation();
+    setIsOpenMoreMenu(false);
+  }, []);
 
   return (
     <>
@@ -94,7 +121,12 @@ const AppCardV2 = ({
                 onClick={handleOnClickBookmark}
               />
               {isCreator && (
-                <AppMoreMenu bgColor='#fff' btnSize='large'>
+                <AppMoreMenu
+                  bgColor='#fff'
+                  btnSize='large'
+                  isOpenMenu={isOpenMoreMenu}
+                  onOpen={handleOpenMoreMenu}
+                  onClose={handleCloseMoreMenu}>
                   <MenuItem onClick={handleEdit}>
                     <AppIconButton tooltip='Edit' icon={<AppIcon icon={Edit} color='#44ff00' />} />
                     <Typography>Edit</Typography>

@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { wrapperActions } from '../wrapper/store';
 import { default as axios } from './../../solutions/services/axios';
+import { profileSyncActions } from './profileDashboardSlice';
 
 export const getAllPostsOfCurrentUser = createAsyncThunk(
   'profile/getAllPostsOfCurrentUser',
@@ -28,8 +29,14 @@ export const deletePostById = createAsyncThunk(
   async (postId: number, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      const { data } = await axios.delete(`/posts/${ postId }`);
-      return data.value;
+      await axios.delete(`/posts/${ postId }`);
+      dispatch(
+        wrapperActions.showToast({
+          toastSeverity: 'success',
+          toastMessage: 'Delete successfully',
+        }),
+      );
+      dispatch(profileSyncActions.removeDeletedPost({ postId }));
     } catch (error) {
       dispatch(
         wrapperActions.showNotification({

@@ -21,6 +21,10 @@ const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
+    removeDeletedPost: (state, action) => {
+      const { postId } = action.payload;
+      state.myPosts = state.myPosts.filter((post) => post.id !== postId);
+    },
     resetMyPosts: (state) => {
       state.myPosts = null;
     },
@@ -43,4 +47,5 @@ const profileSlice = createSlice({
     });
   },
 });
+export const profileSyncActions = profileSlice.actions;
 export default profileSlice;
