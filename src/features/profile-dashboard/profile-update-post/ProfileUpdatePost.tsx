@@ -1,4 +1,4 @@
-import { Add, ExpandMore, Map, PostAdd } from '@mui/icons-material';
+import { Add, Delete, ExpandMore, Map, PostAdd } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
@@ -10,12 +10,13 @@ import {
   Paper,
   Stack,
   TextField,
-  Typography,
+  Typography
 } from '@mui/material';
 import { useFormik } from 'formik';
 import _ from 'lodash';
 import { Marker } from 'mapbox-gl';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import ReactPlayer from 'react-player';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -30,28 +31,10 @@ import { AppSelect } from '../../../solutions/components/app-select';
 import { authSelectors } from '../../auth/store';
 import { categoriesActions, categoriesSelectors } from '../../categories/store';
 import { ICategory } from '../../categories/store/categoriesModels';
-import { postActions } from '../../posts/store';
+import { postActions, postSelectors } from '../../posts/store';
 import { tagsActions, tagSelectors } from '../../tags/store';
 import { ITag } from '../../tags/store/tagModels';
 import styles from './styles.module.scss';
-
-const contentTypeOptions = [
-  {
-    id: 1,
-    value: 'image',
-    label: 'Image Link',
-  },
-  {
-    id: 2,
-    value: 'upload',
-    label: 'Upload image',
-  },
-  {
-    id: 3,
-    value: 'video',
-    label: 'Video',
-  },
-];
 
 const showError = (errorMessage: string): void => {
   SweetAlert.fire({
@@ -85,36 +68,63 @@ const ProfileUpdatePost = () => {
       latitude: '',
     },
     onSubmit: async (values) => {
-      const formData = new FormData();
-      formData.append('title', values.title);
-      formData.append('shortTitle', values.title);
-      formData.append('userId', currentUser.id.toString());
-
+      const payload = {};
+      const { title, location, longitude, latitude } = values;
+      // Check title, location
+      if (!_.isEqual(title, currentPost?.title)) {
+        payload['title'] = values.title;
+      }
       // Check location
-      const { longitude, latitude, location } = values;
-      const isValidLong = longitude && longitude.trim();
-      const isValidLat = latitude && latitude.trim();
-      const isValidAddress = location && location.trim();
-      if (isValidLong && isValidLat && isValidAddress) {
-        formData.append('longitude', values.longitude);
-        formData.append('latitude', values.latitude);
-        formData.append('location', values.location);
+      const isEmptyAll = Boolean(!location.trim() && !longitude.trim() && !latitude.trim());
+      const isDirtyAll = Boolean(location && longitude && latitude);
+      const isDirty = [location, latitude, longitude].some((data) => data.trim());
+      const newLocation = { location, longitude, latitude };
+      if (isEmptyAll && currentPost.isHasLocation) {
+        for (const field of Object.keys(newLocation)) {
+          payload[field] = null;
+        }
+      } else if (isDirtyAll) {
+        for (const field of Object.keys(newLocation)) {
+          const newVal = newLocation[field];
+          const currVal = `${ currentPost[field] }`;
+          if (!_.isEqual(newVal, currVal)) {
+            payload[field] = newVal;
+          }
+        }
+      } else if (isDirty) {
+        // For case, at least one field was filled
+        SweetAlert.fire({ title: 'Info', icon: 'info', text: 'Please fill all location data' });
+        return;
       }
-
+      // Check categories
+      const newCates = _.map(selectedCategories, 'categoryName');
+      if (!_.isEqual(newCates, currentPost?.categories)) {
+        const listId = _.map(selectedCategories, 'id');
+        payload['categories'] = listId;
+      }
+      // Check tags
+      const newTags = _.map(selectedHashtags, 'tagName');
+      if (!_.isEqual(newTags, currentPost?.tags)) {
+        const listId = _.map(selectedHashtags, 'id');
+        payload['tags'] = listId;
+      }
       // Check description
-      if (description) {
-        formData.append('description', encodeURIComponent(description));
+      if (!_.isEqual(description, currentPost?.description)) {
+        payload['description'] = description;
       }
-
-      // Success
-      const tagIds = _.map(selectedHashtags, 'id');
-      const categoryIds = _.map(selectedCategories, 'id');
-      formData.append('tags', JSON.stringify(tagIds));
-      formData.append('categories', JSON.stringify(categoryIds));
-      const result = await dispatch(postActions.createPostActionAsync(formData));
-      if (result.meta.requestStatus === 'fulfilled') {
-        showSuccess('Create successfully');
-        navigate('/home');
+      if (Object.keys(payload).length) {
+        const res = await dispatch(postActions.updatePost({ postId: currentPost?.id, payload }));
+        if (res.meta.requestStatus === 'fulfilled') {
+          navigate(-1);
+        }
+      } else {
+        SweetAlert.fire({
+          title: 'Success',
+          icon: 'success',
+          text: 'Nothing changes',
+        }).then(() => {
+          navigate(-1);
+        });
       }
     },
     validationSchema: yup.object().shape({
@@ -129,15 +139,17 @@ const ProfileUpdatePost = () => {
   const [selectedHashtags, setSelectedHashtags] = useState<ITag[]>([]);
   const [description, setDescription] = useState('');
   const { userId, postId } = useParams();
+  const currentPost = useAppSelector(postSelectors.selectSelectedPost);
+  const descRef = useRef();
 
-  const openMap = (): void => {
+  const openMap = useCallback((): void => {
     setIsOpenMap(true);
-  };
+  }, []);
 
-  const closeMap = (): void => {
+  const closeMap = useCallback((): void => {
     setMarker(null);
     setIsOpenMap(false);
-  };
+  }, []);
 
   const openCreateFormPopup = async (
     title: string,
@@ -230,6 +242,21 @@ const ProfileUpdatePost = () => {
     setSelectedCategories(newValues);
   };
 
+  const isHasLocation = (): boolean => {
+    const { location, latitude, longitude } = form.values;
+    return Boolean(location?.trim() || latitude?.trim() || longitude?.trim());
+  };
+
+  const removeLocation = (): void => {
+    const values = form.values;
+    form.setValues({
+      ...values,
+      location: '',
+      latitude: '',
+      longitude: '',
+    });
+  };
+
   useEffect(() => {
     if (_.isNil(currentUser)) {
       SweetAlert.fire({
@@ -258,8 +285,46 @@ const ProfileUpdatePost = () => {
     } else {
       dispatch(categoriesActions.getCategoryList());
       dispatch(tagsActions.getTagList());
+      dispatch(postActions.getPostByIdAsync(+postId));
     }
   }, []);
+
+  useEffect(() => {
+    if (currentPost) {
+      // set title for post
+      const {
+        title,
+        latitude,
+        longitude,
+        location,
+        categories: postCategories,
+        tags: postTags,
+        description: desc,
+      } = currentPost;
+      form.setValues({
+        title: title || '',
+        latitude: latitude ? latitude.toString() : '',
+        longitude: longitude ? longitude.toString() : '',
+        location: location || '',
+      });
+      // Set categories
+      const currCategories = _.map(postCategories, (cate) => {
+        const category = _.find(categories, (item) => item.categoryName === cate);
+        return category;
+      });
+      setSelectedCategories(currCategories);
+      // Set hashtags
+      const currTags = _.map(postTags, (tag) => {
+        const category = _.find(hashtags, (item) => item.tagName === tag);
+        return category;
+      });
+      setSelectedHashtags(currTags);
+      // set description
+      if (desc) {
+        setDescription(desc);
+      }
+    }
+  }, [currentPost]);
 
   return (
     <>
@@ -298,6 +363,18 @@ const ProfileUpdatePost = () => {
                     error={isInvalidControl('title')}
                     helperText={getErrorMessage('title')}
                   />
+                  <Box marginY={1} className={styles['post-content']} component={Paper}>
+                    {currentPost?.type === 'video' ? (
+                      <ReactPlayer
+                        url={currentPost?.videoYtbUrl}
+                        light
+                        width='100%'
+                        height='100%'
+                      />
+                    ) : (
+                      <img src={currentPost?.imageUrl} alt={currentPost?.title} />
+                    )}
+                  </Box>
                   <Divider>
                     <Typography fontWeight={700}>Optional Information</Typography>
                   </Divider>
@@ -357,6 +434,17 @@ const ProfileUpdatePost = () => {
                             startIcon={<AppIcon icon={Map} color='#fff' />}>
                             Select on map
                           </Button>
+                          {isHasLocation() && (
+                            <Button
+                              type='button'
+                              variant='contained'
+                              color='error'
+                              onClick={removeLocation}
+                              sx={{ textTransform: 'initial', ml: 1 }}
+                              startIcon={<AppIcon icon={Delete} color='#fff' />}>
+                              Clear
+                            </Button>
+                          )}
                         </Box>
                       </AccordionDetails>
                     </Accordion>
@@ -367,7 +455,7 @@ const ProfileUpdatePost = () => {
                         expandIcon={<AppIcon icon={ExpandMore} />}
                         aria-controls='panel1a-content'
                         id='panel1a-header'>
-                        <Typography fontWeight={700}>Add Categories & tags</Typography>
+                        <Typography fontWeight={700}>Add categories & tags</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
                         <Stack
@@ -445,6 +533,7 @@ const ProfileUpdatePost = () => {
                             className={styles['text-editor']}
                             value={description}
                             onChange={setDescription}
+                            ref={descRef}
                           />
                         </Box>
                       </AccordionDetails>
@@ -459,7 +548,7 @@ const ProfileUpdatePost = () => {
                         textTransform: 'inherit',
                         fontSize: '18px',
                       }}>
-                      Create
+                      Update
                     </Button>
                   </Stack>
                 </Grid>

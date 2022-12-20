@@ -16,7 +16,6 @@ const ProfileListPosts = ({ currentUserId, mediaType, isCreator }: IProfileListP
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myPosts = useAppSelector(profileSelectors.selectMyPosts);
-  console.log(myPosts);
   useEffect(() => {
     dispatch(profileActions.getPostsOfUser({ userId: currentUserId, mediaType }));
     return () => {

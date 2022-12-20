@@ -86,4 +86,31 @@ export const postActionsAsync = {
       }
     },
   ),
+  updatePost: createAsyncThunk(
+    'post/updatePost',
+    async (params: { postId: number; payload: any; }, { dispatch }) => {
+      try {
+        dispatch(wrapperActions.showLoading());
+        await axios.patch(`/posts/${ params.postId }`, params.payload, {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        dispatch(
+          wrapperActions.showNotification({
+            typeOfNotification: 'success',
+            message: 'Update successfully',
+          }),
+        );
+      } catch (error) {
+        dispatch(
+          wrapperActions.showNotification({
+            typeOfNotification: 'error',
+            message: error.response.data.message,
+          }),
+        );
+        return Promise.reject();
+      } finally {
+        dispatch(wrapperActions.hideLoading());
+      }
+    },
+  ),
 };
