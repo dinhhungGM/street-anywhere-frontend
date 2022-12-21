@@ -1,11 +1,4 @@
-import {
-  AddAPhoto,
-  Bookmark, Image,
-  People,
-  Person,
-  Upload,
-  YouTube
-} from '@mui/icons-material';
+import { AddAPhoto, Bookmark, Image, People, Person, Upload, YouTube } from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -15,7 +8,7 @@ import {
   Stack,
   Tab,
   Tabs,
-  Typography
+  Typography,
 } from '@mui/material';
 import _ from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -163,127 +156,117 @@ const ProfileDashBoard = () => {
 
   return (
     <>
-      {_.isNil(currentUser) ? (
-        <>
-          <Box className={styles['dashboard']}>
-            <Stack alignItems='center' justifyContent='center' width='100%' height='100%'>
-              <img src='/pagenotfound.png' alt='User not found' />
-            </Stack>
-          </Box>
-        </>
-      ) : (
-        <Box className={styles['dashboard']}>
-          <input type='file' accept='image/*' hidden ref={inputFileRef} onChange={onFileChange} />
-          <Box
-            sx={{
-              width: '100%',
-              height: '400px',
-              background: profileDetail?.coverImageUrl
-                ? `url(${ profileDetail?.coverImageUrl })`
-                : '#ccc',
-              borderRadius: 4,
-              position: 'relative',
-              backgroundSize: 'cover',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-            }}
-            component={Paper}>
-            {isCurrentUser && (
-              <Button
-                startIcon={<AppIcon icon={AddAPhoto} color='#fff' />}
-                variant='contained'
-                className={styles['dashboard-add-cover-image']}
-                onClick={() => uploadImage(ProfilePropertiesEnum.CoverImage)}>
-                Add cover image
-              </Button>
-            )}
-          </Box>
-          <Box className={styles['dashboard-user']}>
-            <Box className={styles['dashboard-user-info']}>
-              <Box
-                sx={{
-                  position: 'relative',
-                }}>
-                <Avatar
-                  src={profileDetail?.profilePhotoUrl}
-                  className={styles['dashboard-user-avatar']}
-                />
-                {isCurrentUser && (
-                  <IconButton
-                    size='medium'
-                    className={styles['dashboard-user-upload']}
-                    color='error'
-                    onClick={() => uploadImage(ProfilePropertiesEnum.Avatar)}>
-                    <AppIcon icon={Upload} color='#fff' />
-                  </IconButton>
-                )}
-              </Box>
-              <Box
-                marginLeft={3}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}>
-                <Typography variant='h5' fontWeight={700}>
-                  {profileDetail?.fullName}
-                </Typography>
-                <Typography textAlign='center' marginTop={1}>
-                  0 Followers
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          <Box className={styles['tab-container']}>
-            <Tabs
-              value={tab}
-              onChange={handleTabChange}
-              variant='scrollable'
-              scrollButtons='auto'
-              allowScrollButtonsMobile
-              indicatorColor='primary'>
-              <Tab
-                icon={<AppIcon icon={Person} />}
-                label='Info'
-                iconPosition='start'
-                className={styles['tab-item']}
-                onClick={() => handleNavigate(`/profile/${ userId }`)}
-              />
-              <Tab
-                icon={<AppIcon icon={People} />}
-                label='Followers'
-                iconPosition='start'
-                className={styles['tab-item']}
-                onClick={() => handleNavigate(`/profile/${ userId }/followers`)}
-              />
-              <Tab
-                icon={<AppIcon icon={Image} />}
-                label='Images'
-                iconPosition='start'
-                className={styles['tab-item']}
-                onClick={() => handleNavigate(`/profile/${ userId }/posts?mediatype=image`)}
-              />
-              <Tab
-                icon={<AppIcon icon={YouTube} />}
-                label='Videos'
-                iconPosition='start'
-                className={styles['tab-item']}
-                onClick={() => handleNavigate(`/profile/${ userId }/posts?mediatype=video`)}
+      <Box className={styles['dashboard']}>
+        <input type='file' accept='image/*' hidden ref={inputFileRef} onChange={onFileChange} />
+        <Box
+          sx={{
+            width: '100%',
+            height: '400px',
+            background: profileDetail?.coverImageUrl
+              ? `url(${ profileDetail?.coverImageUrl })`
+              : '#ccc',
+            borderRadius: 4,
+            position: 'relative',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}
+          component={Paper}>
+          {isCurrentUser && (
+            <Button
+              startIcon={<AppIcon icon={AddAPhoto} color='#fff' />}
+              variant='contained'
+              className={styles['dashboard-add-cover-image']}
+              onClick={() => uploadImage(ProfilePropertiesEnum.CoverImage)}>
+              Add cover image
+            </Button>
+          )}
+        </Box>
+        <Box className={styles['dashboard-user']}>
+          <Box className={styles['dashboard-user-info']}>
+            <Box
+              sx={{
+                position: 'relative',
+              }}>
+              <Avatar
+                src={profileDetail?.profilePhotoUrl}
+                className={styles['dashboard-user-avatar']}
               />
               {isCurrentUser && (
-                <Tab
-                  icon={<AppIcon icon={Bookmark} />}
-                  label='Bookmark'
-                  iconPosition='start'
-                  className={styles['tab-item']}
-                />
+                <IconButton
+                  size='medium'
+                  className={styles['dashboard-user-upload']}
+                  color='error'
+                  onClick={() => uploadImage(ProfilePropertiesEnum.Avatar)}>
+                  <AppIcon icon={Upload} color='#fff' />
+                </IconButton>
               )}
-            </Tabs>
-          </Box>
-          <Box marginY={2} className={styles['profile-content']}>
-            <Outlet />
+            </Box>
+            <Box
+              marginLeft={3}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+              }}>
+              <Typography variant='h5' fontWeight={700}>
+                {profileDetail?.fullName}
+              </Typography>
+              <Typography textAlign='center' marginTop={1}>
+                0 Followers
+              </Typography>
+            </Box>
           </Box>
         </Box>
-      )}
+        <Box className={styles['tab-container']}>
+          <Tabs
+            value={tab}
+            onChange={handleTabChange}
+            variant='scrollable'
+            scrollButtons='auto'
+            allowScrollButtonsMobile
+            indicatorColor='primary'>
+            <Tab
+              icon={<AppIcon icon={Person} />}
+              label='Info'
+              iconPosition='start'
+              className={styles['tab-item']}
+              onClick={() => handleNavigate(`/profile/${ userId }`)}
+            />
+            <Tab
+              icon={<AppIcon icon={People} />}
+              label='Followers'
+              iconPosition='start'
+              className={styles['tab-item']}
+              onClick={() => handleNavigate(`/profile/${ userId }/followers`)}
+            />
+            <Tab
+              icon={<AppIcon icon={Image} />}
+              label='Images'
+              iconPosition='start'
+              className={styles['tab-item']}
+              onClick={() => handleNavigate(`/profile/${ userId }/posts?mediatype=image`)}
+            />
+            <Tab
+              icon={<AppIcon icon={YouTube} />}
+              label='Videos'
+              iconPosition='start'
+              className={styles['tab-item']}
+              onClick={() => handleNavigate(`/profile/${ userId }/posts?mediatype=video`)}
+            />
+            {isCurrentUser && (
+              <Tab
+                icon={<AppIcon icon={Bookmark} />}
+                label='Bookmark'
+                iconPosition='start'
+                className={styles['tab-item']}
+              />
+            )}
+          </Tabs>
+        </Box>
+        <Box marginY={2} className={styles['profile-content']}>
+          <Outlet />
+        </Box>
+      </Box>
     </>
   );
 };
