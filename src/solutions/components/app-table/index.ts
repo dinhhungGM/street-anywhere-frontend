@@ -6,7 +6,7 @@ export interface IAppTableHeaderConfig {
   customClass?: string;
 }
 
-export interface IAppTableColumnConfig {
+export interface IAppTableRowConfig {
   isCenter?: boolean;
   field?: string;
   customClass?: string;

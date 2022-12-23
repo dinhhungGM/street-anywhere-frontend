@@ -1,6 +1,14 @@
 import { useMemo, memo } from 'react';
 import { Box, Paper } from '@mui/material';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import _ from 'lodash';
 import randomColor from 'randomcolor';
@@ -12,6 +20,7 @@ interface IAppBarChartProps {
   chartTitle?: string;
   labelField: string;
   valueField: string;
+  isStats?: boolean;
 }
 const AppBarChart = ({
   options = {},
@@ -19,6 +28,7 @@ const AppBarChart = ({
   labelField,
   valueField,
   chartTitle = 'Chart.js Bar Chart',
+  isStats = false,
 }: IAppBarChartProps) => {
   const chartOptions = useMemo(() => {
     return {
@@ -42,7 +52,7 @@ const AppBarChart = ({
       data,
       (acc, item) => {
         const value = item[valueField];
-        if (value) {
+        if (value || isStats) {
           acc.labels.push(item[labelField]);
           acc.data.push(value);
         }

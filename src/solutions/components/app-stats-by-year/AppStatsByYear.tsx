@@ -1,21 +1,29 @@
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
-import { memo, useMemo, useState } from 'react';
-import { AppLineChart } from '../app-line-chart';
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Stack,
+} from '@mui/material';
 import _ from 'lodash';
+import { memo, useMemo, useState } from 'react';
+import { AppBarChart } from '../app-bar-chart';
 
 const MONTHS = [
-  'January',
-  'February',
+  'Jan',
+  'Feb',
   'March',
   'April',
   'May',
   'June',
   'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
 ];
 
 interface IAppStatsByYearProps {
@@ -41,10 +49,14 @@ const AppStatsByYear = ({ dataByYears = null, chartTitle = 'Chart' }: IAppStatsB
 
   const chartData = useMemo(() => {
     if (year && dataByYears[year]) {
-      return _.map(dataByYears[year].details, (data) => ({
-        month: MONTHS[data.month - 1],
-        count: data.count,
-      }));
+      const details = dataByYears[year].details;
+      return _.map(MONTHS, (month, idx) => {
+        const itemData = _.find(details, (item) => item.month === idx + 1);
+        return {
+          month,
+          count: itemData ? itemData.count : 0,
+        };
+      });
     }
     return [];
   }, [year]);
@@ -69,7 +81,13 @@ const AppStatsByYear = ({ dataByYears = null, chartTitle = 'Chart' }: IAppStatsB
           </Select>
         </FormControl>
         <Box width='100%' height='100%'>
-          <AppLineChart data={chartData} labelField='month' valueField='count' chartTitle={chartTitle} />
+          <AppBarChart
+            data={chartData}
+            labelField='month'
+            valueField='count'
+            chartTitle={chartTitle}
+            isStats
+          />
         </Box>
       </Stack>
     </>
