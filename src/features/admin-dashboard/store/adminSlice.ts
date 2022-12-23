@@ -1,14 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { IPost } from '../../../solutions/models/postModels';
 import * as adminAsyncActions from './adminAsyncActions';
 import {
-  IUserManagement,
-  IRoleManagement,
-  IReactionManagement,
   ICategoryManagement,
   IHashTagManagement,
+  IReactionManagement,
+  IRoleManagement,
+  ISystemStats,
+  IUserManagement,
   IUserMostFollower,
   IUserMostPost,
-  ISystemStats,
 } from './adminModels';
 
 interface IAdminState {
@@ -22,6 +23,7 @@ interface IAdminState {
   userMostFollower: IUserMostFollower[];
   userMostPost: IUserMostPost[];
   sysStats: ISystemStats;
+  posts: IPost[];
 }
 const initialState: IAdminState = {
   users: [],
@@ -34,6 +36,7 @@ const initialState: IAdminState = {
   userMostFollower: [],
   userMostPost: [],
   sysStats: null,
+  posts: [],
 };
 
 const adminSlice = createSlice({
@@ -46,6 +49,9 @@ const adminSlice = createSlice({
       state.userMostPost = [];
       state.userMostFollower = [];
       state.sysStats = null;
+    },
+    resetPostManagement: (state) => {
+      state.posts = [];
     },
   },
   extraReducers: (builder) => {
@@ -117,6 +123,13 @@ const adminSlice = createSlice({
     });
     builder.addCase(adminAsyncActions.getSystemStats.rejected, (state, action) => {
       state.sysStats = null;
+    });
+
+    builder.addCase(adminAsyncActions.getPostsForManagement.fulfilled, (state, action) => {
+      state.posts = action.payload;
+    });
+    builder.addCase(adminAsyncActions.getPostsForManagement.rejected, (state, action) => {
+      state.posts = [];
     });
   },
 });

@@ -161,6 +161,7 @@ const Gallery = () => {
         tag: searchParams.get('tag'),
       }),
     );
+    dispatch(landingPageActions.getTotalPage());
   }, [searchParams]);
 
   useEffect(() => {

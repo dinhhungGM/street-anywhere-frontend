@@ -21,3 +21,10 @@
 .cursor-pointer {
   cursor: pointer;
 }
+
+.text {
+  max-width: 200px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

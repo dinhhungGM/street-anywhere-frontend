@@ -59,10 +59,12 @@ export const landingPageActionsAsync = {
     try {
       dispatch(wrapperActions.showLoading());
       const { data } = await axios.get('/posts/getTotalPage');
+      return data.value;
     } catch (error) {
       dispatch(
         wrapperActions.showNotification({ typeOfNotification: 'error', message: error.toString() }),
       );
+      return Promise.reject();
     } finally {
       dispatch(wrapperActions.hideLoading());
     }

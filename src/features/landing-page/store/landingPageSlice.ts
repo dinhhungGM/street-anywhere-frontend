@@ -22,11 +22,17 @@ const landingPageSlice = createSlice({
     builder.addCase(landingPageActionsAsync.getPostsAsync.fulfilled, (state, action) => {
       state.posts = action.payload;
     });
+    builder.addCase(landingPageActionsAsync.getPostsAsync.rejected, (state, action) => {
+      state.posts = [];
+    });
     builder.addCase(landingPageActionsAsync.getTopPosts.fulfilled, (state, action) => {
       state.topPosts = action.payload;
     });
     builder.addCase(landingPageActionsAsync.getTotalPage.fulfilled, (state, action) => {
       state.totalPage = (action.payload as any).totalPage;
+    });
+    builder.addCase(landingPageActionsAsync.getTotalPage.rejected, (state, action) => {
+      state.totalPage = 0;
     });
   },
 });

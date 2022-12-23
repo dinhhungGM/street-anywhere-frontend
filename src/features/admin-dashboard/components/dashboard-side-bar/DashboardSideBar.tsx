@@ -1,5 +1,22 @@
-import { AddReaction, Category, Groups, People, PieChart, Tag } from '@mui/icons-material';
-import { Avatar, Box, List, ListItem, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
+import {
+  AddReaction,
+  Category,
+  Groups,
+  Newspaper,
+  People,
+  PieChart,
+  Tag,
+} from '@mui/icons-material';
+import {
+  Avatar,
+  Box,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Stack,
+  Typography,
+} from '@mui/material';
 import cx from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { AppIcon } from '../../../../solutions/components/app-icon';
@@ -19,6 +36,12 @@ const sidebarConfigs = [
     title: 'Users',
     icon: <AppIcon icon={People} />,
     path: '/admin-dashboard/users',
+  },
+  {
+    id: 'admin-dashboard/posts',
+    title: 'Posts',
+    icon: <AppIcon icon={Newspaper} />,
+    path: '/admin-dashboard/posts',
   },
   {
     id: 'admin-dashboard/roles',
@@ -71,10 +94,12 @@ const DashboardSideBar = ({ currentUser }: IDashboardSideBarProps) => {
                 <NavLink
                   to={config.path}
                   className={({ isActive }) =>
-                    cx(styles.sidebar__nav__link, isActive ? styles['sidebar__nav__link--active'] : null)
+                    cx(
+                      styles.sidebar__nav__link,
+                      isActive ? styles['sidebar__nav__link--active'] : null,
+                    )
                   }
-                  end
-                >
+                  end>
                   <ListItemIcon>{config.icon}</ListItemIcon>
                   <ListItemText>{config.title}</ListItemText>
                 </NavLink>

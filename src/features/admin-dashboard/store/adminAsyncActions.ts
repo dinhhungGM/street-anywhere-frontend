@@ -329,3 +329,51 @@ export const getSystemStats = createAsyncThunk('admin/getSystemStats', async (_,
     dispatch(wrapperActions.hideLoading());
   }
 });
+
+export const getPostsForManagement = createAsyncThunk(
+  'admin/getPostsForManagement',
+  async (page: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/posts?page=${ page }`);
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+
+export const deletePost = createAsyncThunk(
+  'admin/deletePostAndRefreshData',
+  async (params: { postId: number; currentPage: number; }, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      await axios.delete(`/posts/${ params.postId }`);
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'success',
+          message: 'Delete successfully',
+        }),
+      );
+      dispatch(getPostsForManagement(params.currentPage));
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);

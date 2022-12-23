@@ -1,4 +1,4 @@
-import { Close, Search } from '@mui/icons-material';
+import { Close, Delete, Edit, Image, Search, YouTube } from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -28,6 +28,7 @@ import cx from 'classnames';
 import _ from 'lodash';
 import React, { ChangeEvent, useMemo, useState } from 'react';
 import { AppIcon } from '../app-icon';
+import { AppMoreMenu } from '../app-more-menu';
 import styles from './styles.module.scss';
 
 interface IAppTableProps {
@@ -41,13 +42,13 @@ interface IAppTableProps {
     field: string;
     customClass?: string;
     isAvatar?: boolean;
+    isIcon?: true;
   }[];
   rowKey?: string;
   customTableHeaderClasses?: string;
   isDisplayMoreMenu?: boolean;
   data?: any[];
   pageSize?: number;
-  menuTemplate?: any;
   searchPlaceholder?: string;
   dropdownPlaceholder?: string;
   dropDownOptions?: {
@@ -62,17 +63,24 @@ interface IAppTableProps {
   isFilterByOption?: boolean;
   onRowClick?: any;
   mappingClickField?: string;
+  isDeleteRow?: boolean;
+  isEditRow?: boolean;
+  onDeleteRow?: any;
+  onEditRow?: any;
 }
 
 const AppTable = ({
   rowKey,
   data = [],
   rowConfigs,
+  onEditRow,
   onRowClick,
+  onDeleteRow,
   pageSize = 9,
   headerConfigs,
+  isEditRow = true,
   mappingClickField,
-  menuTemplate = null,
+  isDeleteRow = true,
   searchByField = null,
   filterByField = null,
   dropDownOptions = [],
@@ -85,11 +93,11 @@ const AppTable = ({
   customTableHeaderClasses = null,
   appTableFilterBarCustomClass = null,
 }: IAppTableProps) => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(pageSize);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+  const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [dropdown, setDropdown] = useState('');
+  const [rowsPerPage, setRowsPerPage] = useState(pageSize);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
   const handleSearchChange = (e: ChangeEvent): void => {
     const target = e.target as HTMLInputElement;
@@ -112,6 +120,10 @@ const AppTable = ({
 
   const handleRowClick = (data) => {
     onRowClick(data);
+  };
+
+  const handleClickDeleteRow = (itemId: number) => {
+    onDeleteRow(itemId);
   };
 
   const displayData = useMemo(() => {
@@ -223,15 +235,45 @@ const AppTable = ({
                         component='td'
                         align={config.isCenter ? 'center' : 'left'}
                         className={cx(styles[config.customClass])}
-                        onClick={() => handleRowClick(item[mappingClickField])}>
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRowClick(item[mappingClickField]);
+                        }}>
                         {config.isAvatar ? (
                           <Avatar src={item[config.field]} alt='Avatar' />
+                        ) : config.isIcon ? (
+                          <AppIcon
+                            icon={item[config.field] === 'video' ? YouTube : Image}
+                            color={item[config.field] === 'video' ? '#e60023' : '#747df6'}
+                          />
                         ) : (
-                          <Typography fontWeight={600}>{item[config.field]}</Typography>
+                          <Typography fontWeight={600} className={styles.text}>
+                            {item[config.field]}
+                          </Typography>
                         )}
                       </TableCell>
                     ))}
-                    {isDisplayMoreMenu && <TableCell>{menuTemplate}</TableCell>}
+                    {isDisplayMoreMenu && (
+                      <TableCell>
+                        <AppMoreMenu isOpenInside>
+                          {isEditRow && (
+                            <MenuItem>
+                              <AppIcon icon={Edit} />
+                              <Typography ml={2}>Edit</Typography>
+                            </MenuItem>
+                          )}
+                          {isDeleteRow && (
+                            <MenuItem
+                              onClick={(e) => {
+                                handleClickDeleteRow(item[mappingClickField] as number);
+                              }}>
+                              <AppIcon icon={Delete} />
+                              <Typography ml={2}>Delete</Typography>
+                            </MenuItem>
+                          )}
+                        </AppMoreMenu>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
                 {emptyRows > 0 && (
