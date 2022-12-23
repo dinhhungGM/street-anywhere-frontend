@@ -42,8 +42,11 @@ const SearchUser = () => {
         (key) => key.trim().toLowerCase() === name.trim().toLowerCase(),
       );
       if (!keyword) {
-        setSaveKeys((prev) => [name, ...prev]);
-        localStorage.setItem('savedKey', JSON.stringify(savedKeys));
+        setSaveKeys((prev) => {
+          const newState = [name, ...prev];
+          localStorage.setItem('savedKey', JSON.stringify(newState));
+          return newState;
+        });
       }
       searchParams.set('name', name);
       setSearchParams(searchParams);
