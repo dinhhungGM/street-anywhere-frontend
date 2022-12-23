@@ -38,13 +38,20 @@ const Shorts = () => {
                 <Box className={styles.shorts__card__header}>
                   <Stack direction='row' alignItems='center' justifyContent='space-between'>
                     <Stack direction='row' alignItems='center' spacing={2}>
-                      <Avatar src={post?.profilePhotoUrl} />
-                      <Stack alignItems='flex-start' justifyContent='flex-start'>
+                      <Avatar
+                        src={post?.profilePhotoUrl}
+                        onClick={() => navigate(`/profile/${ post?.userId }`)}
+                        sx={{ cursor: 'pointer' }}
+                      />
+                      <Stack
+                        alignItems='flex-start'
+                        justifyContent='flex-start'
+                        onClick={() => navigate(`/profile/${ post?.userId }`)}
+                        sx={{ cursor: 'pointer' }}>
                         <Typography fontWeight={600}>{post?.fullName}</Typography>
                         <Typography fontSize={12}>{post?.createdAt}</Typography>
                       </Stack>
                     </Stack>
-                    <Button variant='contained'>Follow</Button>
                   </Stack>
                 </Box>
                 <Box className={styles.shorts__card__body}>
