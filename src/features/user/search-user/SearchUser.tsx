@@ -27,7 +27,7 @@ const SearchUser = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [name, setName] = useState('');
   const [savedKeys, setSaveKeys] = useState<string[]>([]);
-  const [isShowHistory, setIsShowHistory] = useState(true);
+  const [isShowHistory, setIsShowHistory] = useState(false);
   const navigate = useNavigate();
   const inputRef = useRef();
 
@@ -126,7 +126,7 @@ const SearchUser = () => {
               <Search />
             </span>
           </Box>
-          {isShowHistory ? (
+          {isShowHistory && savedKeys.length ? (
             <Box marginY={1}>
               <Discover
                 savedKeys={savedKeys}
@@ -161,8 +161,7 @@ const SearchUser = () => {
                   justifyContent='center'
                   padding={4}
                   spacing={4}>
-                  <AppIcon icon={Search} fontSize={48} />
-                  <Typography>No users found</Typography>
+                  <img src='/empty-data.jpg' alt='Empty data' />
                 </Stack>
               </>
             )}

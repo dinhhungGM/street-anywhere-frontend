@@ -16,7 +16,7 @@ export const topFollowersTableHeaderConfigs: IAppTableHeaderConfig[] = [
   },
   {
     header: 'Number of followers',
-    isCenter: true,
+    isCenter: false,
   },
 ];
 
@@ -55,7 +55,7 @@ export const topPostsTableHeaderConfigs: IAppTableHeaderConfig[] = [
   },
   {
     header: 'Number of posts',
-    isCenter: true,
+    isCenter: false,
   },
 ];
 
