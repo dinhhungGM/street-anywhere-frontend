@@ -1,5 +1,4 @@
 import { IAppTableHeaderConfig } from '../../../../solutions/components/app-table';
-import { IAppTableRowConfig } from '../../../../solutions/components/app-table/index';
 
 export const headerConfigs: IAppTableHeaderConfig[] = [
   {
