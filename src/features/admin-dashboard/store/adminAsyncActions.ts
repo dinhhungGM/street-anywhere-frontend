@@ -26,23 +26,26 @@ interface IDeleteUserPayload {
   adminUserId: number;
   userId: number;
 }
-export const deleteUser = createAsyncThunk('admin/deleteUser', async (payload: IDeleteUserPayload, { dispatch }) => {
-  try {
-    dispatch(wrapperActions.showLoading());
-    await axios.delete(`/admin/users/${ payload.userId }?adminUserId=${ payload.adminUserId }`);
-    dispatch(getAllUsersForManagement(payload.adminUserId));
-  } catch (error) {
-    dispatch(
-      wrapperActions.showNotification({
-        typeOfNotification: 'error',
-        message: error.response.data.message,
-      }),
-    );
-    return Promise.reject();
-  } finally {
-    dispatch(wrapperActions.hideLoading());
-  }
-});
+export const deleteUser = createAsyncThunk(
+  'admin/deleteUser',
+  async (payload: IDeleteUserPayload, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      await axios.delete(`/admin/users/${ payload.userId }?adminUserId=${ payload.adminUserId }`);
+      dispatch(getAllUsersForManagement(payload.adminUserId));
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
 interface ICreateNewUserParams {
   adminUserId: number;
   payload: {
@@ -198,34 +201,121 @@ interface IDeleteTagParams {
   adminUserId: number;
   tagId: number;
 }
-export const deleteTag = createAsyncThunk('admin/deleteTag', async (params: IDeleteTagParams, { dispatch }) => {
-  try {
-    dispatch(wrapperActions.showLoading());
-    await axios.delete(`/admin/tags/${ params.tagId }?adminUserId=${ params.adminUserId }`);
-    dispatch(
-      wrapperActions.showNotification({
-        typeOfNotification: 'success',
-        message: 'Create successfully',
-      }),
-    );
-    dispatch(getAllHashTagsForManagement(params.adminUserId));
-  } catch (error) {
-    dispatch(
-      wrapperActions.showNotification({
-        typeOfNotification: 'error',
-        message: error.response.data.message,
-      }),
-    );
-    return Promise.reject();
-  } finally {
-    dispatch(wrapperActions.hideLoading());
-  }
-});
+export const deleteTag = createAsyncThunk(
+  'admin/deleteTag',
+  async (params: IDeleteTagParams, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      await axios.delete(`/admin/tags/${ params.tagId }?adminUserId=${ params.adminUserId }`);
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'success',
+          message: 'Create successfully',
+        }),
+      );
+      dispatch(getAllHashTagsForManagement(params.adminUserId));
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
 
-export const getStatsOfUserByYear = createAsyncThunk('admin/getStatsOfUserByYear', async (_, { dispatch }) => {
+export const getStatsOfUserByYear = createAsyncThunk(
+  'admin/getStatsOfUserByYear',
+  async (_, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get('/stats/total-users');
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+
+export const getStatsOfPostsByYear = createAsyncThunk(
+  'admin/getStatsOfPostsByYear',
+  async (_, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get('/stats/total-posts');
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+
+export const getTopUsersMostFollower = createAsyncThunk(
+  'admin/getTopUsersMostFollower',
+  async (_, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get('/stats/top-users-by-follower-count');
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+
+export const getTopUserMostPost = createAsyncThunk(
+  'admin/getTopUserMostPost',
+  async (_, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get('/stats/top-users-with-most-posts');
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+
+export const getSystemStats = createAsyncThunk('admin/getSystemStats', async (_, { dispatch }) => {
   try {
     dispatch(wrapperActions.showLoading());
-    const { data } = await axios.get('/stats/total-users');
+    const { data } = await axios.get('/stats/sys-stats');
     return data.value;
   } catch (error) {
     dispatch(
@@ -240,20 +330,50 @@ export const getStatsOfUserByYear = createAsyncThunk('admin/getStatsOfUserByYear
   }
 });
 
-export const getStatsOfPostsByYear = createAsyncThunk('admin/getStatsOfPostsByYear', async (_, { dispatch }) => {
-  try {
-    dispatch(wrapperActions.showLoading());
-    const { data } = await axios.get('/stats/total-posts');
-    return data.value;
-  } catch (error) {
-    dispatch(
-      wrapperActions.showNotification({
-        typeOfNotification: 'error',
-        message: error.response.data.message,
-      }),
-    );
-    return Promise.reject();
-  } finally {
-    dispatch(wrapperActions.hideLoading());
-  }
-});
+export const getPostsForManagement = createAsyncThunk(
+  'admin/getPostsForManagement',
+  async (page: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/posts?page=${ page }`);
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+
+export const deletePost = createAsyncThunk(
+  'admin/deletePostAndRefreshData',
+  async (params: { postId: number; currentPage: number; }, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      await axios.delete(`/posts/${ params.postId }`);
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'success',
+          message: 'Delete successfully',
+        }),
+      );
+      dispatch(getPostsForManagement(params.currentPage));
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);

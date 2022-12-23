@@ -100,6 +100,12 @@ const LazySearchUser = lazy(() =>
   import('./../../features/user/search-user').then((m) => ({ default: m.SearchUser })),
 );
 
+const LazyPostsManagement = lazy(() =>
+  import('./../../features/admin-dashboard/components/posts-management').then((m) => ({
+    default: m.PostsManagement,
+  })),
+);
+
 type Route = {
   id: string;
   path: string;
@@ -214,6 +220,11 @@ const routes: Route[] = [
         id: 'admin-dashboard/hash-tags',
         path: 'hash-tags',
         element: <LazyHashTagsManagement />,
+      },
+      {
+        id: 'admin-dashboard/posts',
+        path: 'posts',
+        element: <LazyPostsManagement />,
       },
       {
         id: 'admin-dashboard/home',

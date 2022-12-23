@@ -41,3 +41,33 @@ export interface IHashTagManagement {
   tagName: string;
   numberOfUses: number;
 }
+
+export interface IUserByFollowers {
+  id: number;
+  fullName: string;
+  totalPost: number;
+  profilePhotoUrl: string;
+}
+
+export interface IUserMostFollower {
+  id: number;
+  fullName: string;
+  totalFollower: number;
+  profilePhotoUrl: string;
+}
+
+export interface IUserMostPost {
+  id: number;
+  fullName: string;
+  totalPost: number;
+  profilePhotoUrl: string;
+}
+
+export interface ISystemStats {
+  totalUsers: number;
+  totalPosts: number;
+  totalImages: number;
+  totalVideos: number;
+  totalReactionIcons: number;
+  totalCategories: number;
+}
