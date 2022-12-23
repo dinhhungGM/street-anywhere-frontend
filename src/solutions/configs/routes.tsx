@@ -96,6 +96,10 @@ const LazyProfileMyPosts = lazy(() =>
   })),
 );
 
+const LazySearchUser = lazy(() =>
+  import('./../../features/user/search-user').then((m) => ({ default: m.SearchUser })),
+);
+
 type Route = {
   id: string;
   path: string;
@@ -224,9 +228,19 @@ const routes: Route[] = [
     element: <LazyProfileUpdatePost />,
   },
   {
+    id: 'search-user',
+    path: '/search-user',
+    element: <LazySearchUser />,
+  },
+  {
     id: 'page-not-found',
     path: '/404',
     element: <LazyPageNotFound />,
+  },
+  {
+    id: 'match-all-route',
+    path: '*',
+    element: <Navigate to='/404' replace />,
   },
 ];
 

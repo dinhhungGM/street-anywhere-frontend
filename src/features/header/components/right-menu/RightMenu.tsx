@@ -6,7 +6,7 @@ import {
   Person,
   PersonAdd,
   PowerSettingsNew,
-  Search
+  Search,
 } from '@mui/icons-material';
 import { Badge, Drawer, IconButton, Stack, Tooltip } from '@mui/material';
 import _ from 'lodash';
@@ -52,7 +52,6 @@ const RightMenu = () => {
     setAnchorEl(null);
   }, [anchorEl]);
 
-
   useEffect(() => {
     if (currentUser?.id) {
       dispatch(wrapperActions.getNotifications(currentUser?.id));
@@ -62,7 +61,7 @@ const RightMenu = () => {
   return (
     <>
       <Stack spacing={2} alignItems='center' direction='row'>
-        <Tooltip title='Search'>
+        <Tooltip title='Search user'>
           <IconButton size='large' color='warning' onClick={() => setIsOpenSearchBox(true)}>
             <AppIcon icon={Search} color='#747df6' />
           </IconButton>
@@ -112,7 +111,12 @@ const RightMenu = () => {
           </>
         )}
         <Drawer anchor='bottom' open={isOpenSearchBox} onClose={() => setIsOpenSearchBox(false)}>
-          <SearchBox />
+          <SearchBox
+            onClose={() => {
+              console.log('run');
+              setIsOpenSearchBox(false);
+            }}
+          />
         </Drawer>
       </Stack>
       <PostNotifications
