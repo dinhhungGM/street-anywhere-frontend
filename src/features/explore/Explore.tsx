@@ -1,4 +1,4 @@
-import { Box, Grid, Slider, Stack, Typography } from '@mui/material';
+import { Box, Slider, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -44,7 +44,7 @@ const Explore = () => {
     <Box className={styles.explore}>
       <Box className={styles.explore__slider}>
         <Typography fontWeight={700} marginRight={2}>
-          Radius:{' '}
+          Radius (km):
         </Typography>
         <Slider
           value={radius}
@@ -58,7 +58,7 @@ const Explore = () => {
         />
       </Box>
       <Box className={styles.explore__map}>
-        <AppMapBox baseLong={currentCoord?.long} baseLat={currentCoord?.lat} />
+        <AppMapBox />
       </Box>
     </Box>
   );

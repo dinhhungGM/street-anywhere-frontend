@@ -4,6 +4,7 @@ import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import { Box } from '@mui/material';
 import mapboxgl, { Marker, Popup } from 'mapbox-gl';
 import React, { useEffect, useRef } from 'react';
+import * as turf from '@turf/turf';
 
 // The following is required to stop "npm build" from transpiling mapbox code.
 // notice the exclamation point in the import.
@@ -23,6 +24,7 @@ interface IAppMapBox {
   isDisplayGeoDirection?: boolean;
   desPoint?: { long: number; lat: number; };
   sourcePoint?: { long: number; lat: number; };
+  scanCircle?: any;
   onClickOnMap?: (e) => any;
   onSearchOnMap?: (e) => any;
 }
@@ -33,6 +35,7 @@ const AppMapBox = ({
   desPoint = null,
   mapWidth = '100%',
   isTracing = false,
+  scanCircle = null,
   mapHeight = '100%',
   sourcePoint = null,
   baseLat = 14.058324,
