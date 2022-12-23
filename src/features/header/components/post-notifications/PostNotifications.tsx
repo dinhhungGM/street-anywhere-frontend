@@ -9,7 +9,14 @@ const COLOR_SCHEMA = {
   reacted: '#eab171',
   commented: '#44ff00',
   bookmarked: '#0288d1',
-  followed: '#10A19D'
+  followed: '#10A19D',
+};
+
+const MSG_SCHEMA = {
+  followed: 'you',
+  reacted: 'your post',
+  bookmarked: 'your post',
+  commented: 'your post',
 };
 interface IPostNotificationsProps {
   anchorElement: HTMLElement;
@@ -81,19 +88,15 @@ const PostNotifications = ({ anchorElement, details = [], onClose }: IPostNotifi
                       }}>
                       {notification?.type}
                     </span>
-                    <strong
-                      style={{
-                        marginRight: notification?.type === 'reacted' ? '4px' : '0',
-                      }}>
-                      {notification?.type === 'reacted' && notification?.reactionType}
-                    </strong>
-                    your post
-                    <strong
-                      style={{
-                        marginLeft: '4px',
-                      }}>
-                      {notification?.shortTitle}
-                    </strong>
+                    <span>{MSG_SCHEMA[notification?.type]}</span>
+                    {notification?.type !== 'followed' ? (
+                      <strong
+                        style={{
+                          marginLeft: '4px',
+                        }}>
+                        {notification.shortTitle}
+                      </strong>
+                    ) : null}
                   </Typography>
                   <Typography fontStyle='italic' fontSize={12}>
                     {notification?.createdAt}
