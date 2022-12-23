@@ -18,8 +18,7 @@ const SearchBox = ({ onClose }: ISearchBoxProps) => {
 
   const handleOnKeyDown = (e) => {
     if (!e.altKey && !e.ctrlKey && !e.shiftKey && e.key === 'Enter' && name.trim()) {
-      onClose();
-      navigate(`/search-user?name=${ name }`, { replace: true });
+      navigate(`/search-user?name=${ name }`);
     }
   };
 

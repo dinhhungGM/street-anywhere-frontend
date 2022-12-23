@@ -3,29 +3,33 @@ import {
   Avatar,
   Box,
   Container,
+  Divider,
   List,
   ListItemButton,
-  ListItemText,
   Stack,
   Typography,
 } from '@mui/material';
-import { memo, useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import _ from 'lodash';
+import { memo, useEffect, useState, useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppDispatch } from '../../../app/hooks';
+import { AppHeading } from '../../../solutions/components/app-heading';
 import { AppIcon } from '../../../solutions/components/app-icon';
+import { Discover } from '../../header/components/discover';
 import { wrapperActions } from '../../wrapper/store';
 import { ISearchingUser } from '../userModels';
 import { default as axios } from './../../../solutions/services/axios';
 import styles from './styles.module.scss';
-import SweetAlert from 'sweetalert2';
-import { AppHeading } from '../../../solutions/components/app-heading';
 
 const SearchUser = () => {
   const dispatch = useAppDispatch();
-  const [name, setName] = useState('');
   const [searchingUsers, setSearchingUsers] = useState<ISearchingUser[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [name, setName] = useState('');
+  const [savedKeys, setSaveKeys] = useState<string[]>([]);
+  const [isShowHistory, setIsShowHistory] = useState(true);
   const navigate = useNavigate();
+  const inputRef = useRef();
 
   const handleOnChange = (e) => {
     setName(e.target.value);
@@ -33,6 +37,14 @@ const SearchUser = () => {
 
   const handleOnKeyDown = (e) => {
     if (!e.altKey && !e.ctrlKey && !e.shiftKey && e.key === 'Enter' && name.trim()) {
+      const keyword = _.find(
+        savedKeys,
+        (key) => key.trim().toLowerCase() === name.trim().toLowerCase(),
+      );
+      if (!keyword) {
+        setSaveKeys((prev) => [name, ...prev]);
+        localStorage.setItem('savedKey', JSON.stringify(savedKeys));
+      }
       searchParams.set('name', name);
       setSearchParams(searchParams);
     }
@@ -40,6 +52,24 @@ const SearchUser = () => {
 
   const goToProfile = (userId: number) => {
     navigate(`/profile/${ userId }`);
+  };
+
+  const handleClickOnKey = (key) => {
+    setName(key);
+    setIsShowHistory(false);
+    searchParams.set('name', key);
+    setSearchParams(searchParams);
+  };
+
+  const handleClearAll = () => {
+    setSaveKeys([]);
+    localStorage.setItem('savedKey', JSON.stringify([]));
+  };
+
+  const handleDeleteKey = (key) => {
+    const newKeys = _.filter(savedKeys, (item) => item !== key);
+    setSaveKeys(newKeys);
+    localStorage.setItem('savedKey', JSON.stringify(newKeys));
   };
 
   useEffect(() => {
@@ -65,6 +95,15 @@ const SearchUser = () => {
     findUsers();
   }, [searchParams]);
 
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem('savedKey'));
+    if (!savedData) {
+      localStorage.setItem('savedKey', JSON.stringify([]));
+    } else {
+      setSaveKeys(savedData);
+    }
+  }, []);
+
   return (
     <>
       <Container className={styles.wrapper}>
@@ -72,20 +111,33 @@ const SearchUser = () => {
           <Box className={styles['search-box__input']}>
             <input
               type='text'
-              placeholder='Search'
+              placeholder='Search user....'
               autoFocus
               value={name}
               onChange={handleOnChange}
               onKeyDown={handleOnKeyDown}
+              onFocus={() => setIsShowHistory(true)}
+              ref={inputRef}
             />
             <span className={styles['search-box__input__icon']}>
               <Search />
             </span>
           </Box>
+          {isShowHistory ? (
+            <Box marginY={1}>
+              <Discover
+                savedKeys={savedKeys}
+                onClickOnKey={handleClickOnKey}
+                onClearAll={handleClearAll}
+                onDeleteKey={handleDeleteKey}
+              />
+            </Box>
+          ) : null}
+          <Divider />
           <Box marginTop={4}>
             {searchingUsers.length ? (
               <>
-                <AppHeading heading={`${ searchingUsers.length } results`} />
+                <AppHeading heading={`All results`} />
                 <List>
                   {searchingUsers.map((user) => (
                     <ListItemButton key={user.userId} onClick={() => goToProfile(user.userId)}>

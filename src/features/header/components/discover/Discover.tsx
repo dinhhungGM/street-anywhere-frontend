@@ -1,43 +1,54 @@
-import { List, ListItem, ListItemText } from '@mui/material';
-import styles from './styles.module.scss';
+import { Delete, History } from '@mui/icons-material';
+import { Button, List, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import { AppIcon } from '../../../../solutions/components/app-icon';
+import styles from './styles.module.scss';
 
-const Discover = () => {
+interface IDiscoverProps {
+  savedKeys?: string[];
+  onClickOnKey?: any;
+  onClearAll?: any;
+  onDeleteKey?: any;
+}
+const Discover = ({ savedKeys, onClickOnKey, onClearAll, onDeleteKey }: IDiscoverProps) => {
+  const handleOnClick = (key) => {
+    onClickOnKey(key);
+  };
+
   return (
     <>
-      <Typography variant='h5'>Discover</Typography>
-      <List>
-        {configs.map((config) => (
-          <ListItem key={config.id} className={styles['list-item']}>
-            <ListItemText>{config.title}</ListItemText>
-          </ListItem>
+      <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={2}>
+        <Stack direction='row' alignItems='center' spacing={2} marginTop={1}>
+          <AppIcon icon={History} fontSize={28} />
+          <Typography variant='h5'>Search history</Typography>
+        </Stack>
+        {savedKeys.length ? (
+          <Button variant='contained' color='error' onClick={onClearAll}>
+            Clear all
+          </Button>
+        ) : null}
+      </Stack>
+      <List className={styles.list}>
+        {savedKeys.map((key, idx) => (
+          <ListItemButton
+            key={idx}
+            className={styles['list-item']}
+            onClick={() => handleOnClick(key)}>
+            <Stack direction='row' alignItems='center' justifyContent='space-between' width='100%'>
+              <ListItemText>{key}</ListItemText>
+              <ListItemIcon
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteKey(key);
+                }}>
+                <AppIcon icon={Delete} />
+              </ListItemIcon>
+            </Stack>
+          </ListItemButton>
         ))}
       </List>
     </>
   );
 };
-
-const configs = [
-  {
-    id: 'video',
-    title: 'Video',
-  },
-  {
-    id: 'music',
-    title: 'Music',
-  },
-  {
-    id: 'art',
-    title: 'Art',
-  },
-  {
-    id: 'vimeo',
-    title: 'Vimeo',
-  },
-  {
-    id: 'instagram',
-    title: 'Instagram',
-  },
-];
 
 export default Discover;

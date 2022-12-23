@@ -6,9 +6,9 @@ import {
   Person,
   PersonAdd,
   PowerSettingsNew,
-  Search,
+  Search
 } from '@mui/icons-material';
-import { Badge, Drawer, IconButton, Stack, Tooltip } from '@mui/material';
+import { Badge, IconButton, Stack, Tooltip } from '@mui/material';
 import _ from 'lodash';
 import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,10 +18,8 @@ import { AppIconButton } from '../../../../solutions/components/app-icon-button'
 import { authActions, authSelectors } from '../../../auth/store';
 import { wrapperActions, wrapperSelectors } from '../../../wrapper/store';
 import { PostNotifications } from '../post-notifications';
-import { SearchBox } from '../search-box';
 
 const RightMenu = () => {
-  const [isOpenSearchBox, setIsOpenSearchBox] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
@@ -62,7 +60,7 @@ const RightMenu = () => {
     <>
       <Stack spacing={2} alignItems='center' direction='row'>
         <Tooltip title='Search user'>
-          <IconButton size='large' color='warning' onClick={() => setIsOpenSearchBox(true)}>
+          <IconButton size='large' color='warning' onClick={() => navigate('/search-user')}>
             <AppIcon icon={Search} color='#747df6' />
           </IconButton>
         </Tooltip>
@@ -110,14 +108,6 @@ const RightMenu = () => {
             </IconButton>
           </>
         )}
-        <Drawer anchor='bottom' open={isOpenSearchBox} onClose={() => setIsOpenSearchBox(false)}>
-          <SearchBox
-            onClose={() => {
-              console.log('run');
-              setIsOpenSearchBox(false);
-            }}
-          />
-        </Drawer>
       </Stack>
       <PostNotifications
         anchorElement={anchorEl}
