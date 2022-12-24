@@ -94,8 +94,10 @@ const ProfileDashBoard = () => {
       setTab(1);
     } else if (location.pathname.includes('posts') && location.search.includes('image')) {
       setTab(2);
-    } else if (location.pathname.includes('video') && location.search.includes('video')) {
+    } else if (location.pathname.includes('posts') && location.search.includes('video')) {
       setTab(3);
+    } else if (location.pathname.includes('bookmark')) {
+      setTab(4);
     } else {
       setTab(0);
     }
@@ -259,6 +261,7 @@ const ProfileDashBoard = () => {
                 label='Bookmark'
                 iconPosition='start'
                 className={styles['tab-item']}
+                onClick={() => handleNavigate(`/profile/${ userId }/bookmark`)}
               />
             )}
           </Tabs>

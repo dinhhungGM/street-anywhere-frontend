@@ -8,7 +8,7 @@ import {
   Menu,
   MenuItem,
   Select,
-  TextField
+  TextField,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { memo, useMemo, useRef, useState } from 'react';
@@ -17,6 +17,8 @@ import * as yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../../../../app/hooks';
 import { AppIcon } from '../../../../../../solutions/components/app-icon';
 import { AppModal } from '../../../../../../solutions/components/app-modal';
+import { profileActions } from '../../../../../profile-dashboard/index';
+import { wrapperActions } from '../../../../../wrapper/store';
 import { adminActions, adminSelectors } from '../../../../store';
 import styles from './styles.module.scss';
 
@@ -35,8 +37,34 @@ const UserMoreMenu = ({ adminUserId, user }: IUserMoreMenuProps) => {
       passwordConfirm: '',
       roleId: user.roleId,
     },
-    onSubmit: (values) => {
-      alert('Coming soon');
+    onSubmit: async (values) => {
+      setIsOpen(false);
+      const { password, passwordConfirm, roleId } = values;
+      const isNotUpdatePassword = [password, passwordConfirm].every((str) => !str.trim());
+      const isNotChangeRole = +roleId === user.roleId;
+      if (isNotUpdatePassword && isNotChangeRole) {
+        dispatch(
+          wrapperActions.showToast({
+            toastSeverity: 'info',
+            toastMessage: 'No changes',
+          }),
+        );
+      } else {
+        const payload = {};
+        if (!isNotChangeRole) {
+          payload['roleId'] = roleId;
+        }
+        if (!isNotUpdatePassword) {
+          payload['password'] = password;
+        }
+        const res = await dispatch(
+          profileActions.updateUser({ userId: user.id, payload, isFormData: false }),
+        );
+        if (res.meta.requestStatus === 'fulfilled') {
+          dispatch(adminActions.getAllUsersForManagement(adminUserId));
+        }
+      }
+      setIsOpenModal(false);
     },
     validationSchema: yup.object({
       password: yup
@@ -59,7 +87,7 @@ const UserMoreMenu = ({ adminUserId, user }: IUserMoreMenuProps) => {
     SweetAlert.fire({
       title: 'Confirm',
       icon: 'question',
-      text: `Are you sure to delete ${user.fullName} account?`,
+      text: `Are you sure to delete ${ user.fullName } account?`,
       showCancelButton: true,
     }).then((status) => {
       if (status.isConfirmed) {
@@ -107,8 +135,7 @@ const UserMoreMenu = ({ adminUserId, user }: IUserMoreMenuProps) => {
           sx: { width: 200, maxWidth: '100%' },
         }}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
         <MenuItem onClick={handleDeleteUser}>
           <ListItemIcon>
             <AppIcon icon={Delete} />
@@ -129,15 +156,14 @@ const UserMoreMenu = ({ adminUserId, user }: IUserMoreMenuProps) => {
         onClose={closeModal}
         onOk={form.handleSubmit}
         title='Update user'
-        okText='Update'
-      >
+        okText='Update'>
         <form>
           <FormControl fullWidth className={styles.form__control}>
             <TextField
               id='password'
               type='password'
-              label='Password'
-              placeholder='Password'
+              label='New password'
+              placeholder='New password'
               {...form.getFieldProps('password')}
               error={!!checkControl('password')}
               {...checkControl('password')}
@@ -160,8 +186,7 @@ const UserMoreMenu = ({ adminUserId, user }: IUserMoreMenuProps) => {
               label='Role'
               {...form.getFieldProps('roleId')}
               error={!!checkControl('lastName')}
-              {...checkControl('lastName')}
-            >
+              {...checkControl('lastName')}>
               {roleOptions.map((option) => (
                 <MenuItem key={option.id} value={option.id}>
                   {option.roleName}

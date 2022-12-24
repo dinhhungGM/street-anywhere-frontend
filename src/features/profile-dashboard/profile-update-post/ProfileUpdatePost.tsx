@@ -1,4 +1,4 @@
-import { Add, Delete, ExpandMore, Map, PostAdd } from '@mui/icons-material';
+import { Add, ArrowBack, Delete, ExpandMore, Map, PostAdd } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
@@ -326,6 +326,9 @@ const ProfileUpdatePost = () => {
           elevation={2}
           borderRadius={2}
           component={Paper}>
+          <Button startIcon={<AppIcon icon={ArrowBack} />} onClick={() => navigate(-1)}>
+            Back
+          </Button>
           <Typography textAlign='center' variant='h2' textTransform='uppercase' fontWeight={600}>
             Update Post
           </Typography>

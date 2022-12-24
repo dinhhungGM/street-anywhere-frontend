@@ -106,6 +106,12 @@ const LazyPostsManagement = lazy(() =>
   })),
 );
 
+const LazyProfileListBookmarkedPosts = lazy(() =>
+  import('./../../features/profile-dashboard/profile-list-bookmarked-posts').then((m) => ({
+    default: m.ProfileListBookmarkedPosts,
+  })),
+);
+
 type Route = {
   id: string;
   path: string;
@@ -158,6 +164,11 @@ const routes: Route[] = [
         id: 'profile/my-post',
         path: 'posts',
         element: <LazyProfileMyPosts />,
+      },
+      {
+        id: 'profile/my-bookmarked-posts',
+        path: 'bookmark',
+        element: <LazyProfileListBookmarkedPosts />,
       },
       {
         id: 'profile/info',

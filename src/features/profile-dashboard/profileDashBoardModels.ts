@@ -76,3 +76,23 @@ export enum ProfilePropertiesEnum {
   Avatar = 'avatar',
   CoverImage = 'coverImage',
 }
+
+export interface IBookmarkedPost {
+  id?: number;
+  size?: number;
+  type?: string;
+  title?: string;
+  views?: number;
+  userId?: number;
+  latitude?: string;
+  location?: number;
+  imageUrl?: string;
+  fullName?: string;
+  longitude?: number;
+  description?: null;
+  videoYtbUrl?: null;
+  createdAt?: string;
+  shortTitle?: string;
+  profilePhotoUr1l?: string;
+  bookmarkId?: number;
+}

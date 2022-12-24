@@ -32,7 +32,7 @@ const headerConfigs = [
   },
   {
     header: 'Number of uses',
-    isCenter: true,
+    isCenter: false,
   },
 ];
 
@@ -101,10 +101,10 @@ const HashTagsManagement = () => {
 
   const deleteTag = (tagId): void => {
     dispatch(adminActions.deleteTag({
-      adminUserId: currentUser.id, 
+      adminUserId: currentUser.id,
       tagId
-    }))
-  }
+    }));
+  };
 
   useEffect(() => {
     dispatch(adminActions.getAllHashTagsForManagement(currentUser.id));
