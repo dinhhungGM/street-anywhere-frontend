@@ -21,7 +21,7 @@ const headerConfigs = [
   },
   {
     header: 'Number of uses',
-    isCenter: true,
+    isCenter: false,
   },
 ];
 

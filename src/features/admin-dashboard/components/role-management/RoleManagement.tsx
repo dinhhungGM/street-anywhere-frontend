@@ -16,7 +16,7 @@ const headerConfigs = [
   },
   {
     header: 'Number of users',
-    isCenter: true,
+    isCenter: false,
   },
 ];
 
