@@ -256,7 +256,7 @@ const PostDetail = () => {
       dispatch(postActions.resetPostDetail());
       dispatch(userActions.resetAllData());
     };
-  }, []);
+  }, [postId]);
 
   useEffect(() => {
     if (currentPost) {
