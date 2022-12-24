@@ -1,3 +1,14 @@
 .images {
   padding: 12px 0;
 }
+
+.title {
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.btn {
+  width: 50%;
+}

@@ -53,3 +53,16 @@
 .Mui-selected svg {
   color: #0288d1 !important;
 }
+
+.MuiCardHeader-title {
+  display: inline-block;
+  max-width: 200px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-weight: bold !important;
+}
+
+.MuiCardHeader-subheader {
+  font-size: 14px !important;
+}

@@ -146,3 +146,51 @@ export const getPostsOfUser = createAsyncThunk(
     }
   },
 );
+
+export const getListBookmarkedPosts = createAsyncThunk(
+  'profile/getListBookmarkedPosts',
+  async (userId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/users/bookmarked/${ userId }`);
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+
+export const removeBookmarkedPost = createAsyncThunk(
+  'profile/removeBookmarkedPost',
+  async (bookmarkId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      await axios.delete(`/bookmarks/${ bookmarkId }`);
+      dispatch(
+        wrapperActions.showToast({
+          toastMessage: 'Removed',
+          toastSeverity: 'success',
+        }),
+      );
+      dispatch(profileSyncActions.removeBookmarkedPost({ bookmarkId }));
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
