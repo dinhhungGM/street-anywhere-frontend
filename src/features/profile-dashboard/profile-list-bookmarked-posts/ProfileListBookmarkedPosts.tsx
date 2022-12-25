@@ -137,8 +137,9 @@ const ProfileListBookmarkedPost = () => {
                     <Button
                       size='small'
                       color='error'
+                      variant='contained'
                       className={styles.btn}
-                      startIcon={<AppIcon icon={Delete} color='#e60023' />}
+                      startIcon={<AppIcon icon={Delete} color='#fff' />}
                       onClick={() => handleRemoveBookmarkedPost(post?.bookmarkId)}>
                       Remove
                     </Button>
