@@ -1,9 +1,7 @@
 import { Avatar, Box, Menu, MenuItem, Stack, Typography } from '@mui/material';
-import _ from 'lodash';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../../../app/hooks';
-import { wrapperActions, wrapperModels } from '../../../wrapper/store';
+import { wrapperModels } from '../../../wrapper/store';
 
 const COLOR_SCHEMA = {
   reacted: '#eab171',
@@ -25,17 +23,10 @@ interface IPostNotificationsProps {
 }
 const PostNotifications = ({ anchorElement, details = [], onClose }: IPostNotificationsProps) => {
   const isOpen = Boolean(anchorElement);
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const navigateToPostDetail = (notification): void => {
-    const unSeenIds = _.map(
-      _.filter(details, (notification) => !notification.isSeen),
-      'id',
-    );
-    if (unSeenIds.length) {
-      dispatch(wrapperActions.changeNotificationStatus(unSeenIds));
-    }
+    onClose();
     navigate(`/posts/${ notification?.postId }`);
   };
 

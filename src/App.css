@@ -66,3 +66,7 @@
 .MuiCardHeader-subheader {
   font-size: 14px !important;
 }
+
+.MuiSnackbar-root {
+  z-index: 9999999 !important;
+}
