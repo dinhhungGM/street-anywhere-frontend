@@ -17,7 +17,12 @@ const initialState: LandingPageState = {
 const landingPageSlice = createSlice({
   name: 'landingPage',
   initialState,
-  reducers: {},
+  reducers: {
+    resetLandingPage: (state) => {
+      state.posts = [];
+      state.totalPage = 0;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(landingPageActionsAsync.getPostsAsync.fulfilled, (state, action) => {
       state.posts = [...state.posts, ...action.payload];

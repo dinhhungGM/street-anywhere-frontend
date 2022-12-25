@@ -8,6 +8,7 @@ const LandingPage = () => {
       <Box
         sx={{
           backgroundColor: '#F5F5F7',
+          minHeight: 'calc(100vh - 72px - 56px)'
         }}>
         <Grid container>
           <Grid item xs={12}>
