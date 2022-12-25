@@ -27,7 +27,6 @@ const Gallery = () => {
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const posts = useAppSelector(landingPageSelectors.selectPosts);
   const followingUsers = useAppSelector(userSelectors.selectedFollowingUsers);
-  const reactedPosts = useAppSelector(userSelectors.selectReactedPosts);
   const bookmarkedPosts = useAppSelector(userSelectors.selectBookmarkedPosts);
   const categories = useAppSelector(categoriesSelectors.selectCategoryList);
   const hashtags = useAppSelector(tagSelectors.selectTagList);
@@ -136,14 +135,16 @@ const Gallery = () => {
         );
       } else {
         dispatch(userActions.followUser({ userId: currentUser?.id, followerId: post?.userId }));
-        dispatch(
-          wrapperActions.createNewNotification({
-            postId: post?.id,
-            userId: currentUser?.id,
-            type: 'followed',
-            reactionType: null,
-          }),
-        );
+        if (currentUser?.id !== post?.userId) {
+          dispatch(
+            wrapperActions.createNewNotification({
+              postId: post?.id,
+              userId: currentUser?.id,
+              type: 'followed',
+              reactionType: null,
+            }),
+          );
+        }
       }
     }
   }, []);
@@ -197,7 +198,6 @@ const Gallery = () => {
     if (currentUser) {
       dispatch(userActions.getFollowingUsers(currentUser?.id));
       dispatch(userActions.getBookmarkedPost(currentUser?.id));
-      dispatch(userActions.getReactedPost(currentUser?.id));
     }
 
     const loadMore = (): void => {
@@ -225,7 +225,6 @@ const Gallery = () => {
       return posts;
     } else {
       return _.map(posts, (post) => {
-        const reactedDetail = _.find(reactedPosts, (reactedPost) => reactedPost.postId === post.id);
         const bookmarkedDetail = _.find(
           bookmarkedPosts,
           (bookmarkedPost) => bookmarkedPost.postId === post.id,
@@ -236,8 +235,6 @@ const Gallery = () => {
         );
         return {
           ...post,
-          reactedDetail,
-          isReacted: !!reactedDetail,
           bookmarkedDetail,
           isBookmarked: !!bookmarkedDetail,
           followingDetail,
@@ -245,7 +242,7 @@ const Gallery = () => {
         };
       });
     }
-  }, [currentUser, posts, followingUsers, reactedPosts, bookmarkedPosts]);
+  }, [currentUser, posts, followingUsers, bookmarkedPosts]);
 
   //#endregion
 

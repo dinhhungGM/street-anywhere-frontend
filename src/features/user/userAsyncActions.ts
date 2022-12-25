@@ -53,44 +53,53 @@ export const unfollowUser = createAsyncThunk(
   },
 );
 
-export const getReactedPost = createAsyncThunk('user/getReactedPost', async (userId: number, { dispatch }) => {
-  try {
-    dispatch(wrapperActions.showLoading());
-    const { data } = await axios.get(`/users/reacted/${ userId }`);
-    return data.value;
-  } catch (error: any) {
-    dispatch(wrapperActions.hideLoading());
-    AlertUtil.showError(error.response.data.message);
-    return Promise.reject();
-  } finally {
-    dispatch(wrapperActions.hideLoading());
-  }
-});
+export const getReactedPost = createAsyncThunk(
+  'user/getReactedPost',
+  async (userId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/users/reacted/${ userId }`);
+      return data.value;
+    } catch (error: any) {
+      dispatch(wrapperActions.hideLoading());
+      AlertUtil.showError(error.response.data.message);
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
 
-export const getBookmarkedPost = createAsyncThunk('user/getBookmarkedPost', async (userId: number, { dispatch }) => {
-  try {
-    dispatch(wrapperActions.showLoading());
-    const { data } = await axios.get(`/users/bookmarked/${ userId }`);
-    return data.value;
-  } catch (error: any) {
-    dispatch(wrapperActions.hideLoading());
-    AlertUtil.showError(error.response.data.message);
-    return Promise.reject();
-  } finally {
-    dispatch(wrapperActions.hideLoading());
-  }
-});
+export const getBookmarkedPost = createAsyncThunk(
+  'user/getBookmarkedPost',
+  async (userId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/bookmarks/bookmarked-posts/${ userId }`);
+      return data.value;
+    } catch (error: any) {
+      dispatch(wrapperActions.hideLoading());
+      AlertUtil.showError(error.response.data.message);
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
 
-export const getFollowingUsers = createAsyncThunk('user/getFollowingUsers', async (userId: number, { dispatch }) => {
-  try {
-    dispatch(wrapperActions.showLoading());
-    const { data } = await axios.get(`/users/following/${ userId }`);
-    return data.value;
-  } catch (error: any) {
-    dispatch(wrapperActions.hideLoading());
-    AlertUtil.showError(error.response.data.message);
-    return Promise.reject();
-  } finally {
-    dispatch(wrapperActions.hideLoading());
-  }
-});
+export const getFollowingUsers = createAsyncThunk(
+  'user/getFollowingUsers',
+  async (userId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/users/following/${ userId }`);
+      return data.value;
+    } catch (error: any) {
+      dispatch(wrapperActions.hideLoading());
+      AlertUtil.showError(error.response.data.message);
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
