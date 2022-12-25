@@ -112,6 +112,12 @@ const LazyProfileListBookmarkedPosts = lazy(() =>
   })),
 );
 
+const LazyProfileListFollowings = lazy(() =>
+  import('./../../features/profile-dashboard/profile-list-followings').then((m) => ({
+    default: m.ProfileListFollowings,
+  })),
+);
+
 type Route = {
   id: string;
   path: string;
@@ -159,6 +165,11 @@ const routes: Route[] = [
         id: 'profile/followers',
         path: 'followers',
         element: <LazyProfileListFollowers />,
+      },
+      {
+        id: 'profile/followings',
+        path: 'followings',
+        element: <LazyProfileListFollowings />,
       },
       {
         id: 'profile/my-post',

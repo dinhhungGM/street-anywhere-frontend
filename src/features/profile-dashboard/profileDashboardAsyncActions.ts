@@ -215,3 +215,24 @@ export const getFollowerCount = createAsyncThunk(
     }
   },
 );
+
+export const getFollowings = createAsyncThunk(
+  'profile/getFollowings',
+  async (userId: number, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get(`/users/followings/${ userId }`);
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);

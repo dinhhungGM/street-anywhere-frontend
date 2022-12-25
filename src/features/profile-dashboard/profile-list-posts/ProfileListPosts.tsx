@@ -14,7 +14,7 @@ import {
   MenuItem,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import _ from 'lodash';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -176,31 +176,33 @@ const ProfileListPosts = () => {
     <>
       <Container className={styles.images}>
         <AppHeading heading={getHeading()} />
-        <Box marginY={2}>
-          <TextField
-            placeholder='Search by title'
-            fullWidth
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <AppIcon icon={Search} />
-                </InputAdornment>
-              ),
-              endAdornment: search && (
-                <InputAdornment position='start'>
-                  <AppIconButton
-                    tooltip='Clear'
-                    icon={<AppIcon icon={Close} />}
-                    buttonColor='error'
-                    onClick={clearSearch}
-                  />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
+        {myPosts?.length ? (
+          <Box marginY={2}>
+            <TextField
+              placeholder='Search by title'
+              fullWidth
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <AppIcon icon={Search} />
+                  </InputAdornment>
+                ),
+                endAdornment: search && (
+                  <InputAdornment position='start'>
+                    <AppIconButton
+                      tooltip='Clear'
+                      icon={<AppIcon icon={Close} />}
+                      buttonColor='error'
+                      onClick={clearSearch}
+                    />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+        ) : null}
         {displayPosts?.length ? (
           <>
             <Divider />

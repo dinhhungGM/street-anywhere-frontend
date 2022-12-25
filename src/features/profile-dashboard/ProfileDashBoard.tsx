@@ -1,6 +1,7 @@
 import {
   AddAPhoto,
   Bookmark,
+  ConnectWithoutContact,
   Image,
   People,
   Person,
@@ -34,14 +35,6 @@ import { ProfilePropertiesEnum } from './profileDashBoardModels';
 import * as profileSelectors from './profileDashBoardSelectors';
 import { profileSyncActions } from './profileDashboardSlice';
 import styles from './styles.module.scss';
-
-const showSuccess = (message: string): void => {
-  SweetAlert.fire({
-    title: 'Success',
-    icon: 'success',
-    text: message,
-  });
-};
 
 const showError = (message: string): void => {
   SweetAlert.fire({
@@ -105,14 +98,18 @@ const ProfileDashBoard = () => {
   }, [currentUser?.id, userId]);
 
   useEffect(() => {
-    if (location.pathname.includes('followers')) {
+    const pathName = location.pathname;
+    const seachStr = location.search;
+    if (pathName.includes('followers')) {
       setTab(1);
-    } else if (location.pathname.includes('posts') && location.search.includes('image')) {
+    } else if (pathName.includes('followings')) {
       setTab(2);
-    } else if (location.pathname.includes('posts') && location.search.includes('video')) {
+    } else if (pathName.includes('posts') && seachStr.includes('image')) {
       setTab(3);
-    } else if (location.pathname.includes('bookmark')) {
+    } else if (pathName.includes('posts') && seachStr.includes('video')) {
       setTab(4);
+    } else if (pathName.includes('bookmark')) {
+      setTab(5);
     } else {
       setTab(0);
     }
@@ -150,19 +147,9 @@ const ProfileDashBoard = () => {
       }
     };
 
-    const updateTextInfo = async () => {
-      const payload = {
-        userId: currentUser?.id,
-        payload: {},
-      };
-    };
-
     if (file && field) {
       if (fileFields.includes(field)) {
         updateAvatarOrCoverImage();
-      }
-      if (textFields.includes(field)) {
-        updateTextInfo();
       }
     }
   }, [file, field]);
@@ -310,6 +297,13 @@ const ProfileDashBoard = () => {
               iconPosition='start'
               className={styles['tab-item']}
               onClick={() => handleNavigate(`/profile/${ userId }/followers`)}
+            />
+            <Tab
+              icon={<AppIcon icon={ConnectWithoutContact} />}
+              label='Followings'
+              iconPosition='start'
+              className={styles['tab-item']}
+              onClick={() => handleNavigate(`/profile/${ userId }/followings`)}
             />
             <Tab
               icon={<AppIcon icon={Image} />}

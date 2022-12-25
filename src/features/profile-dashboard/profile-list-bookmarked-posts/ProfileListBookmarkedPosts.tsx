@@ -13,7 +13,7 @@ import {
   InputAdornment,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -100,31 +100,33 @@ const ProfileListBookmarkedPost = () => {
   return (
     <>
       <Container>
-        <Box marginY={2}>
-          <TextField
-            placeholder='Search by title'
-            fullWidth
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <AppIcon icon={Search} />
-                </InputAdornment>
-              ),
-              endAdornment: search && (
-                <InputAdornment position='start'>
-                  <AppIconButton
-                    tooltip='Clear'
-                    icon={<AppIcon icon={Close} />}
-                    buttonColor='error'
-                    onClick={clearSearch}
-                  />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
+        {bookmarkedPosts?.length ? (
+          <Box marginY={2}>
+            <TextField
+              placeholder='Search by title'
+              fullWidth
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <AppIcon icon={Search} />
+                  </InputAdornment>
+                ),
+                endAdornment: search && (
+                  <InputAdornment position='start'>
+                    <AppIconButton
+                      tooltip='Clear'
+                      icon={<AppIcon icon={Close} />}
+                      buttonColor='error'
+                      onClick={clearSearch}
+                    />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+        ) : null}
         {displayPosts?.length ? (
           <Masonry
             columns={{ xs: 1, sm: 3, md: 3, lg: 4, xl: 5 }}

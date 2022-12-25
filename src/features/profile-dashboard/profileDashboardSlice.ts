@@ -2,10 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 import { IPost } from '../../solutions/models/postModels';
 import * as profileAsyncActions from './profileDashboardAsyncActions';
 import { IBookmarkedPost, IProfileDetail } from './profileDashBoardModels';
+import { getFollowings } from './profileDashboardAsyncActions';
 
 interface IProfileState {
   profileDetail: IProfileDetail;
   followers: any[];
+  followings: any[];
   myPosts: IPost[];
   bookmarkedPosts: IBookmarkedPost[];
   followerCount: number;
@@ -14,6 +16,7 @@ interface IProfileState {
 const initialState: IProfileState = {
   profileDetail: null,
   followers: [],
+  followings: [],
   myPosts: [],
   bookmarkedPosts: [],
   followerCount: 0,
@@ -32,6 +35,9 @@ const profileSlice = createSlice({
     },
     resetFollowers: (state) => {
       state.followers = [];
+    },
+    resetFollowings: (state) => {
+      state.followings = [];
     },
     resetProfileDetail: (state) => {
       state.profileDetail = null;
@@ -68,6 +74,13 @@ const profileSlice = createSlice({
     });
     builder.addCase(profileAsyncActions.getFollowers.rejected, (state, action) => {
       state.followers = [];
+    });
+
+    builder.addCase(profileAsyncActions.getFollowings.fulfilled, (state, action) => {
+      state.followings = action.payload;
+    });
+    builder.addCase(profileAsyncActions.getFollowings.rejected, (state, action) => {
+      state.followings = [];
     });
 
     builder.addCase(profileAsyncActions.getPostsOfUser.fulfilled, (state, action) => {
