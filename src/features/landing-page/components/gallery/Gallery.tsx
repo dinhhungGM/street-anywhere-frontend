@@ -202,11 +202,11 @@ const Gallery = () => {
 
     const loadMore = (): void => {
       if (
-        window.innerHeight + document.documentElement.scrollTop ===
+        window.innerHeight + document.documentElement.scrollTop >=
         document.scrollingElement.scrollHeight &&
         page < totalPage
       ) {
-        setPage((prev) => prev++);
+        setPage((prev) => prev + 1);
       }
     };
     window.addEventListener('scroll', loadMore);
