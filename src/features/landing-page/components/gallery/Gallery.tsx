@@ -203,15 +203,19 @@ const Gallery = () => {
     const loadMore = (): void => {
       if (
         window.innerHeight + document.documentElement.scrollTop >=
-        document.scrollingElement.scrollHeight &&
+        document.scrollingElement.scrollHeight / 2 &&
         page < totalPage
       ) {
-        setPage((prev) => prev + 1);
+        const newPage = page + 1;
+        setTimeout(() => {
+          setPage(newPage);
+        }, 100);
       }
     };
     window.addEventListener('scroll', loadMore);
     return () => {
       dispatch(userActions.resetAllData());
+      dispatch(landingPageActions.resetLandingPage());
       window.removeEventListener('scroll', loadMore);
     };
   }, []);
