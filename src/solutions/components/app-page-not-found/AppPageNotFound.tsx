@@ -8,7 +8,7 @@ const AppPageNotFound = () => {
   const navigate = useNavigate();
 
   const handleNavigateToHome = (): void => {
-    navigate('/home');
+    navigate(-1);
   };
 
   return (
@@ -20,7 +20,7 @@ const AppPageNotFound = () => {
           startIcon={<AppIcon icon={ArrowBack} color='#fff' />}
           onClick={handleNavigateToHome}
           variant='contained'>
-          Back to home
+          Back to previous page
         </Button>
       </Box>
     </>

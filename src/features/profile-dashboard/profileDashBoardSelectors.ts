@@ -12,3 +12,8 @@ export const selectBookmarkedPosts = createSelector(
   selectProfileFeature,
   (profile) => profile.bookmarkedPosts,
 );
+export const selectFollowerCount = createSelector(
+  selectProfileFeature,
+  (profile) => profile.followerCount,
+);
+export const selectFollowings = createSelector(selectProfileFeature, (profile) => profile.followings);

@@ -3,6 +3,7 @@ import { userActions } from '.';
 import AlertUtil from '../../solutions/utils/alertUtil';
 import { wrapperActions } from '../wrapper/store';
 import { default as axios } from './../../solutions/services/axios';
+import { profileActions } from '../profile-dashboard/index';
 
 export const followUser = createAsyncThunk(
   'user/followUser',
@@ -21,6 +22,12 @@ export const followUser = createAsyncThunk(
           toastMessage: 'Followed',
         }),
       );
+      if (window.location.href.includes('profile')) {
+        dispatch(profileActions.increaseFollowerCount());
+      }
+      if (window.location.href.includes('followers')) {
+        dispatch(profileActions.getFollowers(payload.followerId));
+      }
       return data.value;
     } catch (error: any) {
       dispatch(wrapperActions.hideLoading());
@@ -43,6 +50,12 @@ export const unfollowUser = createAsyncThunk(
         },
       });
       dispatch(userActions.removeFollowingUser(params));
+      if (window.location.href.includes('profile')) {
+        dispatch(profileActions.decreaseFollowerCount());
+      }
+      if (window.location.href.includes('followers')) {
+        dispatch(profileActions.getFollowers(params.followerId));
+      }
     } catch (error) {
       dispatch(wrapperActions.hideLoading());
       AlertUtil.showError(error.response.data.message);

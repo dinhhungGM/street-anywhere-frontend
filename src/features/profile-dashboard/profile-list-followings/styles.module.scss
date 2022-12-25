@@ -1,0 +1,11 @@
+.wrapper {
+  width: 60%;
+  margin: auto;
+  min-height: 500px;
+}
+
+@media only screen and (max-width: 1024px) {
+  .wrapper {
+    width: 100%;
+  }
+}

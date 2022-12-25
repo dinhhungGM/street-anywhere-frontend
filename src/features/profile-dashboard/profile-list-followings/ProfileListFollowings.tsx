@@ -43,16 +43,16 @@ const ProfileListFollowers = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { userId: currentUserId } = useParams();
-  const followers = useAppSelector(profileSelectors.selectFollowers);
+  const followings = useAppSelector(profileSelectors.selectFollowings);
 
   const goToProfile = useCallback((userId: number) => {
     navigate(`/profile/${ userId }`, { replace: true });
   }, []);
 
   useEffect(() => {
-    dispatch(profileActions.getFollowers(+currentUserId));
+    dispatch(profileActions.getFollowings(+currentUserId));
     return () => {
-      dispatch(profileActions.resetFollowers());
+      dispatch(profileActions.resetFollowings());
     };
   }, []);
 
@@ -60,11 +60,11 @@ const ProfileListFollowers = () => {
     <>
       <Box className={styles.wrapper}>
         <Box paddingBottom={2}>
-          <AppHeading heading={`Followers (${ followers?.length })`} />
+          <AppHeading heading={`Followings (${ followings?.length })`} />
         </Box>
-        {followers?.length ? (
+        {followings?.length ? (
           <AppTable
-            data={followers}
+            data={followings}
             headerConfigs={headerConfigs}
             rowConfigs={rowConfigs}
             isFilterByOption={false}

@@ -328,7 +328,7 @@ const Gallery = () => {
             width: '100%',
           }}>
           {displayPosts &&
-            displayPosts.map((post) => (
+            displayPosts.map((post, idx) => (
               <Box
                 sx={{
                   margin: '12px',
@@ -336,7 +336,7 @@ const Gallery = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
-                key={post?.id}>
+                key={idx}>
                 <AppCardV2
                   post={post}
                   currentUserId={currentUser?.id}

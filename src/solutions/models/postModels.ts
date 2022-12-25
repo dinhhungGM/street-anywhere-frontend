@@ -41,6 +41,7 @@ export interface IPost {
   followingDetail?: IFollowingUser | null | undefined;
   isFollowingUser?: boolean;
   distance?: number;
+  size?: number;
 }
 
 export interface ITag {

@@ -2,19 +2,24 @@ import { createSlice } from '@reduxjs/toolkit';
 import { IPost } from '../../solutions/models/postModels';
 import * as profileAsyncActions from './profileDashboardAsyncActions';
 import { IBookmarkedPost, IProfileDetail } from './profileDashBoardModels';
+import { getFollowings } from './profileDashboardAsyncActions';
 
 interface IProfileState {
   profileDetail: IProfileDetail;
   followers: any[];
+  followings: any[];
   myPosts: IPost[];
   bookmarkedPosts: IBookmarkedPost[];
+  followerCount: number;
 }
 
 const initialState: IProfileState = {
   profileDetail: null,
   followers: [],
+  followings: [],
   myPosts: [],
   bookmarkedPosts: [],
+  followerCount: 0,
 };
 
 const profileSlice = createSlice({
@@ -31,6 +36,9 @@ const profileSlice = createSlice({
     resetFollowers: (state) => {
       state.followers = [];
     },
+    resetFollowings: (state) => {
+      state.followings = [];
+    },
     resetProfileDetail: (state) => {
       state.profileDetail = null;
     },
@@ -42,6 +50,15 @@ const profileSlice = createSlice({
     },
     resetListBookmarkedPosts: (state) => {
       state.bookmarkedPosts = [];
+    },
+    increaseFollowerCount: (state) => {
+      state.followerCount++;
+    },
+    decreaseFollowerCount: (state) => {
+      state.followerCount--;
+    },
+    resetFollowerCount: (state) => {
+      state.followerCount = 0;
     },
   },
   extraReducers: (builder) => {
@@ -59,6 +76,13 @@ const profileSlice = createSlice({
       state.followers = [];
     });
 
+    builder.addCase(profileAsyncActions.getFollowings.fulfilled, (state, action) => {
+      state.followings = action.payload;
+    });
+    builder.addCase(profileAsyncActions.getFollowings.rejected, (state, action) => {
+      state.followings = [];
+    });
+
     builder.addCase(profileAsyncActions.getPostsOfUser.fulfilled, (state, action) => {
       state.myPosts = action.payload;
     });
@@ -71,6 +95,13 @@ const profileSlice = createSlice({
     });
     builder.addCase(profileAsyncActions.getListBookmarkedPosts.rejected, (state, action) => {
       state.bookmarkedPosts = [];
+    });
+
+    builder.addCase(profileAsyncActions.getFollowerCount.fulfilled, (state, action) => {
+      state.followerCount = action.payload.followerCount;
+    });
+    builder.addCase(profileAsyncActions.getFollowerCount.rejected, (state, action) => {
+      state.followerCount = 0;
     });
   },
 });

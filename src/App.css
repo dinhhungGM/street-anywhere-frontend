@@ -56,7 +56,7 @@
 
 .MuiCardHeader-title {
   display: inline-block;
-  max-width: 200px;
+  max-width: 90%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

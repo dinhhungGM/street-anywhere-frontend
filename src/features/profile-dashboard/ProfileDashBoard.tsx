@@ -1,4 +1,14 @@
-import { AddAPhoto, Bookmark, Image, People, Person, Upload, YouTube } from '@mui/icons-material';
+import {
+  AddAPhoto,
+  Bookmark,
+  ConnectWithoutContact,
+  Image,
+  People,
+  Person,
+  PersonAdd,
+  Upload,
+  YouTube,
+} from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -18,19 +28,13 @@ import { profileActions } from '.';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { AppIcon } from '../../solutions/components/app-icon';
 import { authSelectors } from '../auth/store';
+import { userSelectors } from '../user';
+import { userActions } from './../user';
 import * as profileAsyncActions from './profileDashboardAsyncActions';
 import { ProfilePropertiesEnum } from './profileDashBoardModels';
 import * as profileSelectors from './profileDashBoardSelectors';
 import { profileSyncActions } from './profileDashboardSlice';
 import styles from './styles.module.scss';
-
-const showSuccess = (message: string): void => {
-  SweetAlert.fire({
-    title: 'Success',
-    icon: 'success',
-    text: message,
-  });
-};
 
 const showError = (message: string): void => {
   SweetAlert.fire({
@@ -46,6 +50,8 @@ const ProfileDashBoard = () => {
   const inputFileRef = useRef<HTMLInputElement>();
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const profileDetail = useAppSelector(profileSelectors.selectProfileDetail);
+  const followerCount = useAppSelector(profileSelectors.selectFollowerCount);
+  const followingUsers = useAppSelector(userSelectors.selectedFollowingUsers);
   const [file, setFile] = useState<File | null>(null);
   const [field, setField] = useState<ProfilePropertiesEnum | null>(null);
   const { userId } = useParams();
@@ -79,7 +85,9 @@ const ProfileDashBoard = () => {
   useEffect(() => {
     dispatch(profileActions.getAllPostsOfCurrentUser(+userId));
     dispatch(profileActions.getProfileOfUser(+userId));
-
+    if (currentUser) {
+      dispatch(userActions.getFollowingUsers(currentUser?.id));
+    }
     return () => {
       dispatch(profileSyncActions.resetProfileDetail());
     };
@@ -90,14 +98,18 @@ const ProfileDashBoard = () => {
   }, [currentUser?.id, userId]);
 
   useEffect(() => {
-    if (location.pathname.includes('followers')) {
+    const pathName = location.pathname;
+    const seachStr = location.search;
+    if (pathName.includes('followers')) {
       setTab(1);
-    } else if (location.pathname.includes('posts') && location.search.includes('image')) {
+    } else if (pathName.includes('followings')) {
       setTab(2);
-    } else if (location.pathname.includes('posts') && location.search.includes('video')) {
+    } else if (pathName.includes('posts') && seachStr.includes('image')) {
       setTab(3);
-    } else if (location.pathname.includes('bookmark')) {
+    } else if (pathName.includes('posts') && seachStr.includes('video')) {
       setTab(4);
+    } else if (pathName.includes('bookmark')) {
+      setTab(5);
     } else {
       setTab(0);
     }
@@ -135,19 +147,9 @@ const ProfileDashBoard = () => {
       }
     };
 
-    const updateTextInfo = async () => {
-      const payload = {
-        userId: currentUser?.id,
-        payload: {},
-      };
-    };
-
     if (file && field) {
       if (fileFields.includes(field)) {
         updateAvatarOrCoverImage();
-      }
-      if (textFields.includes(field)) {
-        updateTextInfo();
       }
     }
   }, [file, field]);
@@ -155,6 +157,50 @@ const ProfileDashBoard = () => {
   const handleNavigate = (path): void => {
     navigate(path);
   };
+
+  // Handling display follow button
+  const follower = useMemo(() => {
+    if (!followingUsers || !followingUsers.length) {
+      return null;
+    }
+    if (!currentUser) {
+      return null;
+    }
+    return _.find(followingUsers, (user) => user.followerId === +userId);
+  }, [userId, followingUsers, currentUser]);
+
+  // Handling follow user
+  const handlingFollower = () => {
+    if (_.isNil(currentUser)) {
+      SweetAlert.fire({
+        title: 'Notification',
+        icon: 'warning',
+        text: 'You are not sign in',
+        confirmButtonText: 'Sign in',
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/sign-in');
+        }
+      });
+    } else {
+      if (follower) {
+        dispatch(
+          userActions.unfollowUser({ userId: currentUser?.id, followerId: profileDetail.id }),
+        );
+      } else {
+        dispatch(userActions.followUser({ userId: currentUser?.id, followerId: profileDetail.id }));
+      }
+    }
+  };
+
+  // Load follow user
+  useEffect(() => {
+    dispatch(profileActions.getFollowerCount(+userId));
+    return () => {
+      dispatch(profileActions.resetFollowerCount());
+    };
+  }, [userId]);
 
   return (
     <>
@@ -214,8 +260,19 @@ const ProfileDashBoard = () => {
                 {profileDetail?.fullName}
               </Typography>
               <Typography textAlign='center' marginTop={1}>
-                0 Followers
+                {followerCount} Followers
               </Typography>
+              {!isCurrentUser ? (
+                <Stack marginY={1} alignItems='center' justifyContent='center'>
+                  <Button
+                    color={follower ? 'error' : 'primary'}
+                    startIcon={<AppIcon icon={PersonAdd} color='#fff' />}
+                    variant='contained'
+                    onClick={handlingFollower}>
+                    {follower ? 'Unfollow' : 'Follow'}
+                  </Button>
+                </Stack>
+              ) : null}
             </Box>
           </Box>
         </Box>
@@ -240,6 +297,13 @@ const ProfileDashBoard = () => {
               iconPosition='start'
               className={styles['tab-item']}
               onClick={() => handleNavigate(`/profile/${ userId }/followers`)}
+            />
+            <Tab
+              icon={<AppIcon icon={ConnectWithoutContact} />}
+              label='Followings'
+              iconPosition='start'
+              className={styles['tab-item']}
+              onClick={() => handleNavigate(`/profile/${ userId }/followings`)}
             />
             <Tab
               icon={<AppIcon icon={Image} />}
