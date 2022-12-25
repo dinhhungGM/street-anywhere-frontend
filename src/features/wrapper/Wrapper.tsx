@@ -5,6 +5,7 @@ import { AppToast } from '../../solutions/components/app-toast';
 import { LoadingSpinner } from '../../solutions/components/loading-spinner';
 import { Footer } from '../footer';
 import { Header } from '../header';
+import { Box } from '@mui/material';
 
 type WrapperProps = {
   children: ReactNode;
@@ -13,13 +14,18 @@ type WrapperProps = {
 const Wrapper = ({ children }: WrapperProps) => {
   return (
     <>
-      <Header />
-      {children}
-      <Footer />
-      <LoadingSpinner />
-      <AppMoveToTop />
-      <AppNotification />
-      <AppToast />
+      <Box
+        sx={{
+          minHeight: 'calc(100vh - 56px - 72px)',
+        }}>
+        <Header />
+        {children}
+        <Footer />
+        <LoadingSpinner />
+        <AppMoveToTop />
+        <AppNotification />
+        <AppToast />
+      </Box>
     </>
   );
 };
