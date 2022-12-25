@@ -92,7 +92,6 @@ const ProfileDashBoard = () => {
   useEffect(() => {
     dispatch(profileActions.getAllPostsOfCurrentUser(+userId));
     dispatch(profileActions.getProfileOfUser(+userId));
-    dispatch(profileActions.getFollowerCount(+userId));
     if (currentUser) {
       dispatch(userActions.getFollowingUsers(currentUser?.id));
     }
@@ -207,6 +206,14 @@ const ProfileDashBoard = () => {
       }
     }
   };
+
+  // Load follow user
+  useEffect(() => {
+    dispatch(profileActions.getFollowerCount(+userId));
+    return () => {
+      dispatch(profileActions.resetFollowerCount());
+    };
+  }, [userId]);
 
   return (
     <>

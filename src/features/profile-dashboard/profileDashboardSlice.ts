@@ -51,6 +51,9 @@ const profileSlice = createSlice({
     decreaseFollowerCount: (state) => {
       state.followerCount--;
     },
+    resetFollowerCount: (state) => {
+      state.followerCount = 0;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(profileAsyncActions.getProfileOfUser.fulfilled, (state, action) => {

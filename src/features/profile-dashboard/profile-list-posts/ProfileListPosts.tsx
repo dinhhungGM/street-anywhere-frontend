@@ -14,7 +14,7 @@ import {
   MenuItem,
   Stack,
   TextField,
-  Typography,
+  Typography
 } from '@mui/material';
 import _ from 'lodash';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';

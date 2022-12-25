@@ -1,6 +1,7 @@
-import { Delete, Shortcut } from '@mui/icons-material';
+import { Close, Delete, Search, Shortcut } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
 import {
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -9,16 +10,19 @@ import {
   CardMedia,
   Container,
   Divider,
+  InputAdornment,
   Stack,
-  Typography,
+  TextField,
+  Typography
 } from '@mui/material';
 import _ from 'lodash';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import ReactPlayer from 'react-player';
 import { useNavigate, useParams } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppIcon } from '../../../solutions/components/app-icon';
+import { AppIconButton } from '../../../solutions/components/app-icon-button';
 import { authSelectors } from '../../auth/store';
 import { profileActions, profileSelectors } from '../index';
 import styles from './styles.module.scss';
@@ -27,6 +31,7 @@ const ProfileListBookmarkedPost = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const dispatch = useAppDispatch();
+  const [search, setSearch] = useState('');
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const bookmarkedPosts = useAppSelector(profileSelectors.selectBookmarkedPosts);
 
@@ -73,17 +78,61 @@ const ProfileListBookmarkedPost = () => {
       dispatch(profileActions.resetListBookmarkedPosts());
     };
   }, []);
+
+  // Clear search
+  const clearSearch = useCallback(() => {
+    setSearch('');
+  }, []);
+
+  // Handling filter search
+
+  const displayPosts = useMemo(() => {
+    if (!search.trim()) {
+      return bookmarkedPosts;
+    }
+    return _.filter(bookmarkedPosts, (post) => {
+      const title = post.title.trim().toLowerCase();
+      const keyword = search.trim().toLowerCase();
+      return title.includes(keyword);
+    });
+  }, [search, bookmarkedPosts]);
+
   return (
     <>
       <Container>
-        {bookmarkedPosts?.length ? (
+        <Box marginY={2}>
+          <TextField
+            placeholder='Search by title'
+            fullWidth
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <AppIcon icon={Search} />
+                </InputAdornment>
+              ),
+              endAdornment: search && (
+                <InputAdornment position='start'>
+                  <AppIconButton
+                    tooltip='Clear'
+                    icon={<AppIcon icon={Close} />}
+                    buttonColor='error'
+                    onClick={clearSearch}
+                  />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+        {displayPosts?.length ? (
           <Masonry
             columns={{ xs: 1, sm: 3, md: 3, lg: 4, xl: 5 }}
             spacing={2}
             sx={{
               width: '100%',
             }}>
-            {bookmarkedPosts?.map((post) => (
+            {displayPosts?.map((post) => (
               <Card sx={{ maxWidth: 345 }} key={post?.id}>
                 <CardActionArea
                   onClick={(e) => {
