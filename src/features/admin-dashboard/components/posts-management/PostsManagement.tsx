@@ -1,4 +1,4 @@
-import { Box, Pagination } from '@mui/material';
+import { Box, Pagination, Stack } from '@mui/material';
 import { useCallback, useEffect, useState, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
@@ -71,9 +71,9 @@ const PostsManagement = () => {
           />
         </Box>
         {totalPage > 1 ? (
-          <Box marginY={2}>
+          <Stack marginY={2} alignItems='center' justifyContent='center'>
             <Pagination count={totalPage} color='primary' page={page} onChange={handleChangePage} />
-          </Box>
+          </Stack>
         ) : null}
       </Box>
     </>
