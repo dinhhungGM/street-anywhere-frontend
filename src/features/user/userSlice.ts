@@ -22,14 +22,16 @@ const userSlice = createSlice({
       state.bookmarkedPosts.push(action.payload);
     },
     removeBookmarkedPost: (state, action) => {
-      state.bookmarkedPosts = state.bookmarkedPosts.filter((item) => item.bookmarkId !== action.payload.bookmarkId);
+      state.bookmarkedPosts = state.bookmarkedPosts.filter(
+        (item) => item.bookmarkId !== action.payload.bookmarkId,
+      );
     },
     addNewFollowingUser: (state, action) => {
       state.followingUsers.push(action.payload);
     },
     removeFollowingUser: (state, action) => {
+      const { userId, followerId } = action.payload;
       state.followingUsers = state.followingUsers.filter((item) => {
-        const { userId, followerId } = action.payload;
         return item.userId !== userId && item.followerId !== followerId;
       });
     },
@@ -43,11 +45,22 @@ const userSlice = createSlice({
     builder.addCase(userAsyncActions.getFollowingUsers.fulfilled, (state, action) => {
       state.followingUsers = action.payload;
     });
+    builder.addCase(userAsyncActions.getFollowingUsers.rejected, (state, action) => {
+      state.followingUsers = null;
+    });
+
     builder.addCase(userAsyncActions.getBookmarkedPost.fulfilled, (state, action) => {
       state.bookmarkedPosts = action.payload;
     });
+    builder.addCase(userAsyncActions.getBookmarkedPost.rejected, (state, action) => {
+      state.bookmarkedPosts = null;
+    });
+
     builder.addCase(userAsyncActions.getReactedPost.fulfilled, (state, action) => {
       state.reactedPosts = action.payload;
+    });
+    builder.addCase(userAsyncActions.getReactedPost.rejected, (state, action) => {
+      state.reactedPosts = null;
     });
   },
 });

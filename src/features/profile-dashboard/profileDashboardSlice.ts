@@ -8,6 +8,7 @@ interface IProfileState {
   followers: any[];
   myPosts: IPost[];
   bookmarkedPosts: IBookmarkedPost[];
+  followerCount: number;
 }
 
 const initialState: IProfileState = {
@@ -15,6 +16,7 @@ const initialState: IProfileState = {
   followers: [],
   myPosts: [],
   bookmarkedPosts: [],
+  followerCount: 0,
 };
 
 const profileSlice = createSlice({
@@ -42,6 +44,12 @@ const profileSlice = createSlice({
     },
     resetListBookmarkedPosts: (state) => {
       state.bookmarkedPosts = [];
+    },
+    increaseFollowerCount: (state) => {
+      state.followerCount++;
+    },
+    decreaseFollowerCount: (state) => {
+      state.followerCount--;
     },
   },
   extraReducers: (builder) => {
@@ -71,6 +79,13 @@ const profileSlice = createSlice({
     });
     builder.addCase(profileAsyncActions.getListBookmarkedPosts.rejected, (state, action) => {
       state.bookmarkedPosts = [];
+    });
+
+    builder.addCase(profileAsyncActions.getFollowerCount.fulfilled, (state, action) => {
+      state.followerCount = action.payload.followerCount;
+    });
+    builder.addCase(profileAsyncActions.getFollowerCount.rejected, (state, action) => {
+      state.followerCount = 0;
     });
   },
 });

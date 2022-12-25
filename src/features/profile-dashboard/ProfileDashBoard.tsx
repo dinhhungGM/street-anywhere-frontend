@@ -1,4 +1,13 @@
-import { AddAPhoto, Bookmark, Image, People, Person, Upload, YouTube } from '@mui/icons-material';
+import {
+  AddAPhoto,
+  Bookmark,
+  Image,
+  People,
+  Person,
+  PersonAdd,
+  Upload,
+  YouTube,
+} from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -18,6 +27,8 @@ import { profileActions } from '.';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { AppIcon } from '../../solutions/components/app-icon';
 import { authSelectors } from '../auth/store';
+import { userSelectors } from '../user';
+import { userActions } from './../user';
 import * as profileAsyncActions from './profileDashboardAsyncActions';
 import { ProfilePropertiesEnum } from './profileDashBoardModels';
 import * as profileSelectors from './profileDashBoardSelectors';
@@ -46,6 +57,8 @@ const ProfileDashBoard = () => {
   const inputFileRef = useRef<HTMLInputElement>();
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const profileDetail = useAppSelector(profileSelectors.selectProfileDetail);
+  const followerCount = useAppSelector(profileSelectors.selectFollowerCount);
+  const followingUsers = useAppSelector(userSelectors.selectedFollowingUsers);
   const [file, setFile] = useState<File | null>(null);
   const [field, setField] = useState<ProfilePropertiesEnum | null>(null);
   const { userId } = useParams();
@@ -79,7 +92,10 @@ const ProfileDashBoard = () => {
   useEffect(() => {
     dispatch(profileActions.getAllPostsOfCurrentUser(+userId));
     dispatch(profileActions.getProfileOfUser(+userId));
-
+    dispatch(profileActions.getFollowerCount(+userId));
+    if (currentUser) {
+      dispatch(userActions.getFollowingUsers(currentUser?.id));
+    }
     return () => {
       dispatch(profileSyncActions.resetProfileDetail());
     };
@@ -156,6 +172,42 @@ const ProfileDashBoard = () => {
     navigate(path);
   };
 
+  // Handling display follow button
+  const follower = useMemo(() => {
+    if (!followingUsers || !followingUsers.length) {
+      return null;
+    }
+    if (!currentUser) {
+      return null;
+    }
+    return _.find(followingUsers, (user) => user.followerId === +userId);
+  }, [userId, followingUsers, currentUser]);
+
+  // Handling follow user
+  const handlingFollower = () => {
+    if (_.isNil(currentUser)) {
+      SweetAlert.fire({
+        title: 'Notification',
+        icon: 'warning',
+        text: 'You are not sign in',
+        confirmButtonText: 'Sign in',
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/sign-in');
+        }
+      });
+    } else {
+      if (follower) {
+        dispatch(
+          userActions.unfollowUser({ userId: currentUser?.id, followerId: profileDetail.id }),
+        );
+      } else {
+        dispatch(userActions.followUser({ userId: currentUser?.id, followerId: profileDetail.id }));
+      }
+    }
+  };
+
   return (
     <>
       <Box className={styles['dashboard']}>
@@ -214,8 +266,19 @@ const ProfileDashBoard = () => {
                 {profileDetail?.fullName}
               </Typography>
               <Typography textAlign='center' marginTop={1}>
-                0 Followers
+                {followerCount} Followers
               </Typography>
+              {!isCurrentUser ? (
+                <Stack marginY={1} alignItems='center' justifyContent='center'>
+                  <Button
+                    color={follower ? 'error' : 'primary'}
+                    startIcon={<AppIcon icon={PersonAdd} color='#fff' />}
+                    variant='contained'
+                    onClick={handlingFollower}>
+                    {follower ? 'Unfollow' : 'Follow'}
+                  </Button>
+                </Stack>
+              ) : null}
             </Box>
           </Box>
         </Box>

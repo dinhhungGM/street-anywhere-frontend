@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { memo, useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
@@ -72,7 +72,9 @@ const ProfileListFollowers = () => {
             mappingClickField='userId'
           />
         ) : (
-          <Typography textAlign='center'>No data</Typography>
+          <Stack alignItems='center' justifyContent='center'>
+            <img src='/empty-data.jpg' alt='Empty data' />
+          </Stack>
         )}
       </Box>
     </>
