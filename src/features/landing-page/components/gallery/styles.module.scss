@@ -1,5 +1,11 @@
 .gallery {
   padding: 12px;
   width: 100%;
-  min-height: calc(100vh - 56px - 72px);
+}
+
+.paginator {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
 }

@@ -17,32 +17,35 @@ import LikeSrc from './../../assets/images/reactions/like.png';
 import LoveSrc from './../../assets/images/reactions/love.png';
 import styles from './styles.module.scss';
 import { useNavigate } from 'react-router-dom';
+import { IBookmarkDetail } from '../../models/postModels';
 
 interface IAppTrendingCardProps {
-  profilePhotoUrl?: string;
-  fullName?: string;
-  createdAt?: string;
   type?: string;
-  imageUrl?: string;
-  videoYtbUrl?: string;
   title?: string;
   views?: number;
-  totalReaction?: number;
   userId?: number;
   postId?: number;
+  fullName?: string;
+  imageUrl?: string;
+  createdAt?: string;
+  videoYtbUrl?: string;
+  totalReaction?: number;
+  profilePhotoUrl?: string;
+  isBookmarked?: boolean;
+  bookmarkDetail?: any;
 }
 const AppTrendingCard = ({
-  profilePhotoUrl,
   fullName,
-  createdAt,
   type,
-  imageUrl,
-  videoYtbUrl,
   title,
   views,
-  totalReaction,
   userId,
   postId,
+  imageUrl,
+  createdAt,
+  videoYtbUrl,
+  totalReaction,
+  profilePhotoUrl,
 }: IAppTrendingCardProps) => {
   const navigate = useNavigate();
   return (
@@ -85,7 +88,14 @@ const AppTrendingCard = ({
               </Stack>
             </Stack>
           </Box>
-          <Stack direction='row' alignItems='center' justifyContent='flex-start' marginTop={2}>
+          <Stack direction='row' alignItems='center' justifyContent='space-between' marginTop={2}>
+            <Button
+              startIcon={<AppIcon icon={Shortcut} color='#fff' />}
+              variant='contained'
+              color='success'
+              onClick={() => navigate(`/posts/${ postId }`)}>
+              View more
+            </Button>
             <Button
               startIcon={<AppIcon icon={Shortcut} color='#fff' />}
               variant='contained'
