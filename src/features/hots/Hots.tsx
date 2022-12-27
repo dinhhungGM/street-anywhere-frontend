@@ -1,16 +1,23 @@
-import { Box } from '@mui/material';
-import styles from './styles.module.scss';
-import { useState, useEffect } from 'react';
-import { IPost } from '../../solutions/models/postModels';
-import { useAppDispatch } from '../../app/hooks';
-import { default as axios } from './../../solutions/services/axios';
-import { wrapperActions } from '../wrapper/store';
-import { AppTrendingCard } from '../../solutions/components/app-trending-card';
 import { Masonry } from '@mui/lab';
+import { Box, Stack } from '@mui/material';
+import _ from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { AppTrendingCard } from '../../solutions/components/app-trending-card';
+import { IPost } from '../../solutions/models/postModels';
+import { authSelectors } from '../auth/store';
+import { userSelectors } from '../user';
+import { wrapperActions } from '../wrapper/store';
+import { default as axios } from './../../solutions/services/axios';
+import { userActions } from './../user';
+import styles from './styles.module.scss';
 
 const Hots = () => {
-  const [trendingPosts, setTrendingPosts] = useState<IPost[]>([]);
   const dispatch = useAppDispatch();
+  const [trendingPosts, setTrendingPosts] = useState<IPost[]>([]);
+  const currentUser = useAppSelector(authSelectors.selectCurrentUser);
+  const bookmarkedPosts = useAppSelector(userSelectors.selectBookmarkedPosts);
+  const followingUsers = useAppSelector(userSelectors.selectedFollowingUsers);
 
   useEffect(() => {
     const getTrendingPosts = async () => {
@@ -29,35 +36,68 @@ const Hots = () => {
         dispatch(wrapperActions.hideLoading());
       }
     };
-
+    if (currentUser) {
+      dispatch(userActions.getBookmarkedPost(currentUser?.id));
+      dispatch(userActions.getFollowingUsers(currentUser?.id));
+    }
     getTrendingPosts();
   }, []);
 
+  // Construct posts
+  const displayTrendingPosts = useMemo(() => {
+    if (!currentUser) {
+      return trendingPosts;
+    }
+    return _.map(trendingPosts, (item) => {
+      const bookmarkedPost = _.find(bookmarkedPosts, (i) => i.postId === item?.id);
+      console.log(bookmarkedPost);
+      const followingUser = _.find(followingUsers, (i) => i.followerId === item?.userId);
+      return {
+        ...item,
+        isBookmarked: !!bookmarkedPost,
+        bookmarkedDetail: bookmarkedPost,
+        isFollowingUser: !!followingUser,
+        followingDetail: followingUser,
+      };
+    });
+  }, [trendingPosts, bookmarkedPosts, followingUsers]);
+
   return (
     <Box className={styles.hots}>
-      <Masonry
-        columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
-        spacing={2}
-        sx={{
-          width: '100%',
-        }}>
-        {trendingPosts.map((post) => (
-          <AppTrendingCard
-            key={post?.id}
-            postId={post?.id}
-            type={post?.type}
-            views={post?.views}
-            title={post?.title}
-            userId={post?.userId}
-            imageUrl={post?.imageUrl}
-            fullName={post?.fullName}
-            createdAt={post?.createdAt}
-            videoYtbUrl={post?.videoYtbUrl}
-            profilePhotoUrl={post?.profilePhotoUrl}
-            totalReaction={post?.totalReactions}
-          />
-        ))}
-      </Masonry>
+      {displayTrendingPosts?.length ? (
+        <Masonry
+          columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
+          spacing={2}
+          sx={{
+            width: '100%',
+          }}>
+          {displayTrendingPosts.map((post) => (
+            <AppTrendingCard
+              key={post?.id}
+              postId={post?.id}
+              type={post?.type}
+              views={post?.views}
+              title={post?.title}
+              userId={post?.userId}
+              imageUrl={post?.imageUrl}
+              fullName={post?.fullName}
+              createdAt={post?.createdAt}
+              videoYtbUrl={post?.videoYtbUrl}
+              currentUserId={currentUser?.id}
+              isBookmarked={post?.isBookmarked}
+              totalReaction={post?.totalReactions}
+              bookmarkDetail={post?.bookmarkedDetail}
+              profilePhotoUrl={post?.profilePhotoUrl}
+              isFollowingUser={post?.isFollowingUser}
+              followingDetail={post?.followingDetail}
+            />
+          ))}
+        </Masonry>
+      ) : (
+        <Stack alignItems='center' justifyContent='center'>
+          <img src='/empty-data.jpg' alt='Empty data' />
+        </Stack>
+      )}
     </Box>
   );
 };

@@ -1,23 +1,38 @@
-import { Shortcut, Visibility } from '@mui/icons-material';
+import { Bookmark, Shortcut, Visibility } from '@mui/icons-material';
 import {
   Avatar,
   Box,
   Button,
   Card,
+  CardActionArea,
   CardContent,
   CardHeader,
   CardMedia,
   Stack,
   Typography,
 } from '@mui/material';
+import _ from 'lodash';
 import { memo } from 'react';
 import ReactPlayer from 'react-player';
+import { useNavigate } from 'react-router-dom';
+import SweetAlert from 'sweetalert2';
+import { useAppDispatch } from '../../../app/hooks';
+import { bookmarkActions } from '../../../features/bookmark';
+import { userActions } from '../../../features/user';
+import { wrapperActions } from '../../../features/wrapper/store';
 import { AppIcon } from '../app-icon';
 import LikeSrc from './../../assets/images/reactions/like.png';
 import LoveSrc from './../../assets/images/reactions/love.png';
 import styles from './styles.module.scss';
-import { useNavigate } from 'react-router-dom';
-import { IBookmarkDetail } from '../../models/postModels';
+
+const showWarning = () =>
+  SweetAlert.fire({
+    title: 'Warning',
+    icon: 'info',
+    text: 'You are not logged in. Please login to continue',
+    confirmButtonText: 'Sign in',
+    showCancelButton: true,
+  });
 
 interface IAppTrendingCardProps {
   type?: string;
@@ -28,11 +43,14 @@ interface IAppTrendingCardProps {
   fullName?: string;
   imageUrl?: string;
   createdAt?: string;
+  bookmarkDetail?: any;
   videoYtbUrl?: string;
+  isBookmarked?: boolean;
+  currentUserId?: number;
+  followingDetail?: any;
   totalReaction?: number;
   profilePhotoUrl?: string;
-  isBookmarked?: boolean;
-  bookmarkDetail?: any;
+  isFollowingUser?: boolean;
 }
 const AppTrendingCard = ({
   fullName,
@@ -44,32 +62,125 @@ const AppTrendingCard = ({
   imageUrl,
   createdAt,
   videoYtbUrl,
+  isBookmarked,
   totalReaction,
+  currentUserId,
+  bookmarkDetail,
   profilePhotoUrl,
+  isFollowingUser,
+  followingDetail,
 }: IAppTrendingCardProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  //  Handling bookmark
+  const handleBookmarkPost = () => {
+    if (_.isNil(currentUserId)) {
+      showWarning().then((result) => {
+        if (result.isConfirmed) {
+          navigate('/sign-in');
+        }
+      });
+    } else {
+      if (isBookmarked) {
+        dispatch(bookmarkActions.unBookmark({ bookmarkId: bookmarkDetail.bookmarkId }));
+      } else {
+        dispatch(
+          bookmarkActions.createBookmark({
+            postId: postId,
+            userId: currentUserId,
+          }),
+        );
+        if (currentUserId !== +userId) {
+          dispatch(
+            wrapperActions.createNewNotification({
+              postId: postId,
+              type: 'bookmarked',
+              reactionType: null,
+              userId: currentUserId,
+            }),
+          );
+        }
+      }
+    }
+  };
+
+  // Handling follow user
+  const handleFollowUser = () => {
+    if (!currentUserId) {
+      showWarning().then((rs) => {
+        if (rs.isConfirmed) {
+          navigate('/sign-in');
+        }
+      });
+    } else {
+      if (isFollowingUser) {
+        dispatch(
+          userActions.unfollowUser({
+            userId: followingDetail?.userId,
+            followerId: followingDetail?.followerId,
+          }),
+        );
+      } else {
+        dispatch(userActions.followUser({ userId: currentUserId, followerId: userId }));
+        if (currentUserId !== userId) {
+          dispatch(
+            wrapperActions.createNewNotification({
+              postId,
+              userId: currentUserId,
+              type: 'followed',
+              reactionType: null,
+            }),
+          );
+        }
+      }
+    }
+  };
+
   return (
     <>
-      <Card sx={{ maxWidth: 345 }}>
+      <Card sx={{ maxWidth: 345 }} className='trending-card'>
         <CardHeader
-          avatar={<Avatar src={profilePhotoUrl}>{fullName[0]}</Avatar>}
           title={fullName}
           subheader={createdAt}
-          onClick={() => navigate(`/profile/${ userId }`)}
           sx={{ cursor: 'pointer' }}
+          onClick={() => navigate(`/profile/${ userId }`)}
+          avatar={<Avatar src={profilePhotoUrl}>{fullName[0]}</Avatar>}
+          action={
+            currentUserId !== userId ? (
+              <Button
+                variant='contained'
+                color={isFollowingUser ? 'error' : 'primary'}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFollowUser();
+                }}>
+                {isFollowingUser ? 'Unfollow' : 'Follow'}
+              </Button>
+            ) : null
+          }
         />
-        {type === 'video' ? (
-          <>
-            <Box marginY={1}>
-              <ReactPlayer url={videoYtbUrl} light controls={false} muted width='100%' />
-            </Box>
-          </>
-        ) : (
-          <>
-            <CardMedia component='img' height='300' image={imageUrl} alt='Image' sx={{ px: 1 }} />
-          </>
-        )}
-        <CardContent>
+        <CardActionArea onClick={() => navigate(`/posts/${ postId }`)}>
+          {type === 'video' ? (
+            <>
+              <Box marginY={1}>
+                <ReactPlayer
+                  light
+                  muted
+                  width='100%'
+                  height='285px'
+                  controls={false}
+                  url={videoYtbUrl}
+                />
+              </Box>
+            </>
+          ) : (
+            <>
+              <CardMedia component='img' height='300' image={imageUrl} alt='Image' sx={{ px: 1 }} />
+            </>
+          )}
+        </CardActionArea>
+        <CardContent sx={{ paddingBottom: '16px !important' }}>
           <Typography variant='h6' className={styles.title}>
             {title}
           </Typography>
@@ -97,11 +208,11 @@ const AppTrendingCard = ({
               View more
             </Button>
             <Button
-              startIcon={<AppIcon icon={Shortcut} color='#fff' />}
-              variant='contained'
-              color='success'
-              onClick={() => navigate(`/posts/${ postId }`)}>
-              View more
+              startIcon={<AppIcon icon={Bookmark} color={isBookmarked ? '#fff' : '#0288d1'} />}
+              variant={isBookmarked ? 'contained' : 'outlined'}
+              color={isBookmarked ? 'error' : 'primary'}
+              onClick={handleBookmarkPost}>
+              {isBookmarked ? 'Unbookmark' : 'Bookmark'}
             </Button>
           </Stack>
         </CardContent>

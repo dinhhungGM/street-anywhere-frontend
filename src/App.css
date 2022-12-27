@@ -70,3 +70,7 @@
 .MuiSnackbar-root {
   z-index: 9999999 !important;
 }
+
+.trending-card .MuiCardHeader-content {
+  max-width: 55% !important;
+}
