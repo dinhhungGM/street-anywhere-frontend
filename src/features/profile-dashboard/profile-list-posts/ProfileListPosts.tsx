@@ -85,11 +85,14 @@ const ProfileListPosts = () => {
     const mediaType = searchParams.get('mediatype');
     setSearch('');
     dispatch(profileActions.getPostsOfUser({ userId: +userId, mediaType }));
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       if (contentRef.current) {
         (contentRef.current as any).scrollIntoView();
       }
     }, 100);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [searchParams]);
 
   // Handling get bookmarked posts
@@ -213,6 +216,7 @@ const ProfileListPosts = () => {
                 sx={{
                   width: '100%',
                   marginTop: '12px',
+                  paddingLeft: '60px',
                 }}>
                 {displayPosts?.map((post) => (
                   <Card sx={{ maxWidth: 345 }} key={post?.id}>

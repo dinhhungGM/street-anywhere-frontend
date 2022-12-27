@@ -41,6 +41,9 @@ const Hots = () => {
       dispatch(userActions.getFollowingUsers(currentUser?.id));
     }
     getTrendingPosts();
+    return () => {
+      dispatch(userActions.resetAllData());
+    };
   }, []);
 
   // Construct posts
@@ -50,7 +53,6 @@ const Hots = () => {
     }
     return _.map(trendingPosts, (item) => {
       const bookmarkedPost = _.find(bookmarkedPosts, (i) => i.postId === item?.id);
-      console.log(bookmarkedPost);
       const followingUser = _.find(followingUsers, (i) => i.followerId === item?.userId);
       return {
         ...item,

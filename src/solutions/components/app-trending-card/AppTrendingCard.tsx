@@ -40,9 +40,9 @@ interface IAppTrendingCardProps {
   views?: number;
   userId?: number;
   postId?: number;
+  createdAt: string;
   fullName?: string;
   imageUrl?: string;
-  createdAt?: string;
   bookmarkDetail?: any;
   videoYtbUrl?: string;
   isBookmarked?: boolean;
@@ -139,7 +139,7 @@ const AppTrendingCard = ({
 
   return (
     <>
-      <Card sx={{ maxWidth: 345 }} className='trending-card'>
+      <Card sx={{ maxWidth: 345 }} className='card'>
         <CardHeader
           title={fullName}
           subheader={createdAt}

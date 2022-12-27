@@ -6,6 +6,7 @@ import { AppHeading } from '../../../solutions/components/app-heading';
 import { AppTable } from '../../../solutions/components/app-table';
 import { profileActions, profileSelectors } from '../index';
 import styles from './styles.module.scss';
+import { useRef } from 'react';
 
 const headerConfigs = [
   {
@@ -40,6 +41,7 @@ const rowConfigs = [
 ];
 
 const ProfileListFollowers = () => {
+  const contentRef = useRef();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { userId: currentUserId } = useParams();
@@ -51,15 +53,21 @@ const ProfileListFollowers = () => {
 
   useEffect(() => {
     dispatch(profileActions.getFollowers(+currentUserId));
+    const timer = setTimeout(() => {
+      if (contentRef) {
+        (contentRef.current as any).scrollIntoView();
+      }
+    }, 100);
     return () => {
       dispatch(profileActions.resetFollowers());
+      clearTimeout(timer);
     };
   }, []);
 
   return (
     <>
       <Box className={styles.wrapper}>
-        <Box paddingBottom={2}>
+        <Box paddingBottom={2} ref={contentRef}>
           <AppHeading heading={`Followers (${ followers?.length })`} />
         </Box>
         {followers?.length ? (
