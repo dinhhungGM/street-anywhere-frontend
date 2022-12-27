@@ -10,7 +10,11 @@ const initialState: ITagsState = {
 const tagsSlice = createSlice({
   name: 'tags',
   initialState,
-  reducers: {},
+  reducers: {
+    resetTags: (state) => {
+      state.tagList = [];
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(tagAsyncActions.getTagList.fulfilled, (state, action) => {
       state.tagList = action.payload;

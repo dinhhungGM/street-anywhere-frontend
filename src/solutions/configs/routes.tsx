@@ -24,9 +24,6 @@ const LazyPageNotFound = lazy(() =>
 const LazyShorts = lazy(() =>
   import('./../../features/shorts').then((m) => ({ default: m.Shorts })),
 );
-const LazyReactions = lazy(() =>
-  import('./../../features/reactions').then((m) => ({ default: m.Reactions })),
-);
 const LazyHots = lazy(() => import('./../../features/hots').then((m) => ({ default: m.Hots })));
 const LazyExplore = lazy(() =>
   import('./../../features/explore').then((m) => ({ default: m.Explore })),
@@ -197,11 +194,6 @@ const routes: Route[] = [
     id: 'shorts',
     path: '/shorts',
     element: <LazyShorts />,
-  },
-  {
-    id: 'reactions',
-    path: '/reactions',
-    element: <LazyReactions />,
   },
   {
     id: 'hots',

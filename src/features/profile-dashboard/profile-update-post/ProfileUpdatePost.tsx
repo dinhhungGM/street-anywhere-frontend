@@ -245,8 +245,8 @@ const ProfileUpdatePost = () => {
     if (_.isNil(currentUser)) {
       SweetAlert.fire({
         title: 'Warning',
-        icon: 'warning',
-        text: 'You are not sign in. Please sign in to continue',
+        icon: 'info',
+        text: 'You are not signed in. Please sign in to continue',
         confirmButtonText: 'Sign in',
         showCancelButton: true,
       })
@@ -265,12 +265,17 @@ const ProfileUpdatePost = () => {
         title: 'Error',
         icon: 'error',
         text: "You cannot edit other people's posts",
-      });
+      }).then(() => navigate(-1));
     } else {
       dispatch(categoriesActions.getCategoryList());
       dispatch(tagsActions.getTagList());
       dispatch(postActions.getPostByIdAsync(+postId));
     }
+
+    return () => {
+      dispatch(categoriesActions.resetCategories());
+      dispatch(tagsActions.resetTags());
+    };
   }, []);
 
   useEffect(() => {
