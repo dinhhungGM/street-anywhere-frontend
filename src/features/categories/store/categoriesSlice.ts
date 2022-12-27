@@ -10,7 +10,11 @@ const initialState: ICategoriesState = {
 const categoriesSlice = createSlice({
   name: 'categories',
   initialState,
-  reducers: {},
+  reducers: {
+    resetCategories: (state) => {
+      state.categoryList = [];
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(categoriesAsyncActions.getCategoryList.fulfilled, (state, action) => {
       state.categoryList = action.payload;

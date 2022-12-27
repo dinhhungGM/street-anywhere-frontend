@@ -23,6 +23,15 @@ import { wrapperActions } from '../../../wrapper/store';
 import { landingPageActions, landingPageSelectors } from '../../store';
 import styles from './styles.module.scss';
 
+const showWarning = () =>
+  SweetAlert.fire({
+    title: 'Warning',
+    icon: 'info',
+    text: 'You are not signed in. Please sign in to continue',
+    confirmButtonText: 'Sign in',
+    showCancelButton: true,
+  });
+
 const Gallery = () => {
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const posts = useAppSelector(landingPageSelectors.selectPosts);
@@ -77,11 +86,7 @@ const Gallery = () => {
 
   const toggleBookmark = useCallback((post: IPost) => {
     if (_.isNil(currentUser)) {
-      SweetAlert.fire({
-        title: 'Notification',
-        icon: 'warning',
-        text: 'You are not sign in',
-      }).then((result) => {
+      showWarning().then((result) => {
         if (result.isConfirmed) {
           navigate('/sign-in');
         }
@@ -114,13 +119,7 @@ const Gallery = () => {
 
   const toggleFollow = useCallback((post: IPost) => {
     if (_.isNil(currentUser)) {
-      SweetAlert.fire({
-        title: 'Notification',
-        icon: 'warning',
-        text: 'You are not sign in',
-        confirmButtonText: 'Sign in',
-        showCancelButton: true,
-      }).then((result) => {
+      showWarning().then((result) => {
         if (result.isConfirmed) {
           navigate('/sign-in');
         }
@@ -216,6 +215,8 @@ const Gallery = () => {
     return () => {
       dispatch(userActions.resetAllData());
       dispatch(landingPageActions.resetLandingPage());
+      dispatch(reactionsActions.resetReactions());
+      dispatch(categoriesActions.resetCategories());
       window.removeEventListener('scroll', loadMore);
     };
   }, []);
