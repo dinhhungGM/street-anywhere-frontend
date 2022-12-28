@@ -14,12 +14,14 @@ type WrapperProps = {
 const Wrapper = ({ children }: WrapperProps) => {
   return (
     <>
-      <Box
-        sx={{
-          minHeight: 'calc(100vh - 56px - 74px)',
-        }}>
+      <Box>
         <Header />
-        {children}
+        <Box
+          sx={{
+            minHeight: 'calc(100vh - 56px - 74px)',
+          }}>
+          {children}
+        </Box>
         <Footer />
         <LoadingSpinner />
         <AppMoveToTop />
