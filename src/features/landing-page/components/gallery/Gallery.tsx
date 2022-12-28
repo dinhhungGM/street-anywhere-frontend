@@ -1,6 +1,6 @@
 import { Close, Search } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
-import { Box, Grid, InputAdornment, TextField } from '@mui/material';
+import { Box, Grid, InputAdornment, Pagination, Stack, TextField, Typography } from '@mui/material';
 import _ from 'lodash';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -38,8 +38,8 @@ const Gallery = () => {
   const followingUsers = useAppSelector(userSelectors.selectedFollowingUsers);
   const bookmarkedPosts = useAppSelector(userSelectors.selectBookmarkedPosts);
   const categories = useAppSelector(categoriesSelectors.selectCategoryList);
-  const hashtags = useAppSelector(tagSelectors.selectTagList);
   const totalPage = useAppSelector(landingPageSelectors.selectTotalPage);
+  const hashtags = useAppSelector(tagSelectors.selectTagList);
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTitle, setSearchTitle] = useState('');
@@ -161,7 +161,13 @@ const Gallery = () => {
         tag: searchParams.get('tag'),
       }),
     );
-    dispatch(landingPageActions.getTotalPage());
+    dispatch(
+      landingPageActions.getTotalPage({
+        search: searchParams.get('search'),
+        category: searchParams.get('category'),
+        tag: searchParams.get('tag'),
+      }),
+    );
   }, [searchParams]);
 
   useEffect(() => {
@@ -198,26 +204,11 @@ const Gallery = () => {
       dispatch(userActions.getFollowingUsers(currentUser?.id));
       dispatch(userActions.getBookmarkedPost(currentUser?.id));
     }
-
-    const loadMore = (): void => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-        document.scrollingElement.scrollHeight / 2 &&
-        page < totalPage
-      ) {
-        const newPage = page + 1;
-        setTimeout(() => {
-          setPage(newPage);
-        }, 100);
-      }
-    };
-    window.addEventListener('scroll', loadMore);
     return () => {
       dispatch(userActions.resetAllData());
       dispatch(landingPageActions.resetLandingPage());
       dispatch(reactionsActions.resetReactions());
       dispatch(categoriesActions.resetCategories());
-      window.removeEventListener('scroll', loadMore);
     };
   }, []);
 
@@ -250,6 +241,11 @@ const Gallery = () => {
   }, [currentUser, posts, followingUsers, bookmarkedPosts]);
 
   //#endregion
+
+  // Handle Pagination
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
 
   return (
     <>
@@ -322,31 +318,52 @@ const Gallery = () => {
             </Grid>
           </Grid>
         </Box>
-        <Masonry
-          columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
-          spacing={2}
-          sx={{
-            width: '100%',
-          }}>
-          {displayPosts &&
-            displayPosts.map((post, idx) => (
-              <Box
-                sx={{
-                  margin: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                key={idx}>
-                <AppCardV2
-                  post={post}
-                  currentUserId={currentUser?.id}
-                  onBookmark={toggleBookmark}
-                  onFollow={toggleFollow}
+        {displayPosts?.length ? (
+          <>
+            <Masonry
+              columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
+              spacing={2}
+              sx={{
+                width: '100%',
+              }}>
+              {displayPosts.map((post, idx) => (
+                <Box
+                  sx={{
+                    margin: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  key={idx}>
+                  <AppCardV2
+                    post={post}
+                    currentUserId={currentUser?.id}
+                    onBookmark={toggleBookmark}
+                    onFollow={toggleFollow}
+                  />
+                </Box>
+              ))}
+            </Masonry>
+            {totalPage > 1 ? (
+              <Stack
+                alignItems='center'
+                justifyContent='center'
+                marginY={2}
+                className={posts?.length < 30 ? styles.paginator : null}>
+                <Pagination
+                  count={totalPage}
+                  page={page}
+                  onChange={handlePageChange}
+                  color='primary'
                 />
-              </Box>
-            ))}
-        </Masonry>
+              </Stack>
+            ) : null}
+          </>
+        ) : (
+          <Stack alignItems='center' justifyContent='center' height='100%'>
+            <img src='/empty-data.jpg' alt='Empty data' />
+          </Stack>
+        )}
       </Box>
     </>
   );

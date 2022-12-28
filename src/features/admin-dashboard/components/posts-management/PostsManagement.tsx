@@ -44,7 +44,7 @@ const PostsManagement = () => {
 
   useEffect(() => {
     dispatch(adminActions.getPostsForManagement(page));
-    dispatch(landingPageActions.getTotalPage());
+    dispatch(landingPageActions.getTotalPage({ category: null, search: null, tag: null }));
 
     return () => {
       dispatch(adminActions.resetPostManagement());

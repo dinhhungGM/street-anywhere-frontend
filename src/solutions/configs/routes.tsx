@@ -115,6 +115,12 @@ const LazyProfileListFollowings = lazy(() =>
   })),
 );
 
+const LazyAchievement = lazy(() =>
+  import('./../../features/admin-dashboard/components/achievement').then((m) => ({
+    default: m.Achievement,
+  })),
+);
+
 type Route = {
   id: string;
   path: string;
@@ -239,6 +245,11 @@ const routes: Route[] = [
         id: 'admin-dashboard/posts',
         path: 'posts',
         element: <LazyPostsManagement />,
+      },
+      {
+        id: 'admin-dashboard/achievement',
+        path: 'achievements',
+        element: <LazyAchievement />,
       },
       {
         id: 'admin-dashboard/home',

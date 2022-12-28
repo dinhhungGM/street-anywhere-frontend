@@ -1,5 +1,5 @@
 import { Box, Stack } from '@mui/material';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppHeading } from '../../../solutions/components/app-heading';
@@ -40,6 +40,7 @@ const rowConfigs = [
 ];
 
 const ProfileListFollowers = () => {
+  const contentRef = useRef();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { userId: currentUserId } = useParams();
@@ -51,15 +52,19 @@ const ProfileListFollowers = () => {
 
   useEffect(() => {
     dispatch(profileActions.getFollowings(+currentUserId));
+    const timer = setTimeout(() => {
+      (contentRef.current as any).scrollIntoView();
+    });
     return () => {
       dispatch(profileActions.resetFollowings());
+      clearTimeout(timer);
     };
   }, []);
 
   return (
     <>
       <Box className={styles.wrapper}>
-        <Box paddingBottom={2}>
+        <Box paddingBottom={2} ref={contentRef}>
           <AppHeading heading={`Followings (${ followings?.length })`} />
         </Box>
         {followings?.length ? (

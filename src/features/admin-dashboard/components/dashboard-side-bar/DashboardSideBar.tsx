@@ -1,6 +1,7 @@
 import {
   AddReaction,
   Category,
+  EmojiEvents,
   Groups,
   Newspaper,
   People,
@@ -30,6 +31,12 @@ const sidebarConfigs = [
     title: 'Dashboard',
     icon: <AppIcon icon={PieChart} />,
     path: '/admin-dashboard',
+  },
+  {
+    id: 'admin-dashboard/achievements',
+    title: 'Achievements',
+    icon: <AppIcon icon={EmojiEvents} />,
+    path: '/admin-dashboard/achievements',
   },
   {
     id: 'admin-dashboard/users',

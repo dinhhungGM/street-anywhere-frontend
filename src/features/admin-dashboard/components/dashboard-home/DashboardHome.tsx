@@ -1,42 +1,25 @@
-import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
-import { useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Box, Divider, Grid, Typography } from '@mui/material';
+import randomColor from 'randomcolor';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppHeading } from '../../../../solutions/components/app-heading';
 import { AppInfoWidget } from '../../../../solutions/components/app-info-widget';
 import AppStatsByYear from '../../../../solutions/components/app-stats-by-year/AppStatsByYear';
-import { AppTable } from '../../../../solutions/components/app-table';
 import { adminActions, adminSelectors } from '../../store';
-import {
-  topFollowersTableHeaderConfigs,
-  topFollowersTableRowConfigs,
-  topPostsTableHeaderConfigs,
-  topPostsTableRowConfigs,
-  widgetConfigs,
-} from './configs';
+import { widgetConfigs } from './configs';
 import styles from './styles.module.scss';
-import randomColor from 'randomcolor';
 
 const genColor = () => randomColor({ luminosity: 'dark', format: 'hex' });
 
 const DashboardHome = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const usersByYears = useAppSelector(adminSelectors.selectUsersByYears);
   const postsByYears = useAppSelector(adminSelectors.selectPostsByYears);
-  const userMostPost = useAppSelector(adminSelectors.selectTopUserMostPost);
-  const userMostFollower = useAppSelector(adminSelectors.selectTopUserMostFollower);
   const systemStats = useAppSelector(adminSelectors.selectSysStats);
-
-  const navigateToProfile = useCallback((userId: number) => {
-    navigate(`/profile/${ userId }`);
-  }, []);
 
   useEffect(() => {
     dispatch(adminActions.getStatsOfUserByYear());
     dispatch(adminActions.getStatsOfPostsByYear());
-    dispatch(adminActions.getTopUsersMostFollower());
-    dispatch(adminActions.getTopUserMostPost());
     dispatch(adminActions.getSystemStats());
 
     return () => {
@@ -107,32 +90,6 @@ const DashboardHome = () => {
               </Box>
             </Grid>
           </Grid>
-        </Box>
-        <Box marginY={2}>
-          <AppHeading heading='Top 10 people with the most number of followers' />
-          <Box marginY={2}>
-            <AppTable
-              mappingClickField='id'
-              data={userMostFollower}
-              isFilterByOption={false}
-              onRowClick={navigateToProfile}
-              rowConfigs={topFollowersTableRowConfigs}
-              headerConfigs={topFollowersTableHeaderConfigs}
-            />
-          </Box>
-        </Box>
-        <Box marginY={2}>
-          <AppHeading heading='Top 10 people with the most posts' />
-          <Box marginY={2}>
-            <AppTable
-              data={userMostPost}
-              mappingClickField='id'
-              isFilterByOption={false}
-              onRowClick={navigateToProfile}
-              rowConfigs={topPostsTableRowConfigs}
-              headerConfigs={topPostsTableHeaderConfigs}
-            />
-          </Box>
         </Box>
       </Box>
     </>

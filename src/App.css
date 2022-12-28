@@ -64,9 +64,13 @@
 }
 
 .MuiCardHeader-subheader {
-  font-size: 14px !important;
+  font-size: 12px !important;
 }
 
 .MuiSnackbar-root {
   z-index: 9999999 !important;
+}
+
+.card .MuiCardHeader-content {
+  max-width: 55% !important;
 }

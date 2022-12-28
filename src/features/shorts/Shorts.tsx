@@ -118,14 +118,16 @@ const Shorts = () => {
             userId: currentUser?.id,
           }),
         );
-        dispatch(
-          wrapperActions.createNewNotification({
-            postId: post?.id,
-            type: 'bookmarked',
-            reactionType: null,
-            userId: currentUser?.id,
-          }),
-        );
+        if (currentUser?.id !== +post?.userId) {
+          dispatch(
+            wrapperActions.createNewNotification({
+              postId: post?.id,
+              type: 'bookmarked',
+              reactionType: null,
+              userId: currentUser?.id,
+            }),
+          );
+        }
       }
     }
   };

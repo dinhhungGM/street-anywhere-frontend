@@ -25,7 +25,7 @@ const landingPageSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(landingPageActionsAsync.getPostsAsync.fulfilled, (state, action) => {
-      state.posts = [...state.posts, ...action.payload];
+      state.posts = action.payload;
     });
     builder.addCase(landingPageActionsAsync.getPostsAsync.rejected, (state, action) => {
       state.posts = [];

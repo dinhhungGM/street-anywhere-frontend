@@ -1,3 +1,5 @@
+import { IFollowingUser } from '../user/userModels';
+
 export interface IMyPost {
   id?: number;
   type?: string;
@@ -93,6 +95,8 @@ export interface IBookmarkedPost {
   videoYtbUrl?: null;
   createdAt?: string;
   shortTitle?: string;
-  profilePhotoUr1l?: string;
   bookmarkId?: number;
+  profilePhotoUr1l?: string;
+  followingDetail?: IFollowingUser | null | undefined;
+  isFollowingUser?: boolean;
 }
