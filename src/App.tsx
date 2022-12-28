@@ -24,7 +24,11 @@ function App() {
                   return (
                     <Route key={route.id} path={route.path} element={route.element}>
                       {route.children.map((routeChild) => (
-                        <Route key={routeChild.id} path={routeChild.path} element={routeChild.element} />
+                        <Route
+                          key={routeChild.id}
+                          path={routeChild.path}
+                          element={routeChild.element}
+                        />
                       ))}
                     </Route>
                   );

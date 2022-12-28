@@ -42,12 +42,44 @@ const AppLineChart = ({
           text: chartTitle,
           position: 'bottom' as const,
         },
+        datalabels: {
+          backgroundColor: function (context) {
+            return context.dataset.backgroundColor;
+          },
+          borderRadius: 4,
+          color: 'white',
+          font: {
+            weight: 'bold',
+          },
+          formatter: Math.round,
+          padding: 6,
+        },
+      },
+      aspectRatio: 5 / 3,
+      layout: {
+        padding: {
+          top: 32,
+          right: 16,
+          bottom: 16,
+          left: 8,
+        },
+      },
+      elements: {
+        line: {
+          fill: false,
+          tension: 0.4,
+        },
+      },
+      scales: {
+        y: {
+          stacked: true,
+        },
       },
       ...options,
     };
   }, []);
   const chartData = useMemo(() => {
-    const color = randomColor({ format: 'rgb' });
+    const color = randomColor({ format: 'rgb', luminosity: 'dark' });
     const config = _.reduce(
       data,
       (acc, item) => {
@@ -70,6 +102,7 @@ const AppLineChart = ({
           backgroundColor: color,
         },
       ],
+
     };
   }, [data]);
 

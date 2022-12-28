@@ -1,25 +1,15 @@
 import { Add, PieChart, Tag } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  FormControl, Stack,
-  Tab,
-  Tabs,
-  TextField,
-  Typography
-} from '@mui/material';
-import { useFormik } from 'formik';
+import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
-import * as yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppIcon } from '../../../../solutions/components/app-icon';
 import { AppLineChart } from '../../../../solutions/components/app-line-chart';
-import { AppModal } from '../../../../solutions/components/app-modal';
 import AppTabPanel from '../../../../solutions/components/app-tab-panel/AppTabPanel';
 import { AppTable } from '../../../../solutions/components/app-table';
 import { authSelectors } from '../../../auth/store';
 import { adminActions, adminSelectors } from '../../store';
 import styles from './styles.module.scss';
+import Swal from 'sweetalert2';
 
 const headerConfigs = [
   {
@@ -56,59 +46,42 @@ const HashTagsManagement = () => {
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const dispatch = useAppDispatch();
   const [tab, setTab] = React.useState(0);
-  const [isShowModal, setIsShowModal] = React.useState(false);
-  const form = useFormik({
-    initialValues: {
-      tagName: '',
-    },
-    onSubmit: async (values, { resetForm }) => {
-      const res = await dispatch(
-        adminActions.createNewHashTag({
-          adminUserId: currentUser.id,
-          payload: values,
-        }),
-      );
-      if (res.meta.requestStatus === 'fulfilled') {
-        handleCloseModal();
-      }
-    },
-    validationSchema: yup.object({
-      tagName: yup
-        .string()
-        .required('Please provide the tag name to continue')
-        .trim()
-        .max(50, 'The tag can not be more than 50 characters'),
-    }),
-  });
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
   };
 
-  const handleCloseModal = (): void => {
-    form.resetForm();
-    setIsShowModal(false);
-  };
-
-  const checkControl = (controlName: string) => {
-    if (form.touched[controlName] && form.errors[controlName]) {
-      return {
-        helperText: form.errors[controlName],
-      };
-    }
-    return null;
-  };
-
-  const deleteTag = (tagId): void => {
-    dispatch(adminActions.deleteTag({
-      adminUserId: currentUser.id,
-      tagId
-    }));
-  };
-
   useEffect(() => {
     dispatch(adminActions.getAllHashTagsForManagement(currentUser.id));
   }, []);
+
+  // Handle create new category
+  const handleCreateTag = async () => {
+    const { value } = await Swal.fire({
+      title: 'New tag',
+      input: 'text',
+      inputLabel: 'Enter tag name',
+      inputValue: '',
+      showCancelButton: true,
+      confirmButtonText: 'Create',
+      inputValidator: (value) => {
+        if (!value.trim()) {
+          return 'Empty field!';
+        }
+        if (value.length > 50) {
+          return 'The tag name can not be more than 50 characters';
+        }
+      },
+    });
+    if (value) {
+      dispatch(
+        adminActions.createNewHashTag({
+          adminUserId: currentUser?.id,
+          payload: { tagName: value },
+        }),
+      );
+    }
+  };
 
   return (
     <>
@@ -124,14 +97,22 @@ const HashTagsManagement = () => {
             sx={{
               marginRight: 2,
             }}
-            onClick={() => setIsShowModal(true)}
-          >
+            onClick={handleCreateTag}>
             New hashtag
           </Button>
         </Stack>
         <Box>
-          <Tabs value={tab} onChange={handleTabChange} aria-label='icon label tabs example' centered>
-            <Tab icon={<AppIcon icon={Tag} />} label='Hashtags' iconPosition='start' className={styles['tab-item']} />
+          <Tabs
+            value={tab}
+            onChange={handleTabChange}
+            aria-label='icon label tabs example'
+            centered>
+            <Tab
+              icon={<AppIcon icon={Tag} />}
+              label='Hashtags'
+              iconPosition='start'
+              className={styles['tab-item']}
+            />
             <Tab
               icon={<AppIcon icon={PieChart} />}
               label='Statistical Chart'
@@ -148,7 +129,6 @@ const HashTagsManagement = () => {
               searchByField='tagName'
               searchPlaceholder='Search by name'
               isFilterByOption={false}
-              isDisplayMoreMenu={true}
             />
           </AppTabPanel>
           <AppTabPanel value={tab} index={1}>
@@ -161,26 +141,6 @@ const HashTagsManagement = () => {
           </AppTabPanel>
         </Box>
       </Box>
-      <AppModal
-        isOpen={isShowModal}
-        title='New hashtag'
-        onClose={handleCloseModal}
-        onCancel={handleCloseModal}
-        onOk={() => form.handleSubmit()}
-        okText='Create'
-      >
-        <FormControl fullWidth>
-          <TextField
-            placeholder='Enter tag name'
-            id='tagName'
-            name='tagName'
-            label='Tag name'
-            {...form.getFieldProps('tagName')}
-            error={!!checkControl('tagName')}
-            {...checkControl('tagName')}
-          />
-        </FormControl>
-      </AppModal>
     </>
   );
 };

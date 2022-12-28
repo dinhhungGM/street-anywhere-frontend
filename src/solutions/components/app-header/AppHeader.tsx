@@ -1,26 +1,18 @@
-import { Add, Close, Logout, Menu as MenuIcon, Notifications, PersonAdd, Settings } from '@mui/icons-material';
+import { Add, Close, Logout, Menu as MenuIcon, Notifications } from '@mui/icons-material';
 import {
-  Badge,
-  Box,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-  Menu,
-  MenuItem,
-  Avatar,
-  Divider,
-  ListItemIcon,
-  Button,
+  Avatar, Badge,
+  Box, Divider, IconButton, ListItemIcon, Menu,
+  MenuItem, Tooltip,
+  Typography
 } from '@mui/material';
 import cx from 'classnames';
-import { useEffect, useState, MouseEvent } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { authActions, authSelectors } from '../../../features/auth/store';
 import { AppIcon } from '../app-icon';
 import { AppIconButton } from '../app-icon-button';
 import styles from './styles.module.scss';
-import { useAppSelector, useAppDispatch } from '../../../app/hooks';
-import { authActions, authSelectors } from '../../../features/auth/store';
 
 const AppHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);

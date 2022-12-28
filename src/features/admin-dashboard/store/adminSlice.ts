@@ -10,6 +10,8 @@ import {
   IUserManagement,
   IUserMostFollower,
   IUserMostPost,
+  IUsersMostBookmark,
+  IUsersMostInteraction,
 } from './adminModels';
 
 interface IAdminState {
@@ -23,6 +25,8 @@ interface IAdminState {
   userMostFollower: IUserMostFollower[];
   userMostPost: IUserMostPost[];
   sysStats: ISystemStats;
+  usersMostInteractions: IUsersMostInteraction[];
+  usersMostBookmarks: IUsersMostBookmark[];
   posts: IPost[];
 }
 const initialState: IAdminState = {
@@ -37,6 +41,8 @@ const initialState: IAdminState = {
   userMostPost: [],
   sysStats: null,
   posts: [],
+  usersMostInteractions: [],
+  usersMostBookmarks: [],
 };
 
 const adminSlice = createSlice({
@@ -49,6 +55,8 @@ const adminSlice = createSlice({
       state.userMostPost = [];
       state.userMostFollower = [];
       state.sysStats = null;
+      state.usersMostInteractions = [];
+      state.usersMostBookmarks = [];
     },
     resetPostManagement: (state) => {
       state.posts = [];
@@ -130,6 +138,20 @@ const adminSlice = createSlice({
     });
     builder.addCase(adminAsyncActions.getPostsForManagement.rejected, (state, action) => {
       state.posts = [];
+    });
+
+    builder.addCase(adminAsyncActions.getTopUsersMostInteractions.fulfilled, (state, action) => {
+      state.usersMostInteractions = action.payload;
+    });
+    builder.addCase(adminAsyncActions.getTopUsersMostInteractions.rejected, (state, action) => {
+      state.usersMostInteractions = [];
+    });
+
+    builder.addCase(adminAsyncActions.getTopUsersMostBookmarks.fulfilled, (state, action) => {
+      state.usersMostBookmarks = action.payload;
+    });
+    builder.addCase(adminAsyncActions.getTopUsersMostBookmarks.rejected, (state, action) => {
+      state.usersMostBookmarks = [];
     });
   },
 });
