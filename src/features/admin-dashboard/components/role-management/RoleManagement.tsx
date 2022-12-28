@@ -1,6 +1,7 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import { AppHeading } from '../../../../solutions/components/app-heading';
 import { AppTable } from '../../../../solutions/components/app-table';
 import { authSelectors } from '../../../auth/store';
 import { adminActions, adminSelectors } from '../../store';
@@ -46,18 +47,20 @@ const RoleManagement = () => {
   return (
     <>
       <Box padding={4}>
-        <Typography variant='h3' marginBottom={2}>
-          Roles
-        </Typography>
-        <AppTable
-          headerConfigs={headerConfigs}
-          rowConfigs={rowConfigs}
-          data={roles}
-          rowKey='id'
-          searchByField='roleName'
-          searchPlaceholder='Search by name'
-          isFilterByOption={false}
-        />
+        <AppHeading heading='Roles' isDashboardHeading />
+        <br />
+        <Divider />
+        <Box marginY={2}>
+          <AppTable
+            headerConfigs={headerConfigs}
+            rowConfigs={rowConfigs}
+            data={roles}
+            rowKey='id'
+            searchByField='roleName'
+            searchPlaceholder='Search by name'
+            isFilterByOption={false}
+          />
+        </Box>
       </Box>
     </>
   );

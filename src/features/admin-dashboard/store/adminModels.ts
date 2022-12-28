@@ -71,3 +71,17 @@ export interface ISystemStats {
   totalReactionIcons: number;
   totalCategories: number;
 }
+
+export interface IUsersMostInteraction {
+  id: number;
+  fullName: string;
+  profilePhotoUrl: string;
+  totalInteraction: number;
+}
+
+export interface IUsersMostBookmark {
+  id: number;
+  fullName: string;
+  profilePhotoUrl: string;
+  totalBookmark: number;
+}

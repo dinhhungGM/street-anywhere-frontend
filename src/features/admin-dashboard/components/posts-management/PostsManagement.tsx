@@ -1,15 +1,14 @@
-import { Box, Pagination, Stack } from '@mui/material';
-import { useCallback, useEffect, useState, memo } from 'react';
+import { Box, Divider, Pagination, Stack } from '@mui/material';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SweetAlert from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppHeading } from '../../../../solutions/components/app-heading';
 import { AppTable } from '../../../../solutions/components/app-table';
 import { landingPageActions, landingPageSelectors } from '../../../landing-page/store';
-import { postActions } from '../../../posts/store';
 import { adminActions, adminSelectors } from '../../store';
 import { headerConfigs, rowConfigs } from './configs';
 import styles from './styles.module.scss';
-import SweetAlert from 'sweetalert2';
 
 const PostsManagement = () => {
   const dispatch = useAppDispatch();
@@ -54,7 +53,9 @@ const PostsManagement = () => {
   return (
     <>
       <Box className={styles.wrapper}>
-        <AppHeading heading='List post' />
+        <AppHeading heading='List post' isDashboardHeading />
+        <br />
+        <Divider />
         <Box marginY={2}>
           <AppTable
             data={posts}

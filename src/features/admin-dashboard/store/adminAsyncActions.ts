@@ -377,3 +377,75 @@ export const deletePost = createAsyncThunk(
     }
   },
 );
+
+export const getTopUsersMostInteractions = createAsyncThunk(
+  'admin/getTopUsersMostInteractions',
+  async (_, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get('/stats/top-users-by-sum-interactions');
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+
+export const getTopUsersMostBookmarks = createAsyncThunk(
+  'admin/getTopUsersMostBookmarks',
+  async (_, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      const { data } = await axios.get('/stats/top-users-by-sum-bookmark');
+      return data.value;
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+      return Promise.reject();
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);
+
+export const createNewCategory = createAsyncThunk(
+  'admin/createNewCategory',
+  async (params: any, { dispatch }) => {
+    try {
+      dispatch(wrapperActions.showLoading());
+      await axios.post(
+        '/categories',
+        { categoryName: params.categoryName },
+        { headers: { 'Content-Type': 'application/json' } },
+      );
+      dispatch(
+        wrapperActions.showNotification({
+          message: 'Create successfully',
+          typeOfNotification: 'success',
+        }),
+      );
+      dispatch(getAllReactionsForManagement(params.adminUserId));
+    } catch (error) {
+      dispatch(
+        wrapperActions.showNotification({
+          typeOfNotification: 'error',
+          message: error.response.data.message,
+        }),
+      );
+    } finally {
+      dispatch(wrapperActions.hideLoading());
+    }
+  },
+);

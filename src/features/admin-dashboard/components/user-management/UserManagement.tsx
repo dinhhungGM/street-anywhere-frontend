@@ -2,6 +2,7 @@ import { Add, Close, Search } from '@mui/icons-material';
 import {
   Box,
   Button,
+  Divider,
   FormControl,
   Grid,
   IconButton,
@@ -12,12 +13,12 @@ import {
   Paper,
   Select,
   SelectChangeEvent,
-  Stack,
-  Typography,
+  Stack
 } from '@mui/material';
 import _ from 'lodash';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import { AppHeading } from '../../../../solutions/components/app-heading';
 import { AppIcon } from '../../../../solutions/components/app-icon';
 import { authSelectors } from '../../../auth/store';
 import { adminActions, adminSelectors } from '../../store';
@@ -51,7 +52,9 @@ const UserManagement = () => {
       if (!filterName && !filterRole) {
         return true;
       }
-      let isValidSearch = !filterName ? true : _.lowerCase(user.fullName).includes(filterName.trim().toLowerCase());
+      let isValidSearch = !filterName
+        ? true
+        : _.lowerCase(user.fullName).includes(filterName.trim().toLowerCase());
       let isValidRole = !filterRole ? true : _.isEqual(user.role, filterRole);
       return isValidSearch && isValidRole;
     });
@@ -64,15 +67,14 @@ const UserManagement = () => {
   return (
     <>
       <Box className={styles.wrapper}>
-        <Typography variant='h4' fontWeight={700}>
-          Users
-        </Typography>
-        <Stack direction='row' alignItems='center' justifyContent='flex-end'>
+        <AppHeading heading='Users' isDashboardHeading />
+        <br />
+        <Divider />
+        <Stack direction='row' alignItems='center' justifyContent='flex-end' marginTop={2}>
           <Button
             variant='contained'
             startIcon={<AppIcon icon={Add} color='#fff' />}
-            onClick={() => setIsOpenCreateModal(true)}
-          >
+            onClick={() => setIsOpenCreateModal(true)}>
             New user
           </Button>
         </Stack>
@@ -121,8 +123,7 @@ const UserManagement = () => {
                         </InputAdornment>
                       )}
                     </>
-                  }
-                >
+                  }>
                   <MenuItem value='End user'>End user</MenuItem>
                   <MenuItem value='Administrator'>Administrator</MenuItem>
                 </Select>

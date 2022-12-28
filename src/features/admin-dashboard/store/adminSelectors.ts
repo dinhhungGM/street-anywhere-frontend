@@ -31,3 +31,12 @@ export const selectTopUserMostPost = createSelector(
 );
 export const selectSysStats = createSelector(selectAdminStateFeature, (admin) => admin.sysStats);
 export const selectPosts = createSelector(selectAdminStateFeature, (admin) => admin.posts);
+
+export const selectTopUserMostInteractions = createSelector(
+  selectAdminStateFeature,
+  (admin) => admin.usersMostInteractions,
+);
+export const selectTopUserMostBookmarks = createSelector(
+  selectAdminStateFeature,
+  (admin) => admin.usersMostBookmarks,
+);

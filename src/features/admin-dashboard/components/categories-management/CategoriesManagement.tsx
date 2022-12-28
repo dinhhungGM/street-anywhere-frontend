@@ -1,8 +1,10 @@
-import { Category, PieChart } from '@mui/icons-material';
-import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { Add, Category, PieChart } from '@mui/icons-material';
+import { Box, Button, Divider, Stack, Tab, Tabs } from '@mui/material';
 import React, { useEffect } from 'react';
+import Swal from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { AppBarChart } from '../../../../solutions/components/app-bar-chart';
+import { AppHeading } from '../../../../solutions/components/app-heading';
 import { AppIcon } from '../../../../solutions/components/app-icon';
 import AppTabPanel from '../../../../solutions/components/app-tab-panel/AppTabPanel';
 import { AppTable } from '../../../../solutions/components/app-table';
@@ -54,14 +56,51 @@ const CategoriesManagement = () => {
     dispatch(adminActions.getAllCategoriesForManagement(currentUser.id));
   }, []);
 
+  // Handle create new category
+  const handleCreateNewCategory = async () => {
+    const { value } = await Swal.fire({
+      title: 'New category',
+      input: 'text',
+      inputLabel: 'Enter category name',
+      inputValue: '',
+      showCancelButton: true,
+      confirmButtonText: 'Create',
+      inputValidator: (value) => {
+        if (!value.trim()) {
+          return 'Empty field!';
+        }
+        if (value.length > 50) {
+          return 'The category name can not be more than 50 characters';
+        }
+      },
+    });
+    if (value) {
+      dispatch(
+        adminActions.createNewCategory({ adminUserId: currentUser?.id, categoryName: value }),
+      );
+    }
+  };
+
   return (
     <>
       <Box padding={4}>
-        <Typography variant='h3' marginBottom={2}>
-          Categories
-        </Typography>
+        <Stack direction='row' alignItems='center' justifyContent='space-between'>
+          <AppHeading heading='Categories' isDashboardHeading />
+          <Button
+            variant='contained'
+            startIcon={<AppIcon icon={Add} color='#fff' />}
+            onClick={handleCreateNewCategory}>
+            New category
+          </Button>
+        </Stack>
+        <br />
+        <Divider />
         <Box>
-          <Tabs value={tab} onChange={handleTabChange} aria-label='icon label tabs example' centered>
+          <Tabs
+            value={tab}
+            onChange={handleTabChange}
+            aria-label='icon label tabs example'
+            centered>
             <Tab
               icon={<AppIcon icon={Category} />}
               label='Categories'
