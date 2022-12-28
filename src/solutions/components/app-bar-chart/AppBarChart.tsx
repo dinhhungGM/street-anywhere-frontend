@@ -21,14 +21,16 @@ interface IAppBarChartProps {
   labelField: string;
   valueField: string;
   isStats?: boolean;
+  hoverLabel?: string;
 }
 const AppBarChart = ({
   options = {},
   data = [],
   labelField,
   valueField,
-  chartTitle = 'Chart.js Bar Chart',
   isStats = false,
+  hoverLabel = 'Number of uses',
+  chartTitle = 'Chart.js Bar Chart',
 }: IAppBarChartProps) => {
   const chartOptions = useMemo(() => {
     return {
@@ -64,7 +66,7 @@ const AppBarChart = ({
       labels: config.labels,
       datasets: [
         {
-          label: 'Number of uses',
+          label: hoverLabel,
           data: config.data,
           backgroundColor: randomColor({ count: config.labels.length, format: 'rgb' }),
         },
