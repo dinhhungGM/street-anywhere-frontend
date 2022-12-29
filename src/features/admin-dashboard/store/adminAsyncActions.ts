@@ -332,10 +332,11 @@ export const getSystemStats = createAsyncThunk('admin/getSystemStats', async (_,
 
 export const getPostsForManagement = createAsyncThunk(
   'admin/getPostsForManagement',
-  async (page: number, { dispatch }) => {
+  async (params: { page: number; search: string; }, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
-      const { data } = await axios.get(`/posts?page=${ page }`);
+      const searchQuery = params.search ? `&search=${ params.search }` : '';
+      const { data } = await axios.get(`/posts?page=${ params.page }${ searchQuery }`);
       return data.value;
     } catch (error) {
       dispatch(
@@ -353,7 +354,7 @@ export const getPostsForManagement = createAsyncThunk(
 
 export const deletePost = createAsyncThunk(
   'admin/deletePostAndRefreshData',
-  async (params: { postId: number; currentPage: number; }, { dispatch }) => {
+  async (params: { postId: number; currentPage: number; search: string; }, { dispatch }) => {
     try {
       dispatch(wrapperActions.showLoading());
       await axios.delete(`/posts/${ params.postId }`);
@@ -363,7 +364,7 @@ export const deletePost = createAsyncThunk(
           message: 'Delete successfully',
         }),
       );
-      dispatch(getPostsForManagement(params.currentPage));
+      dispatch(getPostsForManagement({ page: params.currentPage, search: params.search }));
     } catch (error) {
       dispatch(
         wrapperActions.showNotification({

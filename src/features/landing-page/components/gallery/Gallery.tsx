@@ -51,18 +51,24 @@ const Gallery = () => {
   //#region Handling search
 
   const onCategoryDropDownChange = useCallback((e, values: ICategory[]): void => {
+    setPage(1);
     setSearchCategories(values);
   }, []);
 
   const onHashTagDropDownChange = useCallback((e, values: ITag[]): void => {
+    setPage(1);
     setSearchHashtags(values);
   }, []);
 
   const onSearchFieldChange = (e): void => {
+    if (!e.target.value && search) {
+      setSearch('');
+    }
     setSearchTitle(e.target.value);
   };
 
   const handleBlur = (): void => {
+    setPage(1);
     setSearch(searchTitle);
   };
 
