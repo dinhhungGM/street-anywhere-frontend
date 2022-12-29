@@ -85,7 +85,7 @@ const ReactionsManagement = () => {
 
   const displayReactions = useMemo(() => {
     return reactions.map((item) => ({ ...item, icon: mappingIconSrc[item.reactionType] }));
-  }, [currentUser]);
+  }, [reactions]);
 
   return (
     <>
