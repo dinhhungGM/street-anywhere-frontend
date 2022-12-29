@@ -67,6 +67,7 @@ interface IAppTableProps {
   isEditRow?: boolean;
   onDeleteRow?: any;
   onEditRow?: any;
+  isDisplaySearch?: boolean;
 }
 
 const AppTable = ({
@@ -84,6 +85,7 @@ const AppTable = ({
   searchByField = null,
   filterByField = null,
   dropDownOptions = [],
+  isDisplaySearch = true,
   isFilterByOption = true,
   isDisplayMoreMenu = false,
   appTableCustomClass = null,
@@ -145,32 +147,34 @@ const AppTable = ({
         component={Paper}
         elevation={3}
         className={cx(styles['app-table'], styles[appTableCustomClass])}>
-        <Box className={cx(styles['app-table__filter-bar'], appTableFilterBarCustomClass)}>
+        <Box className={cx(styles['app-table__filter-bar'], styles[appTableFilterBarCustomClass])}>
           <Grid container spacing={2}>
-            <Grid item sm={12} md={6}>
-              <OutlinedInput
-                fullWidth
-                placeholder={searchPlaceholder}
-                startAdornment={
-                  <InputAdornment position='start'>
-                    <AppIcon icon={Search} />
-                  </InputAdornment>
-                }
-                endAdornment={
-                  <>
-                    {search && (
-                      <InputAdornment position='start'>
-                        <IconButton color='error' onClick={() => setSearch('')}>
-                          <AppIcon icon={Close} />
-                        </IconButton>
-                      </InputAdornment>
-                    )}
-                  </>
-                }
-                value={search}
-                onChange={handleSearchChange}
-              />
-            </Grid>
+            {isDisplaySearch ? (
+              <Grid item sm={12} md={6}>
+                <OutlinedInput
+                  fullWidth
+                  placeholder={searchPlaceholder}
+                  startAdornment={
+                    <InputAdornment position='start'>
+                      <AppIcon icon={Search} />
+                    </InputAdornment>
+                  }
+                  endAdornment={
+                    <>
+                      {search && (
+                        <InputAdornment position='start'>
+                          <IconButton color='error' onClick={() => setSearch('')}>
+                            <AppIcon icon={Close} />
+                          </IconButton>
+                        </InputAdornment>
+                      )}
+                    </>
+                  }
+                  value={search}
+                  onChange={handleSearchChange}
+                />
+              </Grid>
+            ) : null}
             {isFilterByOption && (
               <Grid item sm={12} md={3}>
                 <FormControl fullWidth>
@@ -203,7 +207,7 @@ const AppTable = ({
             )}
           </Grid>
         </Box>
-        <Box className={cx(styles['app-table__content'], appTableContentClass)}>
+        <Box className={cx(styles['app-table__content'], styles[appTableContentClass])}>
           <TableContainer>
             <Table aria-label='custom pagination table'>
               <TableHead

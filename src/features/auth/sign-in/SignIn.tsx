@@ -22,7 +22,6 @@ const SignIn = () => {
       password: '',
     },
     onSubmit: async (values) => {
-      console.log('run function');
       const response = await dispatch(authActions.signInActionAsync(values));
       if (response.meta.requestStatus === 'fulfilled') {
         navigate(-1);
@@ -53,16 +52,32 @@ const SignIn = () => {
       <Box className={styles.wrapper} boxShadow={1}>
         <Box className={styles.form}>
           <form onSubmit={form.handleSubmit}>
-            <Typography variant='h3' textAlign='center' color='#9391fd' marginBottom={4} fontWeight='500'>
+            <Typography
+              variant='h3'
+              textAlign='center'
+              color='#9391fd'
+              marginBottom={4}
+              fontWeight='500'>
               Login
             </Typography>
             <Box className={styles['form-group']}>
               <AppFormInput label='Username' form={form} formControlName='username' />
             </Box>
             <Box className={styles['form-group']}>
-              <AppFormInput type='password' label='Password' form={form} formControlName='password' />
+              <AppFormInput
+                type='password'
+                label='Password'
+                form={form}
+                formControlName='password'
+              />
             </Box>
-            <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%' paddingY={1}>
+            <Stack
+              direction='row'
+              spacing={2}
+              justifyContent='flex-end'
+              alignItems='center'
+              width='100%'
+              paddingY={1}>
               <AppIcon icon={PersonAdd} />
               <NavLink to='/sign-up'>Create new account</NavLink>
             </Stack>
