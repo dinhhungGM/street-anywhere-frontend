@@ -209,7 +209,7 @@ const CreateNewPostV2 = () => {
           return 'Not empty';
         }
         if (value.length > maxLength) {
-          return `Can not be more than ${ maxLength } characters`;
+          return `Can not be more than ${maxLength} characters`;
         }
       },
       showCancelButton: true,
@@ -353,7 +353,6 @@ const CreateNewPostV2 = () => {
               md: '80%',
               lg: '50%',
             },
-            minHeight: '705px',
           }}
           padding={2}
           elevation={2}
@@ -390,11 +389,16 @@ const CreateNewPostV2 = () => {
                     <Box>
                       {contentType === 'upload' &&
                         (_.isNil(file) ? (
-                          <AppUploadButton
-                            buttonLabel='Upload image'
-                            acceptFile='image/*'
-                            onUploadingFile={handleUploadFile}
-                          />
+                          <>
+                            <AppUploadButton
+                              buttonLabel='Upload image'
+                              acceptFile='image/*'
+                              onUploadingFile={handleUploadFile}
+                            />
+                            <Typography marginY={2} fontStyle='italic'>
+                              Support file: .png, .jpg, .jpeg, .gif
+                            </Typography>
+                          </>
                         ) : (
                           <Stack direction='row' spacing={2} alignItems='center'>
                             <Typography>{file.name}</Typography>
@@ -405,9 +409,6 @@ const CreateNewPostV2 = () => {
                             />
                           </Stack>
                         ))}
-                      <Typography marginY={2} fontStyle='italic'>
-                        Support file: .png, .jpg, .jpeg, .gif
-                      </Typography>
                     </Box>
                     {contentType === 'video' && (
                       <Box>

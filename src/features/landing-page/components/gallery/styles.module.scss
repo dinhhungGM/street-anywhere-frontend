@@ -3,9 +3,13 @@
   width: 100%;
 }
 
+.grid-post {
+  position: relative;
+}
+
 .paginator {
-  position: fixed;
-  bottom: 60px;
+  position: absolute;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
 }
