@@ -6,12 +6,14 @@ import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
 import { useAppDispatch } from '../../../app/hooks';
+import { bookmarkActions } from '../../../features/bookmark';
 import { profileActions } from '../../../features/profile-dashboard/index';
 import { IPost } from '../../models/postModels';
 import { AppIcon } from '../app-icon';
 import { AppIconButton } from '../app-icon-button';
 import { AppInnerLoading } from '../app-inner-loading';
 import { AppMoreMenu } from '../app-more-menu';
+import { userActions } from './../../../features/user';
 import styles from './styles.module.scss';
 
 interface IAppCardV2Props {
@@ -39,28 +41,87 @@ const AppCardV2 = ({
   const [isOpenMoreMenu, setIsOpenMoreMenu] = useState(false);
 
   const navigateToPostDetail = (postId: number): void => {
-    navigate(`/posts/${ postId }`, { replace: true });
+    navigate(`/posts/${postId}`, { replace: true });
   };
 
   const handleOnClickBookmark = (e): void => {
     e.stopPropagation();
-    onBookmark(post);
+    if (onBookmark) {
+      onBookmark(post);
+    } else {
+      if (!currentUserId) {
+        SweetAlert.fire({
+          icon: 'info',
+          title: 'Warning',
+          text: 'You are not sign in. Please sign in to continue',
+        }).then((rs) => {
+          if (rs.isConfirmed) {
+            navigate('/sign-in');
+          }
+        });
+      } else {
+        if (post.isBookmarked) {
+          dispatch(
+            bookmarkActions.unBookmark({
+              bookmarkId: post?.bookmarkedDetail.bookmarkId,
+            }),
+          );
+        } else {
+          dispatch(
+            bookmarkActions.createBookmark({
+              postId: post?.id,
+              userId: currentUserId,
+            }),
+          );
+        }
+      }
+    }
   };
 
   const handleOnClickFollow = (e): void => {
     e.stopPropagation();
-    onFollow(post);
+    if (onFollow) {
+      onFollow(post);
+    } else {
+      if (!currentUserId) {
+        SweetAlert.fire({
+          icon: 'info',
+          title: 'Warning',
+          text: 'You are not sign in. Please sign in to continue',
+        }).then((rs) => {
+          if (rs.isConfirmed) {
+            navigate('/sign-in');
+          }
+        });
+      } else {
+        if (post.isFollowingUser) {
+          dispatch(
+            userActions.unfollowUser({
+              userId: currentUserId,
+              followerId: post.userId,
+            }),
+          );
+        } else {
+          dispatch(
+            userActions.followUser({
+              userId: currentUserId,
+              followerId: post.userId,
+            }),
+          );
+        }
+      }
+    }
   };
 
   const viewProfile = (e): void => {
     e.stopPropagation();
-    navigate(`/profile/${ post?.userId }`);
+    navigate(`/profile/${post?.userId}`);
   };
 
   const handleEdit = (e): void => {
     e.stopPropagation();
     handleCloseMoreMenu(e);
-    navigate(`/profile/${ currentUserId }/update-post/${ post?.id }`);
+    navigate(`/profile/${currentUserId}/update-post/${post?.id}`);
   };
 
   const handleDelete = (e): void => {
