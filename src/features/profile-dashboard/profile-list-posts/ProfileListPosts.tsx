@@ -51,17 +51,17 @@ const ProfileListPosts = () => {
 
   const getHeading = (): string => {
     const mediaType = searchParams.get('mediatype');
-    return mediaType === 'image' ? `Images (${ myPosts?.length })` : `Videos (${ myPosts?.length })`;
+    return mediaType === 'image' ? `Images (${myPosts?.length})` : `Videos (${myPosts?.length})`;
   };
 
   // Navigate to post detail
   const navigateToPostDetail = (postId: number) => {
-    navigate(`/posts/${ postId }`);
+    navigate(`/posts/${postId}`);
   };
 
   // Navigate to edit page
   const navigateToEditPage = (postId: number) => {
-    navigate(`/profile/${ currentUser?.id }/update-post/${ postId }`);
+    navigate(`/profile/${currentUser?.id}/update-post/${postId}`);
   };
 
   // Handling delete post
@@ -151,14 +151,16 @@ const ProfileListPosts = () => {
             userId: currentUser?.id,
           }),
         );
-        dispatch(
-          wrapperActions.createNewNotification({
-            postId: post?.id,
-            type: 'bookmarked',
-            reactionType: null,
-            userId: currentUser?.id,
-          }),
-        );
+        if (currentUser?.id !== post?.userId) {
+          dispatch(
+            wrapperActions.createNewNotification({
+              postId: post?.id,
+              type: 'bookmarked',
+              reactionType: null,
+              userId: currentUser?.id,
+            }),
+          );
+        }
       }
     }
   };
