@@ -326,44 +326,49 @@ const Gallery = () => {
         </Box>
         {displayPosts?.length ? (
           <>
-            <Masonry
-              columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
-              spacing={2}
+            <Box
+              className={styles['grid-post']}
               sx={{
-                width: '100%',
+                minHeight: displayPosts.length < 5 ? 'calc(100vh - 74px - 56px - 88px)' : 'initial',
               }}>
-              {displayPosts.map((post, idx) => (
-                <Box
-                  sx={{
-                    margin: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  key={idx}>
-                  <AppCardV2
-                    post={post}
-                    currentUserId={currentUser?.id}
-                    onBookmark={toggleBookmark}
-                    onFollow={toggleFollow}
+              <Masonry
+                columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
+                spacing={2}
+                sx={{
+                  width: '100%',
+                }}>
+                {displayPosts.map((post, idx) => (
+                  <Box
+                    sx={{
+                      margin: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    key={idx}>
+                    <AppCardV2
+                      post={post}
+                      currentUserId={currentUser?.id}
+                      onBookmark={toggleBookmark}
+                      onFollow={toggleFollow}
+                    />
+                  </Box>
+                ))}
+              </Masonry>
+              {totalPage > 1 ? (
+                <Stack
+                  alignItems='center'
+                  justifyContent='center'
+                  className={displayPosts.length < 5 ? styles.paginator : ''}>
+                  <Pagination
+                    count={totalPage}
+                    page={page}
+                    onChange={handlePageChange}
+                    color='primary'
                   />
-                </Box>
-              ))}
-            </Masonry>
-            {totalPage > 1 ? (
-              <Stack
-                alignItems='center'
-                justifyContent='center'
-                marginY={2}
-                className={posts?.length < 30 ? styles.paginator : null}>
-                <Pagination
-                  count={totalPage}
-                  page={page}
-                  onChange={handlePageChange}
-                  color='primary'
-                />
-              </Stack>
-            ) : null}
+                </Stack>
+              ) : null}
+            </Box>
           </>
         ) : (
           <Stack alignItems='center' justifyContent='center' height='100%'>
