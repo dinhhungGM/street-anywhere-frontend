@@ -58,7 +58,7 @@ const SignIn = () => {
               color='#9391fd'
               marginBottom={4}
               fontWeight='500'>
-              Login
+              Sign In
             </Typography>
             <Box className={styles['form-group']}>
               <AppFormInput label='Username' form={form} formControlName='username' />
@@ -89,7 +89,7 @@ const SignIn = () => {
                 color='secondary'
                 className={styles.btn}
                 disabled={!form.isValid}>
-                Login
+                Sign in
               </Button>
             </Box>
           </form>

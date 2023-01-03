@@ -32,9 +32,10 @@ const PostDetail = () => {
   const relevantPosts = useAppSelector(postSelectors.selectRelevantPost);
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const followingUsers = useAppSelector(userSelectors.selectedFollowingUsers);
+  const bookmarkedPost = useAppSelector(userSelectors.selectBookmarkedPosts);
   const reactionList = useAppSelector(reactionsSelectors.selectReactionList);
   const [isOpenMap, setIsOpenMap] = useState<boolean>(false);
-  const [currentCoord, setCurrentCoord] = useState<{ long: number; lat: number; } | null>(null);
+  const [currentCoord, setCurrentCoord] = useState<{ long: number; lat: number } | null>(null);
   const descriptionRef = useRef<any>();
   const navigate = useNavigate();
 
@@ -97,6 +98,24 @@ const PostDetail = () => {
     } as IPost;
     return newPost;
   }, [currentUser, currentPost, followingUsers]);
+  //#endregion
+
+  const displayRelevantPosts = useMemo(() => {
+    if (_.isNil(relevantPosts)) {
+      return [];
+    }
+    return _.map(relevantPosts, (post) => {
+      const followingDetail = constructFollowingDetail(post?.userId);
+      const bookmarkedDetail = _.find(bookmarkedPost, (item) => item.postId === post?.id);
+      return {
+        ...post,
+        isFollowingUser: !!followingDetail,
+        followingDetail,
+        isBookmarked: !!bookmarkedDetail,
+        bookmarkedDetail,
+      } as IPost;
+    });
+  }, [currentUser, relevantPosts, followingUsers, bookmarkedPost]);
   //#endregion
 
   //#region Toggle bookmark
@@ -249,8 +268,10 @@ const PostDetail = () => {
     });
     dispatch(postActions.getPostByIdAsync(+postId));
     dispatch(reactionsActions.getReactionList());
+    dispatch(postActions.incrementViewAsync(+postId));
     if (currentUser) {
       dispatch(userActions.getFollowingUsers(currentUser?.id));
+      dispatch(userActions.getBookmarkedPost(currentUser?.id));
     }
     return () => {
       dispatch(postActions.resetPostDetail());
@@ -307,11 +328,13 @@ const PostDetail = () => {
                   <Box className={styles.post__details__reactions__container}>
                     <Button
                       className={styles.post__details__reactions__btn}
-                      color='primary'
+                      color={post?.isBookmarked ? 'error' : 'primary'}
                       variant={post?.isBookmarked ? 'contained' : 'outlined'}
                       onClick={handleBookmark}>
-                      <AppIcon icon={Bookmark} color={post?.isBookmarked ? '#fff' : '#84849d'} />
-                      <Typography marginLeft={1}>Bookmark</Typography>
+                      <AppIcon icon={Bookmark} color={post?.isBookmarked ? '#fff' : '#0288d1'} />
+                      <Typography marginLeft={1}>
+                        {post?.isBookmarked ? 'Unbookmark' : 'Bookmark'}
+                      </Typography>
                     </Button>
                     {post?.isHasLocation && (
                       <Button
@@ -331,7 +354,7 @@ const PostDetail = () => {
           <Grid item xs={12} sm={12} md={6}>
             <Box
               className={styles.post__details__user}
-              onClick={() => navigate(`/profile/${ post?.userId }`)}>
+              onClick={() => navigate(`/profile/${post?.userId}`)}>
               <Stack
                 direction='row'
                 alignItems='center'
@@ -366,7 +389,6 @@ const PostDetail = () => {
                   iconColor='#ff5b00'
                 />
               </Stack>
-
               {post?.location && (
                 <Stack
                   direction='row'
@@ -420,8 +442,15 @@ const PostDetail = () => {
           {relevantPosts && relevantPosts.length ? (
             <Stack alignItems='center' justifyContent='center' paddingX={4} marginBottom={2}>
               <AppCarousel height='fit-content'>
-                {relevantPosts.map((post) => (
-                  <AppCardV2 key={post?.id} post={post} isFixedSize />
+                {displayRelevantPosts.map((post) => (
+                  <AppCardV2
+                    key={post?.id}
+                    post={post}
+                    isFixedSize
+                    onFollow={null}
+                    onBookmark={null}
+                    currentUserId={currentUser?.id}
+                  />
                 ))}
               </AppCarousel>
             </Stack>
