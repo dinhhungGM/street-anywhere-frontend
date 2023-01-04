@@ -1,4 +1,4 @@
-import { Bookmark, Category, Description, Map, Room, Tag } from '@mui/icons-material';
+import { ArrowBack, Bookmark, Category, Description, Map, Room, Tag } from '@mui/icons-material';
 import { Avatar, Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
 import _ from 'lodash';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -298,6 +298,12 @@ const PostDetail = () => {
   return (
     <>
       <Box className={styles.post__details}>
+        <Button
+          startIcon={<AppIcon icon={ArrowBack} color='#fff' />}
+          variant='contained'
+          onClick={() => navigate(-1)}>
+          Back
+        </Button>
         <Typography variant='h2' textAlign='center' fontWeight={700}>
           {post?.title}
         </Typography>
