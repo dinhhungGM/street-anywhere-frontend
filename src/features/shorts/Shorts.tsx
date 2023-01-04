@@ -205,7 +205,7 @@ const Shorts = () => {
                             </Button>
                             <Button
                               variant='contained'
-                              color='secondary'
+                              color='primary'
                               startIcon={<AppIcon icon={Shortcut} color='#fff' />}
                               onClick={() => goToPostDetail(post?.id)}>
                               View more

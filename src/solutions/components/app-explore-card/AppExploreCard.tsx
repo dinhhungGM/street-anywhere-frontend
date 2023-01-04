@@ -1,4 +1,4 @@
-import { Bookmark, Shortcut, Visibility } from '@mui/icons-material';
+import { Bookmark, Directions, Room, Shortcut } from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import _ from 'lodash';
-import { memo } from 'react';
+import { memo, useCallback, useState } from 'react';
 import ReactPlayer from 'react-player';
 import { useNavigate } from 'react-router-dom';
 import SweetAlert from 'sweetalert2';
@@ -21,57 +21,67 @@ import { bookmarkActions } from '../../../features/bookmark';
 import { userActions } from '../../../features/user';
 import { wrapperActions } from '../../../features/wrapper/store';
 import { AppIcon } from '../app-icon';
-import LikeSrc from './../../assets/images/reactions/like.png';
-import LoveSrc from './../../assets/images/reactions/love.png';
+import { AppMapBox } from '../app-mapbox';
+import { AppModal } from '../app-modal';
 import styles from './styles.module.scss';
 
 const showWarning = () =>
   SweetAlert.fire({
     title: 'Warning',
     icon: 'info',
-    text: 'You are not sign in. Please login to continue',
+    text: 'You are not sign in. Please sign to continue',
     confirmButtonText: 'Sign in',
     showCancelButton: true,
   });
 
-interface IAppTrendingCardProps {
+interface IAppExploreCardProps {
   type?: string;
   title?: string;
   views?: number;
   userId?: number;
   postId?: number;
+  userLat?: number;
+  postLat?: number;
+  postLong?: number;
+  userLong?: number;
+  address?: string;
   createdAt: string;
   fullName?: string;
   imageUrl?: string;
+  distance?: number;
   bookmarkDetail?: any;
   videoYtbUrl?: string;
   isBookmarked?: boolean;
   currentUserId?: number;
   followingDetail?: any;
-  totalReaction?: number;
   profilePhotoUrl?: string;
   isFollowingUser?: boolean;
 }
-const AppTrendingCard = ({
+const AppExploreCard = ({
   fullName,
   type,
   title,
-  views,
   userId,
   postId,
+  address,
+  userLat,
+  postLat,
+  userLong,
+  postLong,
   imageUrl,
+  distance,
   createdAt,
   videoYtbUrl,
   isBookmarked,
-  totalReaction,
   currentUserId,
   bookmarkDetail,
   profilePhotoUrl,
   isFollowingUser,
   followingDetail,
-}: IAppTrendingCardProps) => {
+}: IAppExploreCardProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [isOpenMap, setIsOpenMap] = useState(false);
 
   //  Handling bookmark
   const handleBookmarkPost = () => {
@@ -137,6 +147,11 @@ const AppTrendingCard = ({
     }
   };
 
+  // Handle close map
+  const handleCloseMap = useCallback(() => {
+    setIsOpenMap(false);
+  }, []);
+
   return (
     <>
       <Card sx={{ maxWidth: 345 }} className='card'>
@@ -185,19 +200,24 @@ const AppTrendingCard = ({
             {title}
           </Typography>
           <Box marginY={1}>
-            <Stack direction='row'>
-              <Stack direction='row' width='50%' spacing={2} alignItems='center'>
-                <AppIcon icon={Visibility} />
-                <Typography fontWeight={600}>{views} views</Typography>
-              </Stack>
-              <Stack direction='row' width='50%' spacing={2} alignItems='center'>
-                <Stack direction='row' spacing={1}>
-                  <Avatar src={LikeSrc} sx={{ width: 24, height: 24 }} />
-                  <Avatar src={LoveSrc} sx={{ width: 24, height: 24 }} />
-                </Stack>
-                <Typography fontWeight={600}>{totalReaction}</Typography>
-              </Stack>
+            <Stack direction='row' alignItems='center' spacing={1}>
+              <AppIcon icon={Room} color='#e60023' />
+              <Typography>{address}</Typography>
             </Stack>
+            <Typography>
+              <strong>Distance: </strong>
+              {distance} km
+            </Typography>
+          </Box>
+          <Box marginY={1}>
+            <Button
+              fullWidth
+              variant='contained'
+              color='success'
+              startIcon={<AppIcon icon={Directions} color='#fff' />}
+              onClick={() => setIsOpenMap(true)}>
+              View direction
+            </Button>
           </Box>
           <Stack
             direction='row'
@@ -209,7 +229,7 @@ const AppTrendingCard = ({
               fullWidth
               startIcon={<AppIcon icon={Shortcut} color='#fff' />}
               variant='contained'
-              color='success'
+              color='primary'
               onClick={() => navigate(`/posts/${postId}`)}>
               View more
             </Button>
@@ -224,8 +244,25 @@ const AppTrendingCard = ({
           </Stack>
         </CardContent>
       </Card>
+      <AppModal
+        title='Map'
+        width='60vw'
+        height='60vh !important'
+        isOpen={isOpenMap}
+        cancelText='Close'
+        isDisplayOkButton={false}
+        onClose={handleCloseMap}
+        onCancel={handleCloseMap}>
+        <AppMapBox
+          isTracing
+          address={address}
+          isDisplayGeoDirection
+          sourcePoint={{ lat: userLat, long: userLong }}
+          desPoint={{ lat: postLat, long: postLong }}
+        />
+      </AppModal>
     </>
   );
 };
 
-export default memo(AppTrendingCard);
+export default memo(AppExploreCard);
