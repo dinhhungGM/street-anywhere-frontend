@@ -202,7 +202,13 @@ const AppExploreCard = ({
           <Box marginY={1}>
             <Stack direction='row' alignItems='center' spacing={1}>
               <AppIcon icon={Room} color='#e60023' />
-              <Typography>{address}</Typography>
+              <Typography
+                width='100%'
+                whiteSpace='nowrap'
+                textOverflow='ellipsis'
+                overflow='hidden'>
+                {address}
+              </Typography>
             </Stack>
             <Typography>
               <strong>Distance: </strong>
