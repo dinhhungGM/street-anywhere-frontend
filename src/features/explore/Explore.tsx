@@ -1,11 +1,14 @@
 import { Masonry } from '@mui/lab';
 import { Box, Slider, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import _ from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import useDebounce from '../../hooks/useDebounce';
 import { AppExploreCard } from '../../solutions/components/app-explore-card';
 import { authSelectors } from '../auth/store';
+import { userSelectors } from '../user';
 import { wrapperSelectors } from '../wrapper/store';
+import { userActions } from './../user';
 import * as exploreAsyncActions from './exploreAsyncActions';
 import * as exploreSelectors from './exploreSelectors';
 import styles from './styles.module.scss';
@@ -18,6 +21,8 @@ const Explore = () => {
   const currentUser = useAppSelector(authSelectors.selectCurrentUser);
   const aroundHereData = useAppSelector(exploreSelectors.selectAroundHereData);
   const [currentCoord, setCurrentCoord] = useState<{ long: number; lat: number } | null>(null);
+  const followingUsers = useAppSelector(userSelectors.selectedFollowingUsers);
+  const bookmarkedPosts = useAppSelector(userSelectors.selectBookmarkedPosts);
 
   const handleSliderChange = (e, newValue): void => {
     setRadius(newValue);
@@ -28,6 +33,23 @@ const Explore = () => {
       setCurrentCoord({ long: position.coords.longitude, lat: position.coords.latitude });
     });
   }, []);
+
+  const displayPosts = useMemo(() => {
+    if (!currentUser) {
+      return aroundHereData;
+    }
+    return _.map(aroundHereData, (item) => {
+      const bookmarkedPost = _.find(bookmarkedPosts, (i) => i.postId === item?.id);
+      const followingUser = _.find(followingUsers, (i) => i.followerId === item?.userId);
+      return {
+        ...item,
+        isBookmarked: !!bookmarkedPost,
+        bookmarkedDetail: bookmarkedPost,
+        isFollowingUser: !!followingUser,
+        followingDetail: followingUser,
+      };
+    });
+  }, [aroundHereData, bookmarkedPosts, followingUsers]);
 
   useEffect(() => {
     if (currentCoord && searchingRadius) {
@@ -40,6 +62,13 @@ const Explore = () => {
       );
     }
   }, [currentCoord, searchingRadius]);
+
+  useEffect(() => {
+    if (currentUser) {
+      dispatch(userActions.getBookmarkedPost(currentUser?.id));
+      dispatch(userActions.getFollowingUsers(currentUser?.id));
+    }
+  }, []);
 
   return (
     <Box className={styles.explore}>
@@ -64,12 +93,12 @@ const Explore = () => {
             <>
               <Box padding={2}>
                 <Masonry
-                  columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
+                  columns={{ xs: 1, sm: 2, md: 3, lg: 5, xl: 6 }}
                   spacing={2}
                   sx={{
                     width: '100%',
                   }}>
-                  {aroundHereData.map((post) => (
+                  {displayPosts.map((post) => (
                     <AppExploreCard
                       key={post?.id}
                       type={post?.type}

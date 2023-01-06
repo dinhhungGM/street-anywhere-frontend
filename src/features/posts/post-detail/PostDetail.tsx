@@ -281,13 +281,6 @@ const PostDetail = () => {
 
   useEffect(() => {
     if (currentPost) {
-      dispatch(
-        postActions.getPostRelevantToCurrentPost({
-          categories: currentPost?.categories,
-          hashtags: currentPost?.tags,
-          postId: currentPost?.id,
-        }),
-      );
       if (descriptionRef.current) {
         descriptionRef.current.innerHTML = currentPost.description || '(No description)';
       }
@@ -304,11 +297,11 @@ const PostDetail = () => {
           onClick={() => navigate(-1)}>
           Back
         </Button>
-        <Typography variant='h2' textAlign='center' fontWeight={700}>
+        <Typography variant='h2' textAlign='center' fontWeight={700} marginTop={1}>
           {post?.title}
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={12} md={6} padding={4}>
+          <Grid item xs={12} sm={12} md={6}>
             <Box className={styles.post__details__media}>
               <Stack width='100%' spacing={2}>
                 <Box className={styles.post__details__media__content}>
@@ -435,31 +428,6 @@ const PostDetail = () => {
             <Box component={Paper} elevation={2} className={styles.post__details__stats__chart}>
               <AppListUserReact postId={currentPost?.id} />
             </Box>
-          ) : (
-            <Typography textAlign='center' fontStyle='italic'>
-              No data
-            </Typography>
-          )}
-        </Box>
-        <Box className={styles.post__details__relevant}>
-          <Box marginY={2}>
-            <AppHeading heading='More like this' />
-          </Box>
-          {relevantPosts && relevantPosts.length ? (
-            <Stack alignItems='center' justifyContent='center' paddingX={4} marginBottom={2}>
-              <AppCarousel height='fit-content'>
-                {displayRelevantPosts.map((post) => (
-                  <AppCardV2
-                    key={post?.id}
-                    post={post}
-                    isFixedSize
-                    onFollow={null}
-                    onBookmark={null}
-                    currentUserId={currentUser?.id}
-                  />
-                ))}
-              </AppCarousel>
-            </Stack>
           ) : (
             <Typography textAlign='center' fontStyle='italic'>
               No data

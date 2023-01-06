@@ -65,7 +65,7 @@ const Shorts = () => {
 
   // Handling go to post details
   const goToPostDetail = (postId: number): void => {
-    navigate(`/posts/${ postId }`);
+    navigate(`/posts/${postId}`);
   };
 
   // Handling follow user
@@ -142,7 +142,8 @@ const Shorts = () => {
             sx={{ backgroundColor: '#fff' }}
             padding={2}
             width='fit-content'
-            borderRadius={2}>
+            borderRadius={2}
+            className={styles.shorts__list}>
             {shorts?.length ? (
               displayShorts?.map((post) => (
                 <Box key={post?.id} className={styles.shorts__card}>
@@ -151,15 +152,22 @@ const Shorts = () => {
                       <Stack direction='row' alignItems='center' spacing={2}>
                         <Avatar
                           src={post?.profilePhotoUrl}
-                          onClick={() => navigate(`/profile/${ post?.userId }`)}
+                          onClick={() => navigate(`/profile/${post?.userId}`)}
                           sx={{ cursor: 'pointer' }}
                         />
                         <Stack
                           alignItems='flex-start'
                           justifyContent='flex-start'
-                          onClick={() => navigate(`/profile/${ post?.userId }`)}
+                          onClick={() => navigate(`/profile/${post?.userId}`)}
                           sx={{ cursor: 'pointer' }}>
-                          <Typography fontWeight={600}>{post?.fullName}</Typography>
+                          <Typography
+                            fontWeight={600}
+                            whiteSpace='nowrap'
+                            textOverflow='ellipsis'
+                            overflow='hidden'
+                            className={styles.shorts__card__header__username}>
+                            {post?.fullName}
+                          </Typography>
                           <Typography fontSize={12}>{post?.createdAt}</Typography>
                         </Stack>
                       </Stack>
@@ -177,23 +185,24 @@ const Shorts = () => {
                     <Typography variant='h5' marginY={2}>
                       {post?.title}
                     </Typography>
-                    <Grid container spacing={2}>
-                      <Grid item md={12}>
-                        <ReactPlayer url={post?.videoYtbUrl} width='100%' height='440px' />
+                    <Grid container spacing={2} width='100%'>
+                      <Grid item md={12} width='100%'>
+                        <ReactPlayer light url={post?.videoYtbUrl} width='100%' height='440px' />
                       </Grid>
-                      <Grid item md={12}>
+                      <Grid item md={12} width='100%'>
                         <Stack
                           direction='row'
                           alignItems='center'
                           justifyContent='space-between'
-                          spacing={2}>
+                          spacing={2}
+                          className={styles.shorts__card__footer}>
                           <Typography>
                             <strong>Views: {post?.views}</strong>
                           </Typography>
-                          <Stack direction='row' alignItems='center' spacing={2}>
+                          <Stack direction='row' alignItems='center' spacing={1}>
                             <Button
                               variant={post?.isBookmarked ? 'contained' : 'outlined'}
-                              color='primary'
+                              color={post?.isBookmarked ? 'error' : 'primary'}
                               startIcon={
                                 <AppIcon
                                   icon={Bookmark}

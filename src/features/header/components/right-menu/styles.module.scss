@@ -3,3 +3,9 @@
 .btn-icon {
   background-color: $primaryLightGrey !important;
 }
+
+@media only screen and (max-width: 500px) {
+  .section-item {
+    display: none !important;
+  }
+}

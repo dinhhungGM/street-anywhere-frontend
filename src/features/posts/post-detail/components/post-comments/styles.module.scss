@@ -32,3 +32,15 @@
 .error {
   border: 1px solid $primaryRed;
 }
+
+@media only screen and (max-width: 500px) {
+  .writer {
+    width: 120px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .date {
+    display: none;
+  }
+}

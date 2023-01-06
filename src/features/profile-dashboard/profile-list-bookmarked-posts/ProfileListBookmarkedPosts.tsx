@@ -15,7 +15,7 @@ import {
   InputAdornment,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -51,7 +51,7 @@ const ProfileListBookmarkedPost = () => {
 
   // Navigate to post detail
   const navigateToPostDetail = (postId: number) => {
-    navigate(`/posts/${ postId }`);
+    navigate(`/posts/${postId}`);
   };
 
   // Handling remove bookmarked post
@@ -153,7 +153,7 @@ const ProfileListBookmarkedPost = () => {
   };
   return (
     <>
-      <Container>
+      <Container className={styles.bookmarked}>
         {bookmarkedPosts?.length ? (
           <Box marginY={2}>
             <TextField
@@ -182,20 +182,14 @@ const ProfileListBookmarkedPost = () => {
           </Box>
         ) : null}
         {displayPosts?.length ? (
-          <Masonry
-            columns={{ xs: 1, sm: 3, md: 3, lg: 4, xl: 5 }}
-            spacing={2}
-            sx={{
-              width: '100%',
-              paddingLeft: '60px',
-            }}>
+          <Masonry columns={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 6 }} spacing={2}>
             {displayPosts?.map((post) => (
-              <Card sx={{ maxWidth: 345 }} key={post?.id} className='card'>
+              <Card key={post?.id} className='card'>
                 <CardHeader
                   title={post?.fullName}
                   subheader={post?.createdAt}
                   sx={{ cursor: 'pointer' }}
-                  onClick={() => navigate(`/profile/${ post?.userId }`)}
+                  onClick={() => navigate(`/profile/${post?.userId}`)}
                   avatar={<Avatar src={post?.profilePhotoUr1l}>{post?.fullName[0]}</Avatar>}
                   action={
                     currentUser?.id !== post?.userId ? (

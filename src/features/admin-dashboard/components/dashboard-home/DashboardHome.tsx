@@ -38,14 +38,7 @@ const DashboardHome = () => {
           <AppHeading heading='System Overall' />
           <Box
             marginY={3}
-            sx={{
-              sm: {
-                flexDirection: 'column',
-              },
-              md: {
-                flexDirection: 'row',
-              },
-            }}
+            className={styles['system-overall']}
             display='flex'
             gap={2}
             alignItems='center'

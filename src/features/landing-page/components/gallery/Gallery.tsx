@@ -332,7 +332,7 @@ const Gallery = () => {
                 minHeight: displayPosts.length < 5 ? 'calc(100vh - 74px - 56px - 88px)' : 'initial',
               }}>
               <Masonry
-                columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
+                columns={{ xs: 1, sm: 2, md: 4, lg: 5, xl: 6 }}
                 spacing={2}
                 sx={{
                   width: '100%',

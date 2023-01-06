@@ -25,7 +25,7 @@ const AppInputWithEdit = ({
         sx={{
           minWidth: '100%',
         }}>
-        <Stack direction='row' alignItems='center' spacing={2}>
+        <Stack direction='row' alignItems='center' spacing={2} className={styles.wrapper}>
           <Typography fontWeight={700} className={styles.title}>
             {title}:{' '}
           </Typography>

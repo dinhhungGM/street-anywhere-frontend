@@ -1,6 +1,9 @@
-import { Avatar, Box, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { Close } from '@mui/icons-material';
+import { Avatar, Box, Divider, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AppIcon } from '../../../../solutions/components/app-icon';
+import { AppIconButton } from '../../../../solutions/components/app-icon-button';
 import { wrapperModels } from '../../../wrapper/store';
 
 const COLOR_SCHEMA = {
@@ -27,7 +30,7 @@ const PostNotifications = ({ anchorElement, details = [], onClose }: IPostNotifi
 
   const navigateToPostDetail = (notification): void => {
     onClose();
-    navigate(`/posts/${ notification?.postId }`);
+    navigate(`/posts/${notification?.postId}`);
   };
 
   return (
@@ -53,6 +56,17 @@ const PostNotifications = ({ anchorElement, details = [], onClose }: IPostNotifi
           vertical: 'top',
           horizontal: 'right',
         }}>
+        <Stack padding={1} direction='row' alignItems='center' justifyContent='space-between'>
+          <Typography variant='h6' fontWeight={700}>
+            Notification ({details.length})
+          </Typography>
+          <AppIconButton
+            tooltip='Close'
+            icon={<AppIcon icon={Close} color='#e60023' />}
+            onClick={onClose}
+          />
+        </Stack>
+        <Divider />
         {details.length ? (
           details.map((notification) => (
             <MenuItem

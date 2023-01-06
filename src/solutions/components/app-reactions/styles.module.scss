@@ -19,3 +19,11 @@
   border-radius: 100rem;
   background-color: #c7f8ff;
 }
+
+@media only screen and (max-width: 500px) {
+  .reaction-container {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    padding: 8px;
+  }
+}

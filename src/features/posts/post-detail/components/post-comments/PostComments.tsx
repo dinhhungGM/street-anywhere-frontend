@@ -163,7 +163,7 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
     <>
       <Box ref={commentRef}>
         <Typography variant='h4' fontWeight={700}>
-          Comments {commentCount ? `(${ commentCount })` : `(0)`}
+          Comments {commentCount ? `(${commentCount})` : `(0)`}
         </Typography>
         <Box padding={1}>
           <form onSubmit={form.handleSubmit}>
@@ -175,7 +175,11 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
                 {...form.getFieldProps('content')}></textarea>
             </FormControl>
             <Stack justifyContent='flex-end' alignItems='center' paddingTop={2}>
-              <Button type='submit' variant='contained' className={styles.btn} disabled={!(form.isValid && form.dirty)}>
+              <Button
+                type='submit'
+                variant='contained'
+                className={styles.btn}
+                disabled={!(form.isValid && form.dirty)}>
                 Comment
               </Button>
             </Stack>
@@ -189,12 +193,23 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
                 {commentList.length &&
                   commentList.map((comment) => (
                     <ListItem key={comment.id} className={styles.comment}>
-                      <Stack direction='row' alignItems='center' justifyContent='flex-start' spacing={2}>
-                        <Avatar alt={comment?.user?.fullName} src={comment?.user?.profilePhotoUrl} />
+                      <Stack
+                        direction='row'
+                        alignItems='center'
+                        justifyContent='flex-start'
+                        spacing={2}>
+                        <Avatar
+                          alt={comment?.user?.fullName}
+                          src={comment?.user?.profilePhotoUrl}
+                        />
                         <Box className={styles.content}>
                           <Stack direction='row' alignItems='center' justifyContent='space-between'>
-                            <Stack direction='row' alignItems='center' justifyContent='flex-start' spacing={2}>
-                              <Typography fontWeight={600} fontSize={16}>
+                            <Stack
+                              direction='row'
+                              alignItems='center'
+                              justifyContent='flex-start'
+                              spacing={2}>
+                              <Typography fontWeight={600} fontSize={16} className={styles.writer}>
                                 {comment?.user?.fullName}
                               </Typography>
                               {currentUserId === comment?.userId && (
@@ -202,10 +217,15 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
                                   <IconButton
                                     color='info'
                                     size='small'
-                                    onClick={() => updateCommentByCommentId(comment?.id, comment?.content)}>
+                                    onClick={() =>
+                                      updateCommentByCommentId(comment?.id, comment?.content)
+                                    }>
                                     <AppIcon icon={Edit} color='#0288d1' />
                                   </IconButton>
-                                  <IconButton color='error' size='small' onClick={() => deleteComment(comment?.id)}>
+                                  <IconButton
+                                    color='error'
+                                    size='small'
+                                    onClick={() => deleteComment(comment?.id)}>
                                     <AppIcon icon={Delete} color='#e60023' />
                                   </IconButton>
                                 </>
@@ -213,7 +233,7 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
                             </Stack>
                             <Typography fontSize={12} className={styles.date} fontStyle='italic'>
                               {comment?.isUpdated
-                                ? `(Modified) ${ new Date(comment?.updatedAt).toLocaleString() }`
+                                ? `(Modified) ${new Date(comment?.updatedAt).toLocaleString()}`
                                 : new Date(comment?.createdAt).toLocaleString()}
                             </Typography>
                           </Stack>
@@ -227,13 +247,20 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
           ) : (
             <>
               <Stack alignItems='center' justifyContent='center'>
-                <Typography marginTop={2} fontStyle='italic'>No data</Typography>
+                <Typography marginTop={2} fontStyle='italic'>
+                  No data
+                </Typography>
               </Stack>
             </>
           )}
           {pageCount > 1 ? (
             <Stack justifyContent='center' alignItems='center'>
-              <Pagination count={pageCount} color='primary' page={pageNumber} onChange={handleChangePage} />
+              <Pagination
+                count={pageCount}
+                color='primary'
+                page={pageNumber}
+                onChange={handleChangePage}
+              />
             </Stack>
           ) : null}
         </Box>

@@ -5,3 +5,17 @@
   text-overflow: ellipsis;
   font-weight: 700 !important;
 }
+
+.actions {
+  flex-direction: row;
+}
+
+@media only screen and (max-width: 375px) {
+  .actions {
+    flex-direction: column;
+    gap: 12px;
+    .btn-bookmark {
+      margin: 0;
+    }
+  }
+}

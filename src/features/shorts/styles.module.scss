@@ -14,7 +14,7 @@
   &__card {
     min-height: 600px;
     width: 700px;
-    padding: 16px;
+    padding: 16px 0 16px 16px;
 
     &:not(:last-child) {
       border-bottom: 2px solid #ccc;
@@ -22,13 +22,45 @@
     }
 
     &__header {
-      padding: 12px 0;
+      padding: 12px 16px 12px 0;
     }
 
     &__body {
       min-height: calc(600px - 64px);
       iframe {
         border-radius: 4px;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .shorts__container {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .shorts__list {
+    width: 100% !important;
+    border-radius: unset !important;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .shorts__card {
+    width: 100%;
+    &__header {
+      &__username {
+        width: 150px !important;
+      }
+    }
+    &__footer {
+      flex-direction: column !important;
+      gap: 12px;
+      p {
+        align-self: flex-start;
+      }
+      & > div {
+        margin-left: 0 !important;
       }
     }
   }

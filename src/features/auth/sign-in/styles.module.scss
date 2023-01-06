@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  height: calc(100vh - 80px - 22px);
+  min-height: calc(100vh - 80px - 22px);
   padding: 20px;
   background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3)),
     url('https://images.pexels.com/photos/114979/pexels-photo-114979.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500');
@@ -48,5 +48,17 @@
     &:hover {
       transform: scale(1.05);
     }
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .wrapper {
+    width: 100%;
+    display: block;
+    padding: 8px;
+  }
+  .form {
+    width: 100% !important;
+    padding: 16px;
   }
 }

@@ -67,12 +67,7 @@ const Hots = () => {
   return (
     <Box className={styles.hots}>
       {displayTrendingPosts?.length ? (
-        <Masonry
-          columns={{ xs: 1, sm: 3, md: 4, lg: 5, xl: 6 }}
-          spacing={2}
-          sx={{
-            width: '100%',
-          }}>
+        <Masonry columns={{ xs: 1, sm: 2, md: 3, lg: 5, xl: 6 }} spacing={2}>
           {displayTrendingPosts.map((post) => (
             <AppTrendingCard
               key={post?.id}
