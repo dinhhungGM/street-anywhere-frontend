@@ -231,8 +231,7 @@ const AppExploreCard = ({
             justifyContent='space-between'
             marginTop={2}
             spacing={2}
-            className={styles.actions}
-            >
+            className={styles.actions}>
             <Button
               fullWidth
               startIcon={<AppIcon icon={Shortcut} color='#fff' />}
@@ -247,8 +246,7 @@ const AppExploreCard = ({
               variant={isBookmarked ? 'contained' : 'outlined'}
               color={isBookmarked ? 'error' : 'primary'}
               onClick={handleBookmarkPost}
-              className={styles['btn-bookmark']}
-              >
+              className={styles['btn-bookmark']}>
               {isBookmarked ? 'Unbookmark' : 'Bookmark'}
             </Button>
           </Stack>
