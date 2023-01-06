@@ -1,4 +1,4 @@
-import { Add, Close, ExpandMore, Map, PostAdd } from '@mui/icons-material';
+import { Add, ArrowBack, Close, ExpandMore, Map, PostAdd } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
@@ -358,7 +358,16 @@ const CreateNewPostV2 = () => {
           elevation={2}
           borderRadius={2}
           component={Paper}>
-          <Typography textAlign='center' variant='h2' textTransform='uppercase' fontWeight={600}>
+          <Button startIcon={<AppIcon icon={ArrowBack} color='#fff' />} variant='contained'>
+            Back
+          </Button>
+          <Typography
+            textAlign='center'
+            variant='h2'
+            textTransform='uppercase'
+            fontWeight={600}
+            className={styles.title}
+            marginTop={1}>
             New Post
           </Typography>
           <Divider>
@@ -396,7 +405,7 @@ const CreateNewPostV2 = () => {
                               onUploadingFile={handleUploadFile}
                             />
                             <Typography marginY={2} fontStyle='italic'>
-                              Support file: .png, .jpg, .jpeg, .gif
+                              <strong>Support file:</strong> .png, .jpg, .jpeg, .gif
                             </Typography>
                           </>
                         ) : (
@@ -422,7 +431,7 @@ const CreateNewPostV2 = () => {
                           {...form.getFieldProps('videoYtbUrl')}
                         />
                         <Typography marginY={1} fontStyle='italic'>
-                          Support link: {process.env.REACT_APP_SUPPORT_VIDEO_LINK}
+                          <strong>Support link:</strong> {process.env.REACT_APP_SUPPORT_VIDEO_LINK}
                         </Typography>
                       </Box>
                     )}
@@ -438,7 +447,7 @@ const CreateNewPostV2 = () => {
                           {...form.getFieldProps('imageUrl')}
                         />
                         <Typography marginY={1} fontStyle='italic'>
-                          Support link: {process.env.REACT_APP_SUPPORT_IMAGE_LINK}
+                          <strong>Support link:</strong> {process.env.REACT_APP_SUPPORT_IMAGE_LINK}
                         </Typography>
                       </Box>
                     )}

@@ -154,7 +154,7 @@ const AppExploreCard = ({
 
   return (
     <>
-      <Card sx={{ maxWidth: 345 }} className='card'>
+      <Card className='card'>
         <CardHeader
           title={fullName}
           subheader={createdAt}
@@ -230,7 +230,9 @@ const AppExploreCard = ({
             alignItems='center'
             justifyContent='space-between'
             marginTop={2}
-            spacing={2}>
+            spacing={2}
+            className={styles.actions}
+            >
             <Button
               fullWidth
               startIcon={<AppIcon icon={Shortcut} color='#fff' />}
@@ -244,7 +246,9 @@ const AppExploreCard = ({
               startIcon={<AppIcon icon={Bookmark} color={isBookmarked ? '#fff' : '#0288d1'} />}
               variant={isBookmarked ? 'contained' : 'outlined'}
               color={isBookmarked ? 'error' : 'primary'}
-              onClick={handleBookmarkPost}>
+              onClick={handleBookmarkPost}
+              className={styles['btn-bookmark']}
+              >
               {isBookmarked ? 'Unbookmark' : 'Bookmark'}
             </Button>
           </Stack>

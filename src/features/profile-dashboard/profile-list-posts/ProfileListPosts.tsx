@@ -213,15 +213,14 @@ const ProfileListPosts = () => {
             <Divider />
             <Box ref={contentRef}>
               <Masonry
-                columns={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
+                columns={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 6 }}
                 spacing={2}
                 sx={{
                   width: '100%',
                   marginTop: '12px',
-                  paddingLeft: '60px',
                 }}>
                 {displayPosts?.map((post) => (
-                  <Card sx={{ maxWidth: 345 }} key={post?.id}>
+                  <Card key={post?.id}>
                     <CardHeader
                       title={post?.title}
                       subheader={post?.createdAt}

@@ -5,8 +5,8 @@ import {
   Notifications,
   Person,
   PersonAdd,
-  PowerSettingsNew,
-  Search
+  PersonSearch,
+  PowerSettingsNew
 } from '@mui/icons-material';
 import { Badge, IconButton, Stack, Tooltip } from '@mui/material';
 import _ from 'lodash';
@@ -18,6 +18,7 @@ import { AppIconButton } from '../../../../solutions/components/app-icon-button'
 import { authActions, authSelectors } from '../../../auth/store';
 import { wrapperActions, wrapperSelectors } from '../../../wrapper/store';
 import { PostNotifications } from '../post-notifications';
+import styles from './styles.module.scss';
 
 const RightMenu = () => {
   const navigate = useNavigate();
@@ -59,15 +60,16 @@ const RightMenu = () => {
   return (
     <>
       <Stack spacing={2} alignItems='center' direction='row'>
-        <Tooltip title='Search user'>
+        <Tooltip title='Search user' className={styles['section-item']}>
           <IconButton size='large' color='warning' onClick={() => navigate('/search-user')}>
-            <AppIcon icon={Search} color='#747df6' />
+            <AppIcon icon={PersonSearch} color='#747df6' />
           </IconButton>
         </Tooltip>
         <AppIconButton
           tooltip='Create new post'
           icon={<AppIcon icon={Add} color='#44ff00' />}
           onClick={navigateToCreateNewPostPage}
+          customClass='btn'
         />
         {_.isNil(currentUser) ? (
           <>
@@ -91,13 +93,13 @@ const RightMenu = () => {
                 </Badge>
               </IconButton>
             </Tooltip>
-            <Tooltip title='Profile'>
-              <IconButton size='large' onClick={() => navigate(`/profile/${ currentUser?.id }`)}>
+            <Tooltip title='Profile' className={styles['section-item']}>
+              <IconButton size='large' onClick={() => navigate(`/profile/${currentUser?.id}`)}>
                 <AppIcon icon={Person} color='#0288d1' />
               </IconButton>
             </Tooltip>
             {currentUser?.isAdmin ? (
-              <Tooltip title='Admin Dashboard'>
+              <Tooltip title='Admin Dashboard' className={styles['section-item']}>
                 <IconButton size='large' onClick={() => navigate('/admin-dashboard')}>
                   <AppIcon icon={AdminPanelSettings} color='#ff5b00' />
                 </IconButton>

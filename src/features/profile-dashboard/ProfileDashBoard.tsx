@@ -211,7 +211,7 @@ const ProfileDashBoard = () => {
             width: '100%',
             height: '400px',
             background: profileDetail?.coverImageUrl
-              ? `url(${ profileDetail?.coverImageUrl })`
+              ? `url(${profileDetail?.coverImageUrl})`
               : '#ccc',
             borderRadius: 4,
             position: 'relative',
@@ -256,7 +256,7 @@ const ProfileDashBoard = () => {
                 display: 'flex',
                 flexDirection: 'column',
               }}>
-              <Typography variant='h5' fontWeight={700}>
+              <Typography variant='h5' fontWeight={700} className={styles['username']}>
                 {profileDetail?.fullName}
               </Typography>
               <Typography textAlign='center' marginTop={1}>
@@ -289,35 +289,35 @@ const ProfileDashBoard = () => {
               label='Info'
               iconPosition='start'
               className={styles['tab-item']}
-              onClick={() => handleNavigate(`/profile/${ userId }`)}
+              onClick={() => handleNavigate(`/profile/${userId}`)}
             />
             <Tab
               icon={<AppIcon icon={People} />}
               label='Followers'
               iconPosition='start'
               className={styles['tab-item']}
-              onClick={() => handleNavigate(`/profile/${ userId }/followers`)}
+              onClick={() => handleNavigate(`/profile/${userId}/followers`)}
             />
             <Tab
               icon={<AppIcon icon={ConnectWithoutContact} />}
               label='Followings'
               iconPosition='start'
               className={styles['tab-item']}
-              onClick={() => handleNavigate(`/profile/${ userId }/followings`)}
+              onClick={() => handleNavigate(`/profile/${userId}/followings`)}
             />
             <Tab
               icon={<AppIcon icon={Image} />}
               label='Images'
               iconPosition='start'
               className={styles['tab-item']}
-              onClick={() => handleNavigate(`/profile/${ userId }/posts?mediatype=image`)}
+              onClick={() => handleNavigate(`/profile/${userId}/posts?mediatype=image`)}
             />
             <Tab
               icon={<AppIcon icon={YouTube} />}
               label='Videos'
               iconPosition='start'
               className={styles['tab-item']}
-              onClick={() => handleNavigate(`/profile/${ userId }/posts?mediatype=video`)}
+              onClick={() => handleNavigate(`/profile/${userId}/posts?mediatype=video`)}
             />
             {isCurrentUser && (
               <Tab
@@ -325,7 +325,7 @@ const ProfileDashBoard = () => {
                 label='Bookmark'
                 iconPosition='start'
                 className={styles['tab-item']}
-                onClick={() => handleNavigate(`/profile/${ userId }/bookmark`)}
+                onClick={() => handleNavigate(`/profile/${userId}/bookmark`)}
               />
             )}
           </Tabs>

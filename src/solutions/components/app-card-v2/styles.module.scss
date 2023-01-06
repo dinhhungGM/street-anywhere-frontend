@@ -69,6 +69,7 @@
       background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       position: absolute;
       bottom: 0;
+      padding: 8px;
       &__name {
         cursor: pointer;
         transition: all 0.3s ease;
@@ -85,5 +86,12 @@
   &__fixed {
     width: 400px;
     height: 500px;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .card {
+    width: 100%;
+    min-width: unset;
   }
 }

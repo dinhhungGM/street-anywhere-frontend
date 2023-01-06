@@ -1,0 +1,16 @@
+.middle-menu {
+  display: block;
+}
+
+.right-menu {
+  padding-right: 16px;
+}
+
+@media only screen and (max-width: 1024px)  {
+  .middle-menu {
+    display: none;
+  }
+  .right-menu {
+    padding-right: 0;
+  }
+}

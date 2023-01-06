@@ -11,9 +11,11 @@
       margin-top: 20px;
       height: 600px;
       padding: 12px;
+      width: 100%;
 
       img {
         width: 100%;
+        height: 100%;
       }
 
       iframe {
@@ -82,5 +84,20 @@
     &__user__background {
       margin-top: -18px;
     }
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .post__details__stats {
+    display: none !important;
+  }
+  .post__details__user p:first-child {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 150px;
+  }
+  .post__details__user__background p:last-child {
+    font-size: 10px;
   }
 }

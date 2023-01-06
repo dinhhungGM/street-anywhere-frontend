@@ -18,7 +18,7 @@ const Wrapper = ({ children }: WrapperProps) => {
         <Header />
         <Box
           sx={{
-            minHeight: 'calc(100vh - 56px - 74px)',
+            minHeight: 'calc(100vh - 56px - 72px)',
           }}>
           {children}
         </Box>

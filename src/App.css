@@ -84,3 +84,12 @@
   justify-content: center;
   background-color: rgba(242, 245, 248, 0.5);
 }
+
+@media only screen and (max-width: 375px) {
+  .MuiCard-root {
+    width: 100% !important;
+  }
+  .MuiCardHeader-subheader {
+    font-size: 10px !important;
+  }
+}
