@@ -54,7 +54,7 @@ const SearchUser = () => {
   };
 
   const goToProfile = (userId: number) => {
-    navigate(`/profile/${ userId }`);
+    navigate(`/profile/${userId}`);
   };
 
   const handleClickOnKey = (key) => {
@@ -81,7 +81,7 @@ const SearchUser = () => {
       if (name) {
         try {
           dispatch(wrapperActions.showLoading());
-          const { data } = await axios.get(`/users/search-user?name=${ name }`);
+          const { data } = await axios.get(`/users/search-user?name=${name}`);
           setSearchingUsers(data.value);
         } catch (error) {
           dispatch(
@@ -119,7 +119,9 @@ const SearchUser = () => {
               value={name}
               onChange={handleOnChange}
               onKeyDown={handleOnKeyDown}
-              onFocus={() => setIsShowHistory(true)}
+              onFocus={() => {
+                setIsShowHistory(true);
+              }}
               ref={inputRef}
             />
             <span className={styles['search-box__input__icon']}>

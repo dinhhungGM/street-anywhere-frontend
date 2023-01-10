@@ -259,6 +259,11 @@ const ProfileDashBoard = () => {
               <Typography variant='h5' fontWeight={700} className={styles['username']}>
                 {profileDetail?.fullName}
               </Typography>
+              <Stack direction='row' alignItems='center' justifyContent='flex-start'>
+                <Typography fontWeight={700}>Rank: </Typography>
+                <Typography marginLeft={2}>{profileDetail?.rankName}</Typography>
+                <Avatar src={profileDetail?.rankLogoUrl} alt={profileDetail?.rankName} />
+              </Stack>
               <Typography textAlign='center' marginTop={1}>
                 {followerCount} Followers
               </Typography>
