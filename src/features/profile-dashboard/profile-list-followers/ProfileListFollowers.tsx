@@ -22,6 +22,12 @@ const headerConfigs = [
     header: 'Name',
     isCenter: false,
   },
+  {
+    header: 'Rank Name', 
+  },
+  {
+    header: 'Rank',
+  },
 ];
 
 const rowConfigs = [
@@ -38,6 +44,13 @@ const rowConfigs = [
     field: 'fullName',
     isCenter: false,
   },
+  {
+    field: 'rankName', 
+  },
+  {
+    field: 'rankLogoUrl',
+    isAvatar: true,
+  },
 ];
 
 const ProfileListFollowers = () => {
@@ -48,7 +61,7 @@ const ProfileListFollowers = () => {
   const followers = useAppSelector(profileSelectors.selectFollowers);
 
   const goToProfile = useCallback((userId: number) => {
-    navigate(`/profile/${ userId }`, { replace: true });
+    navigate(`/profile/${userId}`, { replace: true });
   }, []);
 
   useEffect(() => {
@@ -68,7 +81,7 @@ const ProfileListFollowers = () => {
     <>
       <Box className={styles.wrapper}>
         <Box paddingBottom={2} ref={contentRef}>
-          <AppHeading heading={`Followers (${ followers?.length })`} />
+          <AppHeading heading={`Followers (${followers?.length})`} />
         </Box>
         {followers?.length ? (
           <AppTable

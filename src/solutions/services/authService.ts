@@ -16,6 +16,13 @@ class AuthenticationService {
       },
     });
   };
+  signInByGoogle = async (payload) => {
+    return await axios.post('/auth/sign-in-by-google', payload, {
+      headers: {
+        'content-type': 'application/json',
+      },
+    });
+  };
 }
 
 const authService = new AuthenticationService();

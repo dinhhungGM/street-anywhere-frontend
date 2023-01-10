@@ -66,6 +66,8 @@ export interface IProfileDetail {
   profilePhotoUrl?: string;
   coverImageUrl?: string;
   posts?: IProfilePost[];
+  rankName?: string;
+  rankLogoUrl?: string;
 }
 
 export enum ProfilePropertiesEnum {

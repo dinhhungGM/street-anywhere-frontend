@@ -2,8 +2,9 @@ import { PersonAdd } from '@mui/icons-material';
 import { Box, Button, Divider, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
+import { gapi } from 'gapi-script';
 import { useEffect } from 'react';
-import GoogleLogin from 'react-google-login';
+import { GoogleLogin } from 'react-google-login';
 import { NavLink, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
@@ -33,8 +34,24 @@ const SignIn = () => {
     }),
   });
 
-  const handleOnSuccess = (obj: any) => {
-    console.log('Handle On Success', obj);
+  const handleOnSuccess = async (obj: any) => {
+    const {
+      familyName: lastName,
+      givenName: firstName,
+      imageUrl: profilePhotoUrl,
+      email,
+    } = obj.profileObj;
+    const res = await dispatch(
+      authActions.signInByGoogle({
+        firstName,
+        lastName,
+        profilePhotoUrl,
+        email,
+      }),
+    );
+    if (res.meta.requestStatus === 'fulfilled') {
+      navigate(-1);
+    }
   };
 
   const handleOnFailure = (obj: any) => {
@@ -45,6 +62,13 @@ const SignIn = () => {
     if (currentUser) {
       navigate(-1);
     }
+    const initClient = () => {
+      gapi.client.init({
+        clientId: process.env.REACT_APP_GOOGLE_AUTHENTICATION_CLIENT_ID,
+        scope: '',
+      });
+    };
+    gapi.load('client:auth2', initClient);
   }, []);
 
   return (
@@ -96,7 +120,7 @@ const SignIn = () => {
           <Divider>Or continue with</Divider>
           <Stack paddingY={4} alignItems='center' justifyContent='center'>
             <GoogleLogin
-              clientId={process.env.REACT_APP_GOOGLE_AUTHENTICATION_CLIENT_ID as string}
+              clientId='258306785106-s3d9edr25eodmn8jddur8dtba2voevei.apps.googleusercontent.com'
               onSuccess={handleOnSuccess}
               onFailure={handleOnFailure}
               cookiePolicy={'single_host_origin'}
