@@ -2,7 +2,7 @@ import SweetAlert from 'sweetalert2';
 
 const AlertUtil = {
   showSuccess: (message: string) => {
-    SweetAlert.fire({
+    return SweetAlert.fire({
       title: 'Success',
       icon: 'success',
       text: message,
@@ -10,7 +10,7 @@ const AlertUtil = {
   },
   showError: (error: any) => {
     const message = error.toString();
-    SweetAlert.fire({
+    return SweetAlert.fire({
       title: 'Error',
       icon: 'error',
       text: message,

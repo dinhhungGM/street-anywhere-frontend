@@ -46,31 +46,6 @@ const AppBarChart = ({
           text: chartTitle,
           position: 'bottom' as const,
         },
-        datalabels: {
-          align: 'end',
-          anchor: 'end',
-          color: function (context) {
-            return context.dataset.backgroundColor;
-          },
-          font: function (context) {
-            var w = context.chart.width;
-            return {
-              size: w < 512 ? 12 : 14,
-              weight: 'bold',
-            };
-          },
-          formatter: function (value) {
-            if (value > 0) {
-              value = value.toString();
-              value = value.split(/(?=(?:...)*$)/);
-              value = value.join(',');
-              return value;
-            } else {
-              value = '';
-              return value;
-            }
-          },
-        },
       },
       aspectRatio: 5 / 3,
       layout: {
