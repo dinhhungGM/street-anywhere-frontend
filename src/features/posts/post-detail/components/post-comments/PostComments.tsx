@@ -174,7 +174,7 @@ const PostComments = ({ postId, currentUserId, ownerId }: PostCommentsProps) => 
                 className={styles.control}
                 {...form.getFieldProps('content')}></textarea>
             </FormControl>
-            <Stack justifyContent='flex-end' alignItems='center' paddingTop={2}>
+            <Stack direction='row' justifyContent='flex-end' alignItems='center' paddingTop={2}>
               <Button
                 type='submit'
                 variant='contained'
