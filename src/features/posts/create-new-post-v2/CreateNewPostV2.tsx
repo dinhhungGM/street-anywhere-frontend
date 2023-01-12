@@ -358,7 +358,10 @@ const CreateNewPostV2 = () => {
           elevation={2}
           borderRadius={2}
           component={Paper}>
-          <Button startIcon={<AppIcon icon={ArrowBack} color='#fff' />} variant='contained'>
+          <Button
+            startIcon={<AppIcon icon={ArrowBack} color='#fff' />}
+            variant='contained'
+            onClick={() => navigate(-1)}>
             Back
           </Button>
           <Typography
